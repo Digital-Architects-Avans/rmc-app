@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Rent My Car</string>
+    <string name="register">Register</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">E-mail</string>
+    <string name="telephone">Telephone</string>
+    <string name="password">Password</string>
+    <string name="address">Address</string>
+    <string name="postal_code">Postal code</string>
+    <string name="building_number">Building nr.</string>
+    <string name="city">City</string>
+    <string name="close">Close</string>
+    <string name="add_vehicle">Add Vehicle</string>
+    <string name="my_vehicles">My vehicles</string>
+    <string name="vehicle">Vehicle</string>
+    <string name="available">Available</string>
+    <string name="location">Location</string>
+    <string name="price">Price</string>
 </resources>
