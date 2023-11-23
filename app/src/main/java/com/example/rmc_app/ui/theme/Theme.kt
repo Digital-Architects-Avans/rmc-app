@@ -82,7 +82,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun RmcappTheme(
+fun RmcAppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

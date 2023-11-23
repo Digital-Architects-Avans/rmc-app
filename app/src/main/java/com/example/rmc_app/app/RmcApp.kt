@@ -12,7 +12,7 @@ import com.example.rmc_app.navigation.Screen
 import com.example.rmc_app.screens.LoginScreen
 import com.example.rmc_app.screens.RegisterScreen
 import com.example.rmc_app.screens.TermsAndConditionsScreen
-import com.example.rmc_app.ui.theme.RmcappTheme
+import com.example.rmc_app.ui.theme.RmcAppTheme
 
 
 @Preview(showBackground = true)
@@ -44,7 +44,7 @@ fun RmcApp() {
 @Preview
 @Composable
 fun Preview() {
-    RmcappTheme {
+    RmcAppTheme {
         RmcApp()
 //        VehicleList()
 //        RegisterSection()
