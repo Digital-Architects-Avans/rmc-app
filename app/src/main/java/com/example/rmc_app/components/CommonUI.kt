@@ -53,6 +53,13 @@ import androidx.compose.ui.unit.sp
 import com.example.rmc_app.R
 import com.example.rmc_app.ui.theme.Shapes
 
+/*
+ * Composables shared across different screens
+ */
+
+/**
+ * Composable that displays a Text component with a specific styling for NormalText
+ */
 @Composable
 fun NormalTextComponent(value: String) {
     Text(
@@ -68,6 +75,9 @@ fun NormalTextComponent(value: String) {
     )
 }
 
+/**
+ * Composable that displays a Text component with a specific styling for HeadingText
+ */
 @Composable
 fun HeadingTextComponent(value: String) {
     Text(
@@ -84,8 +94,9 @@ fun HeadingTextComponent(value: String) {
     )
 }
 
-
-// Add Composables here that will be shared across multiple screens
+/**
+ * Stateless Composable that displays an OutlinedTextField with a label and leading icon
+ */
 @Composable
 fun MyTextFieldComponent(
     labelValue: String,
@@ -124,6 +135,10 @@ fun MyTextFieldComponent(
     )
 }
 
+/**
+ * Stateless Composable that displays an OutlinedTextField with a label, leading icon, trialing
+ * specific for passwords
+ */
 @Composable
 fun PasswordTextFieldComponent(
     labelValue: String,
@@ -181,6 +196,9 @@ fun PasswordTextFieldComponent(
     )
 }
 
+/**
+ * Stateless CheckboxComponent which consists out of a CheckBox and HyperLinkTextComponent
+ */
 @Composable
 fun CheckboxComponent(
     value: String,
@@ -201,6 +219,9 @@ fun CheckboxComponent(
     }
 }
 
+/**
+ * Composable that displays a ClickableText for the Privacy Police and Terms of Use
+ */
 @Composable
 fun HyperlinkTextComponent(
     value: String,
@@ -239,6 +260,9 @@ fun HyperlinkTextComponent(
     })
 }
 
+/**
+ * Stateless Button Composable
+ */
 @Composable
 fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boolean = false) {
     Button(
@@ -278,6 +302,9 @@ fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boole
     }
 }
 
+/**
+ * Composable consisting out of two dividers with the text "or" in the middle
+ */
 @Composable
 fun DividerTextComponent() {
     Row(
@@ -309,6 +336,9 @@ fun DividerTextComponent() {
     }
 }
 
+/**
+ * Composable that displays a ClickableText depending on the screen you are in
+ */
 @Composable
 fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (String) -> Unit) {
     val initialText =
@@ -349,6 +379,9 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
     )
 }
 
+/**
+ * Stateless Text Composable with an underline
+ */
 @Composable
 fun UnderLinedTextComponent(value: String) {
     Text(
