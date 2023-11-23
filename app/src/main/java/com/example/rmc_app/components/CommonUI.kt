@@ -66,9 +66,10 @@ fun NormalTextComponent(value: String) {
         text = value,
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 40.dp),
+            .heightIn(min = 40.dp)
+            .padding(bottom = 15.dp),
         style = TextStyle(
-            fontSize = 24.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
             fontStyle = FontStyle.Normal
         ), color = MaterialTheme.colorScheme.primary
@@ -76,10 +77,29 @@ fun NormalTextComponent(value: String) {
 }
 
 /**
- * Composable that displays a Text component with a specific styling for HeadingText
+ * Composable that displays a Text component with a specific styling for small HeadingText
  */
 @Composable
-fun HeadingTextComponent(value: String) {
+fun SmallHeadingTextComponent(value: String) {
+    Text(
+        text = value,
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(),
+        style = TextStyle(
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Normal
+        ), color = MaterialTheme.colorScheme.primary,
+        textAlign = TextAlign.Center
+    )
+}
+
+/**
+ * Composable that displays a Text component with a specific styling for a large HeadingText
+ */
+@Composable
+fun LargeHeadingTextComponent(value: String) {
     Text(
         text = value,
         modifier = Modifier
@@ -101,6 +121,7 @@ fun HeadingTextComponent(value: String) {
 fun MyTextFieldComponent(
     labelValue: String,
     icon: ImageVector,
+    onTextSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
@@ -125,6 +146,7 @@ fun MyTextFieldComponent(
         value = textValue,
         onValueChange = {
             textValue = it
+            onTextSelected(it)
         },
         leadingIcon = {
             Icon(
@@ -143,6 +165,7 @@ fun MyTextFieldComponent(
 fun PasswordTextFieldComponent(
     labelValue: String,
     icon: ImageVector,
+    onTextSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Password,
@@ -169,6 +192,7 @@ fun PasswordTextFieldComponent(
         value = password,
         onValueChange = {
             password = it
+            onTextSelected(it)
         },
         leadingIcon = {
             Icon(
