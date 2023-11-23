@@ -20,22 +20,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.rmc_app.R
+import com.example.rmc_app.app.RmcScreen
 import com.example.rmc_app.components.ButtonComponent
 import com.example.rmc_app.components.ClickableLoginTextComponent
 import com.example.rmc_app.components.DividerTextComponent
-import com.example.rmc_app.components.HeadingTextComponent
+import com.example.rmc_app.components.LargeHeadingTextComponent
 import com.example.rmc_app.components.MyTextFieldComponent
-import com.example.rmc_app.components.NormalTextComponent
 import com.example.rmc_app.components.PasswordTextFieldComponent
 import com.example.rmc_app.components.UnderLinedTextComponent
-import com.example.rmc_app.navigation.RmcAppRouter
-import com.example.rmc_app.navigation.Screen
-import com.example.rmc_app.navigation.SystemBackButtonHandler
+import com.example.rmc_app.data.login.LoginUIEvent
+import com.example.rmc_app.data.login.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    loginViewModel: LoginViewModel = viewModel()
 ) {
     Surface(
         modifier = Modifier
@@ -47,18 +51,23 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            NormalTextComponent(value = stringResource(id = R.string.login))
-            HeadingTextComponent(value = stringResource(id = R.string.welcome))
+            LargeHeadingTextComponent(value = stringResource(id = R.string.welcome))
             Spacer(modifier = Modifier.height(20.dp))
 
             MyTextFieldComponent(
                 labelValue = stringResource(id = R.string.email),
                 icon = Icons.Default.Email,
+                onTextSelected = {
+                    loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
+                },
                 Modifier.fillMaxWidth()
             )
             PasswordTextFieldComponent(
                 labelValue = stringResource(id = R.string.password),
                 icon = Icons.Default.Lock,
+                onTextSelected = {
+                    loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
+                },
                 Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -70,7 +79,12 @@ fun LoginScreen(
 
             UnderLinedTextComponent(value = stringResource(id = R.string.forgot_password))
 
-            ButtonComponent(value = stringResource(id = R.string.login), onButtonClicked = { /*TODO*/ })
+            ButtonComponent(
+                value = stringResource(id = R.string.login),
+                onButtonClicked = {
+                    loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                }
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -79,19 +93,16 @@ fun LoginScreen(
             ClickableLoginTextComponent(
                 tryingToLogin = false,
                 onTextSelected = {
-                RmcAppRouter.navigateTo(Screen.RegisterScreen)
-            })
+                    navController.navigate(RmcScreen.Register.name)
+                }
+            )
         }
-
-    }
-    SystemBackButtonHandler {
-        RmcAppRouter.navigateTo(Screen.RegisterScreen)
     }
 }
 
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+    LoginScreen(navController = rememberNavController())
 }
 
