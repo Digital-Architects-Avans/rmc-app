@@ -1,4 +1,4 @@
-package com.example.rmc_app.data.login
+package com.digitalarchitects.rmc_app.data.login
 
 data class LoginUIState(
     var email: String = "",
