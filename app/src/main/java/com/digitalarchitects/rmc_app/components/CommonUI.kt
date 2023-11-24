@@ -1,4 +1,4 @@
-package com.example.rmc_app.components
+package com.digitalarchitects.rmc_app.components
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -50,8 +50,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rmc_app.R
-import com.example.rmc_app.ui.theme.Shapes
+import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.ui.theme.Shapes
 
 /*
  * Composables shared across different screens
