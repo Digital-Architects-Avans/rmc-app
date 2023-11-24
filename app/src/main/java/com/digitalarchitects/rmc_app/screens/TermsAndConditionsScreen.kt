@@ -1,4 +1,4 @@
-package com.example.rmc_app.screens
+package com.digitalarchitects.rmc_app.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,9 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.rmc_app.R
-import com.example.rmc_app.components.NormalTextComponent
-import com.example.rmc_app.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.components.NormalTextComponent
+import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
 
 @Composable
 fun TermsAndConditionsScreen(navController: NavController) {
