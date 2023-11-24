@@ -1,4 +1,4 @@
-package com.example.rmc_app.data.login
+package com.digitalarchitects.rmc_app.data.login
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
