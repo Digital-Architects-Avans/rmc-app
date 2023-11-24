@@ -1,4 +1,4 @@
-package com.example.rmc_app.app
+package com.digitalarchitects.rmc_app.app
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
@@ -22,13 +22,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.rmc_app.R
-import com.example.rmc_app.components.LargeHeadingTextComponent
-import com.example.rmc_app.data.login.LoginViewModel
-import com.example.rmc_app.screens.LoginScreen
-import com.example.rmc_app.screens.RegisterScreen
-import com.example.rmc_app.screens.TermsAndConditionsScreen
-import com.example.rmc_app.ui.theme.RmcAppTheme
+import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.login.LoginViewModel
+import com.digitalarchitects.rmc_app.screens.LoginScreen
+import com.digitalarchitects.rmc_app.screens.RegisterScreen
+import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
+import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 enum class RmcScreen(@StringRes val title: Int) {
     Login(title = R.string.login),
