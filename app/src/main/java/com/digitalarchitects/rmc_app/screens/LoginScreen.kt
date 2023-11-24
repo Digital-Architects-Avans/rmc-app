@@ -1,4 +1,4 @@
-package com.example.rmc_app.screens
+package com.digitalarchitects.rmc_app.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,17 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.rmc_app.R
-import com.example.rmc_app.app.RmcScreen
-import com.example.rmc_app.components.ButtonComponent
-import com.example.rmc_app.components.ClickableLoginTextComponent
-import com.example.rmc_app.components.DividerTextComponent
-import com.example.rmc_app.components.LargeHeadingTextComponent
-import com.example.rmc_app.components.MyTextFieldComponent
-import com.example.rmc_app.components.PasswordTextFieldComponent
-import com.example.rmc_app.components.UnderLinedTextComponent
-import com.example.rmc_app.data.login.LoginUIEvent
-import com.example.rmc_app.data.login.LoginViewModel
+import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.components.ButtonComponent
+import com.digitalarchitects.rmc_app.components.ClickableLoginTextComponent
+import com.digitalarchitects.rmc_app.components.DividerTextComponent
+import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
+import com.digitalarchitects.rmc_app.components.MyTextFieldComponent
+import com.digitalarchitects.rmc_app.components.PasswordTextFieldComponent
+import com.digitalarchitects.rmc_app.components.UnderLinedTextComponent
+import com.digitalarchitects.rmc_app.data.login.LoginUIEvent
+import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 
 @Composable
 fun LoginScreen(
