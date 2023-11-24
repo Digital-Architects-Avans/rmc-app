@@ -1,11 +1,11 @@
-package com.example.rmc_app
+package com.digitalarchitects.rmc_app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.rmc_app.app.RmcApp
-import com.example.rmc_app.ui.theme.RmcAppTheme
+import com.digitalarchitects.rmc_app.app.RmcApp
+import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
