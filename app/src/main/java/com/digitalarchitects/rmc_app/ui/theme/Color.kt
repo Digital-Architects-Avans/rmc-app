@@ -1,4 +1,4 @@
-package com.example.rmc_app.ui.theme
+package com.digitalarchitects.rmc_app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF704DA0)
