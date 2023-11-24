@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.rmc_app.app.RmcApp
-import com.example.rmc_app.ui.theme.RmcappTheme
+import com.example.rmc_app.ui.theme.RmcAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
             false
         }
         setContent {
-            RmcappTheme {
+            RmcAppTheme {
                 RmcApp()
             }
         }
