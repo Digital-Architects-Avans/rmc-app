@@ -1,4 +1,4 @@
-package com.example.rmc_app.model
+package com.digitalarchitects.rmc_app.model
 
 data class Vehicle(
     val plateNumber: String,
