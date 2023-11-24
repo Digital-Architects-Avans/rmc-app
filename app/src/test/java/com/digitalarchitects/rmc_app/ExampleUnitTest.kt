@@ -1,4 +1,4 @@
-package com.example.rmc_app
+package com.digitalarchitects.rmc_app
 
 import org.junit.Test
 
