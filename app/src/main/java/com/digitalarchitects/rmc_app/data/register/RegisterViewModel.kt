@@ -1,4 +1,4 @@
-package com.example.rmc_app.data.register
+package com.digitalarchitects.rmc_app.data.register
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
