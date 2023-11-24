@@ -1,4 +1,4 @@
-package com.example.rmc_app.data.login
+package com.digitalarchitects.rmc_app.data.login
 
 sealed class LoginUIEvent {
     data class EmailChanged(val email: String) : LoginUIEvent()
