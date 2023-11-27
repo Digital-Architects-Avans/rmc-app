@@ -3,12 +3,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+val bundleId = "com.digitalarchitects.rmc_app"
+
 android {
-    namespace = "com.example.rmc_app"
+    namespace = bundleId
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.rmc_app"
+        applicationId = bundleId
         minSdk = 28
         targetSdk = 34
         versionCode = 1
