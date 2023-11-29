@@ -10,13 +10,11 @@ import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 
 // Initialize fonts
-@Suppress("SpellCheckingInspection")
 val NotoSans = FontFamily(
     Font(R.font.notosans_black, FontWeight.Black),
     Font(R.font.notosans_black_italic, FontWeight.Black, FontStyle.Italic)
 )
 
-@Suppress("SpellCheckingInspection")
 val Chivo = FontFamily(
     Font(R.font.chivo_regular, FontWeight.Normal),
     Font(R.font.chivo_medium, FontWeight.Medium)
