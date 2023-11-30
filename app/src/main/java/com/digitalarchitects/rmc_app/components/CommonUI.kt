@@ -5,9 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,6 +25,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -54,8 +59,16 @@ import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
 
 /*
- * Composables shared across different screens
+ * Composable components shared across different screens
  */
+
+/**
+ * Default spacer
+ */
+@Composable
+fun RmcSpacer(height: Int = 24) {
+    Spacer(modifier = Modifier.height(height.dp))
+}
 
 /**
  * Composable that displays a Text component with a specific styling for NormalText
@@ -153,6 +166,61 @@ fun MyTextFieldComponent(
                 imageVector = icon,
                 contentDescription = null
             )
+        }
+    )
+}
+
+@Composable
+fun RmcTextField(
+    label: String,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    placeholder: String? = null,
+    isPassword: Boolean = false,
+    value: String,
+    onValueChange: (String) -> Unit,
+    // TODO: Add error handling
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.None
+    )
+) {
+    OutlinedTextField(
+        shape = MaterialTheme.shapes.small,
+        label = { Text(text = label) },
+        textStyle = MaterialTheme.typography.bodyLarge,
+        colors = OutlinedTextFieldDefaults.colors(
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            errorBorderColor = MaterialTheme.colorScheme.error,
+            errorTextColor = MaterialTheme.colorScheme.error,
+            unfocusedTextColor = MaterialTheme.colorScheme.scrim
+        ),
+        keyboardOptions = keyboardOptions,
+        modifier = modifier.fillMaxWidth(),
+        singleLine = true,
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        maxLines = 1,
+        value = value,
+        onValueChange = onValueChange,
+        leadingIcon = icon?.let {
+            {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null
+                )
+            }
+        },
+        placeholder = placeholder?.let {
+            {
+                Text(
+                    text = placeholder,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     )
 }
@@ -323,6 +391,70 @@ fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boole
             )
 
         }
+    }
+}
+
+@Composable
+fun RmcFilledButton(
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    color: Color = MaterialTheme.colorScheme.primary,
+    value: String,
+    isEnabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = { onClick() },
+        enabled = isEnabled,
+        colors = ButtonDefaults.buttonColors(color),
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        icon?.let {
+            Icon(
+                imageVector = it,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+        androidx.compose.material.Text(
+            text = value,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+}
+
+@Composable
+fun RmcOutlinedButton(
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    value: String,
+    isEnabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        onClick = { onClick() },
+        enabled = isEnabled,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        icon?.let {
+            Icon(
+                imageVector = it,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
