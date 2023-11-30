@@ -46,7 +46,6 @@ import com.digitalarchitects.rmc_app.data.search.SearchViewModel
 @Composable
 fun SearchScreen(
     searchViewModel: SearchViewModel = viewModel()
-    // navController: NavController,
 ) {
     val searchUiState by searchViewModel.uiState.collectAsState()
 
@@ -156,7 +155,7 @@ fun SearchScreen(
                 Column(Modifier.weight(1f)) {
                     RmcFilledButton(
                         value = stringResource(id = R.string.apply),
-                        onClick = { /*TODO: Close screen, go back to Rent A Car */ }
+                        onClick = { searchViewModel.applyFilters() }
                     )
                 }
             }
