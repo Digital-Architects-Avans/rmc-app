@@ -1,7 +1,7 @@
 package com.digitalarchitects.rmc_app.data.search
 
 // TODO: Hoist all search settings to Rent A Car screen to show results
-// TODO: Translate UI state to data class for persistent storage
+
 data class SearchUIState(
     val date: String? = "Date!", // TODO: Make LocalDate, maybe with LocalDate.now()
     val location: String? = "Location!",
