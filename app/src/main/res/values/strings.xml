@@ -56,4 +56,6 @@
     <string name="tac_changes_content">Rent My Car reserves the right to update or modify these terms and conditions at any time without prior notice. Your continued use of the app after any changes indicates your acceptance of the modified terms.</string>
     <string name="tac_contact_header">7. Contact Information</string>
     <string name="tac_contact_content">If you have any questions or concerns about these terms, please contact us at info@rentmycar.com\n\n</string>
+    <string name="welcome_text_title">Welcome to Rent My Car</string>
+    <string name="welcome_text_body">Join a movement towards a green planet with shared mobility of everyone, for everyone.</string>
 </resources>
