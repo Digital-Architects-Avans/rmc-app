@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -124,6 +125,22 @@ fun LargeHeadingTextComponent(value: String) {
             fontStyle = FontStyle.Normal
         ), color = MaterialTheme.colorScheme.primary,
         textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun RmcTitleLarge(value: String) {
+    Text(
+        text = value,
+        style = MaterialTheme.typography.titleLarge
+    )
+}
+
+@Composable
+fun RmcBodyLarge(value: String) {
+    Text(
+        text = value,
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 
@@ -419,10 +436,41 @@ fun RmcFilledButton(
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
-        androidx.compose.material.Text(
+        Text(
             text = value,
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+}
+
+@Composable
+fun RmcFilledTonalButton(
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    value: String,
+    isEnabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    FilledTonalButton(
+        onClick = { onClick() },
+        enabled = isEnabled,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        icon?.let {
+            Icon(
+                imageVector = it,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }
