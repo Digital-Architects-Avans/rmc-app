@@ -13,18 +13,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcFilledTonalButton
+import com.digitalarchitects.rmc_app.components.RmcLogoText
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.data.welcome.WelcomeUIEvent
 import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
@@ -77,19 +72,4 @@ fun WelcomeScreen(
 
         }
     }
-}
-
-@Composable
-fun RmcLogoText() {
-    androidx.compose.material.Text(
-        text = buildAnnotatedString {
-            withStyle(style = SpanStyle(fontWeight = FontWeight.Black)) {
-                append("RENT ")
-                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
-                    append("MY")
-                }
-                append(" CAR")
-            }
-        }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
-    )
 }

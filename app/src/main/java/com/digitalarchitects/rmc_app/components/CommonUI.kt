@@ -64,6 +64,24 @@ import com.digitalarchitects.rmc_app.ui.theme.Shapes
  */
 
 /**
+ * Composable that displays RENT MY CAR in text
+ */
+@Composable
+fun RmcLogoText() {
+    androidx.compose.material.Text(
+        text = buildAnnotatedString {
+            withStyle(style = SpanStyle(fontWeight = FontWeight.Black)) {
+                append("RENT ")
+                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+                    append("MY")
+                }
+                append(" CAR")
+            }
+        }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
+    )
+}
+
+/**
  * Default spacer
  */
 @Composable
