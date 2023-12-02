@@ -128,22 +128,6 @@ fun LargeHeadingTextComponent(value: String) {
     )
 }
 
-@Composable
-fun RmcTitleLarge(value: String) {
-    Text(
-        text = value,
-        style = MaterialTheme.typography.titleLarge
-    )
-}
-
-@Composable
-fun RmcBodyLarge(value: String) {
-    Text(
-        text = value,
-        style = MaterialTheme.typography.bodyLarge
-    )
-}
-
 /**
  * Stateless Composable that displays an OutlinedTextField with a label and leading icon
  */
