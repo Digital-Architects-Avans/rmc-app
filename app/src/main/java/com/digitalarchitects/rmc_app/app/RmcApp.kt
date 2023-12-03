@@ -31,9 +31,19 @@ import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 enum class RmcScreen(@StringRes val title: Int) {
-    Login(title = R.string.login),
-    Register(title = R.string.register),
-    TermsAndConditions(title = R.string.terms_and_conditions_header)
+    Welcome(title = R.string.screen_title_welcome),
+    Register(title = R.string.screen_title_register),
+    TermsAndConditions(title = R.string.screen_title_terms),
+    Login(title = R.string.screen_title_login),
+    RentACar(title = R.string.screen_title_rent_a_car),
+    Search(title = R.string.screen_title_search),
+    VehicleDetails(title = R.string.screen_title_vehicle_details),
+    MyRentals(title = R.string.screen_title_my_rentals),
+    RentMyCar(title = R.string.screen_title_rent_my_car),
+    MyVehicles(title = R.string.screen_title_my_vehicles),
+    RegisterVehicle(title = R.string.screen_title_register_vehicle),
+    MyAccount(title = R.string.screen_title_my_account),
+    EditAccount(title = R.string.screen_title_edit_account)
 }
 
 /**
