@@ -1,7 +1,10 @@
 package com.digitalarchitects.rmc_app.components
 
 import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -41,6 +45,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -58,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
+
 
 /*
  * Composable components shared across different screens
@@ -78,6 +87,25 @@ fun RmcLogoText() {
                 append(" CAR")
             }
         }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
+    )
+}
+/**
+ * Composable that displays User icon
+ */
+@Composable
+fun RmcUserIcon(
+    @DrawableRes userIcon: Int,
+    modifier: Modifier = Modifier
+){
+    Image(
+        modifier = modifier
+            .size(dimensionResource(R.dimen.image_size_userIcon))
+            .padding(dimensionResource(R.dimen.padding_small))
+            .clip(CircleShape)
+            .border(1.dp, colorResource(R.color.purple_200), CircleShape),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(userIcon),
+        contentDescription = null
     )
 }
 

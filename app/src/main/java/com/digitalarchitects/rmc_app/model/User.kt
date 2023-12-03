@@ -1,5 +1,7 @@
 package com.digitalarchitects.rmc_app.model
 
+import androidx.annotation.DrawableRes
+
 data class User(
     val firstName: String,
     val lastName: String,
@@ -9,5 +11,6 @@ data class User(
     val address: String,
     val postalCode: String,
     val buildingNumber: String,
-    val city: String
+    val city: String,
+    @DrawableRes val imageResourceId: Int,
 )

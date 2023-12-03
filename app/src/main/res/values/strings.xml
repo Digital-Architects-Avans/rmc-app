@@ -11,7 +11,10 @@
     <string name="building_number">Building nr.</string>
     <string name="city">City</string>
     <string name="close">Close</string>
+    <string name="my_account">My Account</string>
     <string name="add_vehicle">Add Vehicle</string>
+    <string name="rent_out_my_car">Rent out my car</string>
+    <string name="my_rentals">My rentals</string>
     <string name="my_vehicles">My vehicles</string>
     <string name="vehicle">Vehicle</string>
     <string name="available">Available</string>
@@ -38,6 +41,7 @@
     <string name="terms_and_conditions_header">Term of Use</string>
     <string name="or">or</string>
     <string name="login">Login</string>
+    <string name="logout">Log out</string>
     <string name="welcome">Welcome Back</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="back_button">Back</string>

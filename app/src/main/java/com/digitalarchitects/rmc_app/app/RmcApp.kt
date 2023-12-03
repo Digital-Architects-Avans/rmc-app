@@ -25,15 +25,19 @@ import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
+import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.screens.LoginScreen
+import com.digitalarchitects.rmc_app.screens.MyAccountScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
+import com.digitalarchitects.rmc_app.screens.VehicleList
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 enum class RmcScreen(@StringRes val title: Int) {
     Login(title = R.string.login),
     Register(title = R.string.register),
-    TermsAndConditions(title = R.string.terms_and_conditions_header)
+    TermsAndConditions(title = R.string.terms_and_conditions_header),
+    MyAccount(title = R.string.my_account)
 }
 
 /**
@@ -80,7 +84,7 @@ fun RmcApp(
             RmcAppBar(
                 currentScreenTitle = currentScreen.title,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
             )
         }
     ) { innerPadding ->
@@ -88,7 +92,7 @@ fun RmcApp(
 
         NavHost(
             navController = navController,
-            startDestination = RmcScreen.Login.name,
+            startDestination = RmcScreen.MyAccount.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = RmcScreen.Login.name) {
@@ -99,6 +103,19 @@ fun RmcApp(
             }
             composable(route = RmcScreen.TermsAndConditions.name) {
                 TermsAndConditionsScreen(navController = navController)
+            }
+            composable(route = RmcScreen.MyAccount.name){
+                val user = User(firstName = "John",
+                    lastName = "Doe",
+                    email = "john.doe@example.com",
+                    telephone = "123-456-7890",
+                    password = "securePassword",
+                    address = "123 Main Street",
+                    postalCode = "12345",
+                    buildingNumber = "A1",
+                    city = "Example City",
+                    imageResourceId = R.drawable.usericon)
+                MyAccountScreen(user)
             }
         }
     }
