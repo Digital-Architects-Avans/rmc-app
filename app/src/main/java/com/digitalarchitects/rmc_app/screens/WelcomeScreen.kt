@@ -43,14 +43,14 @@ fun WelcomeScreen(
             RmcSpacer()
 
             Text(
-                text = "Welcome to Rent My Car",
+                text = stringResource(R.string.welcome_title),
                 style = MaterialTheme.typography.titleLarge
             )
 
             RmcSpacer(8)
 
             Text(
-                text = "Join a movement towards a green planet with shared mobility of everyone, for everyone.",
+                text = stringResource(R.string.welcome_body),
                 style = MaterialTheme.typography.bodyLarge
             )
 
