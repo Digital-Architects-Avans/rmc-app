@@ -27,7 +27,9 @@ import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
+import com.digitalarchitects.rmc_app.screens.SearchScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
+import com.digitalarchitects.rmc_app.screens.WelcomeScreen
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 enum class RmcScreen(@StringRes val title: Int) {
@@ -101,14 +103,52 @@ fun RmcApp(
             startDestination = RmcScreen.Welcome.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(route = RmcScreen.Login.name) {
-                LoginScreen(navController = navController)
+            composable(route = RmcScreen.Welcome.name) {
+                WelcomeScreen()
             }
             composable(route = RmcScreen.Register.name) {
                 RegisterScreen(navController = navController)
             }
             composable(route = RmcScreen.TermsAndConditions.name) {
                 TermsAndConditionsScreen(navController = navController)
+            }
+            composable(route = RmcScreen.Login.name) {
+                LoginScreen(navController = navController)
+            }
+            composable(route = RmcScreen.RentACar.name) {
+                TODO("Implement Rent A Car screen")
+                // RentACarScreen()
+            }
+            composable(route = RmcScreen.Search.name) {
+                SearchScreen()
+            }
+            composable(route = RmcScreen.VehicleDetails.name) {
+                TODO("Implement VehicleDetails screen")
+                // VehicleDetailsScreen()
+            }
+            composable(route = RmcScreen.MyRentals.name) {
+                TODO("Implement MyRentals screen")
+                // MyRentalsScreen()
+            }
+            composable(route = RmcScreen.RentMyCar.name) {
+                TODO("Implement RentMyCar screen")
+                // RentMyCarScreen()
+            }
+            composable(route = RmcScreen.MyVehicles.name) {
+                TODO("Implement MyVehicles screen")
+                // MyVehiclesScreen()
+            }
+            composable(route = RmcScreen.RegisterVehicle.name) {
+                TODO("Implement RegisterVehicle screen")
+                // RegisterVehicleScreen()
+            }
+            composable(route = RmcScreen.MyAccount.name) {
+                TODO("Implement MyAccount screen")
+                // MyAccountScreen()
+            }
+            composable(route = RmcScreen.EditAccount.name) {
+                TODO("Implement EditAccount screen")
+                // EditAccountScreen()
             }
         }
     }
