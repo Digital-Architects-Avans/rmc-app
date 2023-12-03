@@ -30,10 +30,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
@@ -52,99 +52,116 @@ fun SearchScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surface
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(dimensionResource(R.dimen.padding_large))
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            RmcTextField(
-                label = stringResource(id = R.string.date),
-                icon = Icons.Filled.CalendarMonth,
-                value = searchUiState.date ?: "",
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                onValueChange = { searchViewModel.onEvent(SearchUIEvent.DateChanged(it)) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column {
+                RmcTextField(
+                    label = stringResource(id = R.string.date),
+                    icon = Icons.Filled.CalendarMonth,
+                    value = searchUiState.date ?: "",
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    onValueChange = { searchViewModel.onEvent(SearchUIEvent.DateChanged(it)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            RmcSpacer()
+                RmcSpacer()
 
-            RmcTextField(
-                label = stringResource(id = R.string.location),
-                icon = Icons.Filled.LocationOn,
-                value = searchUiState.location ?: "",
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.None
-                ),
-                onValueChange = { searchViewModel.onEvent(SearchUIEvent.LocationChanged(it)) },
-                modifier = Modifier.fillMaxWidth()
-            )
+                RmcTextField(
+                    label = stringResource(id = R.string.location),
+                    icon = Icons.Filled.LocationOn,
+                    value = searchUiState.location ?: "",
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.None
+                    ),
+                    onValueChange = { searchViewModel.onEvent(SearchUIEvent.LocationChanged(it)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            RmcSpacer(32)
+                RmcSpacer(32)
 
-            RmcSlider(
-                label = stringResource(id = R.string.price),
-                icon = Icons.Filled.PriceChange,
-                sliderPosition = searchUiState.price?.toFloat() ?: 0.0F,
-                maxValue = 250.0F,
-                onValueChange = { searchViewModel.onEvent(SearchUIEvent.PriceChanged(it)) }
-            )
+                RmcSlider(
+                    label = stringResource(id = R.string.price),
+                    icon = Icons.Filled.PriceChange,
+                    sliderPosition = searchUiState.price?.toFloat() ?: 0.0F,
+                    maxValue = 250.0F,
+                    onValueChange = { searchViewModel.onEvent(SearchUIEvent.PriceChanged(it)) }
+                )
 
-            RmcSpacer()
+                RmcSpacer()
 
-            RmcSlider(
-                label = stringResource(id = R.string.distance),
-                icon = Icons.Filled.LocationOn,
-                sliderPosition = searchUiState.distance?.toFloat() ?: 0.0F,
-                maxValue = 250.0F,
-                onValueChange = { searchViewModel.onEvent(SearchUIEvent.DistanceChanged(it)) }
-            )
+                RmcSlider(
+                    label = stringResource(id = R.string.distance),
+                    icon = Icons.Filled.LocationOn,
+                    sliderPosition = searchUiState.distance?.toFloat() ?: 0.0F,
+                    maxValue = 250.0F,
+                    onValueChange = { searchViewModel.onEvent(SearchUIEvent.DistanceChanged(it)) }
+                )
 
-            RmcSpacer()
+                RmcSpacer()
 
-            RmcFilterLabel(label = stringResource(id = R.string.engine_type))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                Column(Modifier.weight(1f)) {
-                    RmcFilterChip(
-                        label = stringResource(id = R.string.engine_type_ice),
-                        selected = searchUiState.engineTypeIce,
-                        onClick = { searchViewModel.onEvent(SearchUIEvent.EngineTypeIceChanged(it)) }
-                    )
+                RmcFilterLabel(label = stringResource(id = R.string.engine_type))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large))
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        RmcFilterChip(
+                            label = stringResource(id = R.string.engine_type_ice),
+                            selected = searchUiState.engineTypeIce,
+                            onClick = {
+                                searchViewModel.onEvent(
+                                    SearchUIEvent.EngineTypeIceChanged(
+                                        it
+                                    )
+                                )
+                            }
+                        )
+                    }
+                    Column(Modifier.weight(1f)) {
+                        RmcFilterChip(
+                            label = stringResource(id = R.string.engine_type_cev),
+                            selected = searchUiState.engineTypeCev,
+                            onClick = {
+                                searchViewModel.onEvent(
+                                    SearchUIEvent.EngineTypeCevChanged(
+                                        it
+                                    )
+                                )
+                            }
+                        )
+                    }
+                    Column(Modifier.weight(1f)) {
+                        RmcFilterChip(
+                            label = stringResource(id = R.string.engine_type_fbev),
+                            selected = searchUiState.engineTypeFbev,
+                            onClick = {
+                                searchViewModel.onEvent(
+                                    SearchUIEvent.EngineTypeFbevChanged(
+                                        it
+                                    )
+                                )
+                            }
+                        )
+                    }
                 }
-                Column(Modifier.weight(1f)) {
-                    RmcFilterChip(
-                        label = stringResource(id = R.string.engine_type_cev),
-                        selected = searchUiState.engineTypeCev,
-                        onClick = { searchViewModel.onEvent(SearchUIEvent.EngineTypeCevChanged(it)) }
-                    )
-                }
-                Column(Modifier.weight(1f)) {
-                    RmcFilterChip(
-                        label = stringResource(id = R.string.engine_type_fbev),
-                        selected = searchUiState.engineTypeFbev,
-                        onClick = { searchViewModel.onEvent(SearchUIEvent.EngineTypeFbevChanged(it)) }
-                    )
-                }
+                RmcSpacer(32)
             }
-
-            RmcSpacer()
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.Bottom
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
             ) {
                 Column(Modifier.weight(1f)) {
                     RmcOutlinedButton(
@@ -187,8 +204,8 @@ fun RmcSliderLabel(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(end = 8.dp)
-                    .size(16.dp),
+                    .padding(end = dimensionResource(R.dimen.padding_small))
+                    .size(dimensionResource(R.dimen.icon_size_small)),
                 tint = MaterialTheme.colorScheme.secondary
             )
             if (sliderPosition == 0) {
@@ -251,7 +268,7 @@ fun RmcFilterLabel(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp)
+            .padding(bottom = dimensionResource(R.dimen.padding_small))
     ) {
         Text(
             text = label,
