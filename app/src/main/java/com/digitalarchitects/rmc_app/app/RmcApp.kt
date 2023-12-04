@@ -120,7 +120,11 @@ fun RmcApp(
                 TermsAndConditionsScreen(navController = navController)
             }
             composable(route = RmcScreen.Login.name) {
-                LoginScreen(navController = navController)
+                LoginScreen(
+                    // onForgotPasswordTextClicked = { navController.navigate(RmcScreen.ForgotPassword.name) },
+                    onLoginButtonClicked = { navController.navigate(RmcScreen.RentACar.name) },
+                    onRegisterTextClicked = { navController.navigate(RmcScreen.Register.name) }
+                )
             }
             composable(route = RmcScreen.RentACar.name) {
                 TODO("Implement Rent A Car screen")
