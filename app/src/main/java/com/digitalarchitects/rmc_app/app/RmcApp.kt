@@ -110,7 +110,11 @@ fun RmcApp(
                 )
             }
             composable(route = RmcScreen.Register.name) {
-                RegisterScreen(navController = navController)
+                RegisterScreen(
+                    onTermsAndConditionsTextClicked = { navController.navigate(RmcScreen.TermsAndConditions.name) },
+                    onLoginTextClicked = { navController.navigate(RmcScreen.Login.name) },
+                    onRegisterButtonClicked = { navController.navigate(RmcScreen.RentACar.name) }
+                )
             }
             composable(route = RmcScreen.TermsAndConditions.name) {
                 TermsAndConditionsScreen(navController = navController)
