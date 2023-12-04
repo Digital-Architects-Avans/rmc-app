@@ -15,18 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.components.RmcLogoText
 import com.digitalarchitects.rmc_app.components.RmcSpacer
-import com.digitalarchitects.rmc_app.data.welcome.WelcomeUIEvent
-import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
 
 @Composable
 fun WelcomeScreen(
-    welcomeViewModel: WelcomeViewModel = viewModel()
     onLoginButtonClicked: () -> Unit,
     onRegisterButtonClicked: () -> Unit
 ) {
