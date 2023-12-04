@@ -104,7 +104,10 @@ fun RmcApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = RmcScreen.Welcome.name) {
-                WelcomeScreen()
+                WelcomeScreen(
+                    onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
+                    onLoginButtonClicked = { navController.navigate(RmcScreen.Login.name) }
+                )
             }
             composable(route = RmcScreen.Register.name) {
                 RegisterScreen(navController = navController)

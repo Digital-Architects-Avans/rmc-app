@@ -27,6 +27,8 @@ import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
 @Composable
 fun WelcomeScreen(
     welcomeViewModel: WelcomeViewModel = viewModel()
+    onLoginButtonClicked: () -> Unit,
+    onRegisterButtonClicked: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -61,12 +63,16 @@ fun WelcomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Column(Modifier.weight(1f)) {
-                    RmcFilledTonalButton(value = stringResource(id = R.string.register),
-                        onClick = { welcomeViewModel.onEvent(WelcomeUIEvent.RegisterButtonClicked) })
+                    RmcFilledTonalButton(
+                        value = stringResource(id = R.string.register),
+                        onClick = onRegisterButtonClicked
+                    )
                 }
                 Column(Modifier.weight(1f)) {
-                    RmcFilledButton(value = stringResource(id = R.string.login),
-                        onClick = { welcomeViewModel.onEvent(WelcomeUIEvent.LoginButtonClicked) })
+                    RmcFilledButton(
+                        value = stringResource(id = R.string.login),
+                        onClick = onLoginButtonClicked
+                    )
                 }
             }
 
