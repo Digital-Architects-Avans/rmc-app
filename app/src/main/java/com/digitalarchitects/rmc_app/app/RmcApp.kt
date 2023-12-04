@@ -27,6 +27,7 @@ import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
+import com.digitalarchitects.rmc_app.screens.RentACarScreen
 import com.digitalarchitects.rmc_app.screens.SearchScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
 import com.digitalarchitects.rmc_app.screens.WelcomeScreen
@@ -127,8 +128,12 @@ fun RmcApp(
                 )
             }
             composable(route = RmcScreen.RentACar.name) {
-                TODO("Implement Rent A Car screen")
-                // RentACarScreen()
+                RentACarScreen(
+                    onSearchButtonClicked = { navController.navigate(RmcScreen.Search.name) },
+                    onRentMyCarButtonClicked = { navController.navigate(RmcScreen.RentMyCar.name) },
+                    onMyRentalsButtonClicked = { navController.navigate(RmcScreen.MyRentals.name) },
+                    onMyAccountButtonClicked = { navController.navigate(RmcScreen.MyAccount.name) }
+                )
             }
             composable(route = RmcScreen.Search.name) {
                 SearchScreen()
