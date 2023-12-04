@@ -133,10 +133,6 @@ fun RmcApp(
             composable(route = RmcScreen.Search.name) {
                 SearchScreen()
             }
-            composable(route = RmcScreen.VehicleDetails.name) {
-                TODO("Implement VehicleDetails screen")
-                // VehicleDetailsScreen()
-            }
             composable(route = RmcScreen.MyRentals.name) {
                 TODO("Implement MyRentals screen")
                 // MyRentalsScreen()
