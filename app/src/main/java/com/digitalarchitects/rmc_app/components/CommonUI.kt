@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -62,6 +64,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
@@ -95,11 +98,11 @@ fun RmcLogoText() {
 @Composable
 fun RmcUserIcon(
     @DrawableRes userIcon: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier, size: Dp
 ){
     Image(
         modifier = modifier
-            .size(dimensionResource(R.dimen.image_size_userIcon))
+            .size(size)
             .padding(dimensionResource(R.dimen.padding_small))
             .clip(CircleShape)
             .border(1.dp, colorResource(R.color.purple_200), CircleShape),
@@ -633,3 +636,43 @@ fun UnderLinedTextComponent(value: String) {
     )
 
 }
+
+/**
+ * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
+ */
+@Composable
+fun RmcTopBotton(){
+    Row(
+        modifier = Modifier
+            .height(40.dp)
+            .padding(horizontal = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = { /* TODO */ }
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Color.White, shape = CircleShape)
+                    .border(1.dp, Color.LightGray, shape = CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = stringResource(R.string.close),
+                    modifier = Modifier.fillMaxSize(),
+                    tint = Color.Gray
+                )
+            }
+        }
+        Text(
+            text = stringResource(R.string.my_vehicles),
+            style = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(start = 12.dp)
+        )
+    }
+}
+

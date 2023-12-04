@@ -25,19 +25,24 @@ import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
-import com.digitalarchitects.rmc_app.model.User
+import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
+import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
+import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.MyAccountScreen
+import com.digitalarchitects.rmc_app.screens.MyVehiclesScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
+import com.digitalarchitects.rmc_app.screens.RentOutMyCarScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
-import com.digitalarchitects.rmc_app.screens.VehicleList
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 enum class RmcScreen(@StringRes val title: Int) {
     Login(title = R.string.login),
     Register(title = R.string.register),
     TermsAndConditions(title = R.string.terms_and_conditions_header),
-    MyAccount(title = R.string.my_account)
+    MyAccount(title = R.string.my_account),
+    MyVehicles(title = R.string.my_vehicles),
+    RentOutMyCar(title = R.string.rent_out_my_car)
 }
 
 /**
@@ -92,7 +97,7 @@ fun RmcApp(
 
         NavHost(
             navController = navController,
-            startDestination = RmcScreen.MyAccount.name,
+            startDestination = RmcScreen.RentOutMyCar.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = RmcScreen.Login.name) {
@@ -105,17 +110,17 @@ fun RmcApp(
                 TermsAndConditionsScreen(navController = navController)
             }
             composable(route = RmcScreen.MyAccount.name){
-                val user = User(firstName = "John",
-                    lastName = "Doe",
-                    email = "john.doe@example.com",
-                    telephone = "123-456-7890",
-                    password = "securePassword",
-                    address = "123 Main Street",
-                    postalCode = "12345",
-                    buildingNumber = "A1",
-                    city = "Example City",
-                    imageResourceId = R.drawable.usericon)
-                MyAccountScreen(user)
+                val user = DummyUserDTO()
+                MyAccountScreen(user = user)
+            }
+            composable(route = RmcScreen.MyVehicles.name){
+                val listOfVehicles = DummyVehicleDTO()
+                MyVehiclesScreen(list = listOfVehicles)
+            }
+            composable(route = RmcScreen.RentOutMyCar.name){
+                val listOfRentals = DummyRentalDTO()
+                val listOfVehicles = DummyVehicleDTO()
+                RentOutMyCarScreen(list = listOfRentals,vehicles = listOfVehicles)
             }
         }
     }

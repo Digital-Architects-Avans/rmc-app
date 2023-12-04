@@ -2,7 +2,6 @@ package com.digitalarchitects.rmc_app.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,19 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,85 +41,15 @@ import com.digitalarchitects.rmc_app.model.Vehicle
 // https://developer.android.com/jetpack/compose/components/bottom-sheets
 // https://developer.android.com/jetpack/compose/components/scaffold
 @Composable
-fun VehicleList() {
+fun MyVehiclesScreen(list:List<Vehicle>) {
     Column(modifier = Modifier.padding(vertical = 24.dp)) {
-        Row(
-            modifier = Modifier
-                .height(40.dp)
-                .padding(horizontal = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = { /* TODO */ }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Color.White, shape = CircleShape)
-                        .border(1.dp, Color.LightGray, shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = stringResource(R.string.close),
-                        modifier = Modifier.fillMaxSize(),
-                        tint = Color.Gray
-                    )
-                }
-            }
-            Text(
-                text = stringResource(R.string.my_vehicles),
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(start = 12.dp)
-            )
-        }
+
         Column(
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .padding(24.dp)
 
         ) {
-
-            val vehicle1 = Vehicle(
-                plateNumber = "YW - 790 - 2",
-                status = "Available",
-                model = "2011 - Toyota Yaris",
-                location = "Eindhoven",
-                price = "95,-",
-                img = R.drawable.yaris
-            )
-
-            val vehicle2 = Vehicle(
-                plateNumber = "ABC - 123",
-                status = "Not Available",
-                model = "2020 - Honda Civic",
-                location = "Amsterdam",
-                price = "120,-",
-                img = R.drawable.civic
-            )
-
-            val vehicle3 = Vehicle(
-                plateNumber = "XYZ - 456",
-                status = "Available",
-                model = "2019 - Ford Focus",
-                location = "Rotterdam",
-                price = "80,-",
-                img = R.drawable.focus
-            )
-
-            val vehicle4 = Vehicle(
-                plateNumber = "DEF - 789",
-                status = "Available",
-                model = "2022 - Chevrolet Malibu",
-                location = "Utrecht",
-                price = "110,-",
-                img = R.drawable.malibu
-            )
-
-
-            val list = listOf(vehicle1, vehicle2, vehicle3, vehicle4)
             list.forEachIndexed { index, vehicle ->
                 VehicleListItem(vehicle)
                 if (index < list.size - 1) {
@@ -160,7 +84,7 @@ fun VehicleListItem(vehicle: Vehicle) {
     Row(modifier = Modifier.height(92.dp)) {
 
         Image(
-            painter = painterResource(id = vehicle.img),
+            painter = painterResource(id = vehicle.imgLink),
             contentDescription = stringResource(R.string.vehicle),
             modifier = Modifier
                 .padding(end = 6.dp)
@@ -180,7 +104,7 @@ fun VehicleListItem(vehicle: Vehicle) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = vehicle.plateNumber,
+                    text = vehicle.licensePlate,
                     color = Color.Red,
                     fontSize = 16.sp,
                     fontStyle = FontStyle.Italic,
@@ -215,7 +139,7 @@ fun VehicleListItem(vehicle: Vehicle) {
                         imageVector = Icons.Default.Place,
                         contentDescription = stringResource(R.string.location)
                     )
-                    Text(text = vehicle.location)
+                    Text(text = vehicle.latitude.toString())
                 }
                 Row {
                     Icon(
@@ -223,7 +147,7 @@ fun VehicleListItem(vehicle: Vehicle) {
                         contentDescription = stringResource(R.string.price)
                     )
                     Text(
-                        text = vehicle.price,
+                        text = vehicle.price.toString(),
                         modifier = Modifier
                             .padding(end = 24.dp)
                             .width(54.dp)
