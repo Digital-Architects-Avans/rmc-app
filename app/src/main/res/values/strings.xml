@@ -67,4 +67,17 @@
     <string name="tac_changes_content">Rent My Car reserves the right to update or modify these terms and conditions at any time without prior notice. Your continued use of the app after any changes indicates your acceptance of the modified terms.</string>
     <string name="tac_contact_header">7. Contact Information</string>
     <string name="tac_contact_content">If you have any questions or concerns about these terms, please contact us at info@rentmycar.com\n\n</string>
+    <string name="screen_title_welcome">Welcome</string>
+    <string name="screen_title_login">Login</string>
+    <string name="screen_title_register">Register</string>
+    <string name="screen_title_terms">Term of Use</string>
+    <string name="screen_title_rent_a_car">Rent A Car</string>
+    <string name="screen_title_search">Search</string>
+    <string name="screen_title_vehicle_details">Vehicle details</string>
+    <string name="screen_title_my_rentals">My rentals</string>
+    <string name="screen_title_rent_my_car">Rent out my vehicle</string>
+    <string name="screen_title_my_vehicles">My vehicles</string>
+    <string name="screen_title_register_vehicle">Register vehicle</string>
+    <string name="screen_title_my_account">My account</string>
+    <string name="screen_title_edit_account">Edit account</string>
 </resources>
