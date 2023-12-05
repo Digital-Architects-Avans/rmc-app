@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.network
 
-import com.digitalarchitects.rmc_app.data.FakeDataSource
 import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.model.Vehicle
 
