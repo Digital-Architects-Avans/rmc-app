@@ -25,9 +25,15 @@ import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
+import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
+import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
+import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
 import com.digitalarchitects.rmc_app.screens.LoginScreen
+import com.digitalarchitects.rmc_app.screens.MyAccountScreen
+import com.digitalarchitects.rmc_app.screens.MyVehiclesScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
 import com.digitalarchitects.rmc_app.screens.RentACarScreen
+import com.digitalarchitects.rmc_app.screens.RentOutMyCarScreen
 import com.digitalarchitects.rmc_app.screens.SearchScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
 import com.digitalarchitects.rmc_app.screens.WelcomeScreen
@@ -93,7 +99,7 @@ fun RmcApp(
             RmcAppBar(
                 currentScreenTitle = currentScreen.title,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
             )
         }
     ) { innerPadding ->
@@ -143,20 +149,22 @@ fun RmcApp(
                 // MyRentalsScreen()
             }
             composable(route = RmcScreen.RentMyCar.name) {
-                TODO("Implement RentMyCar screen")
-                // RentMyCarScreen()
+                val listOfRentals = DummyRentalDTO()
+                val listOfVehicles = DummyVehicleDTO()
+                val user = DummyUserDTO()
+                RentOutMyCarScreen(list = listOfRentals, vehicles = listOfVehicles, user = user)
             }
             composable(route = RmcScreen.MyVehicles.name) {
-                TODO("Implement MyVehicles screen")
-                // MyVehiclesScreen()
+                val listOfVehicles = DummyVehicleDTO()
+                MyVehiclesScreen(list = listOfVehicles)
             }
             composable(route = RmcScreen.RegisterVehicle.name) {
                 TODO("Implement RegisterVehicle screen")
                 // RegisterVehicleScreen()
             }
             composable(route = RmcScreen.MyAccount.name) {
-                TODO("Implement MyAccount screen")
-                // MyAccountScreen()
+                val user = DummyUserDTO()
+                MyAccountScreen(user = user)
             }
             composable(route = RmcScreen.EditAccount.name) {
                 TODO("Implement EditAccount screen")

@@ -1,21 +1,27 @@
 package com.digitalarchitects.rmc_app.components
 
 import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -41,6 +47,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -54,10 +64,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
+
 
 /*
  * Composable components shared across different screens
@@ -78,6 +90,25 @@ fun RmcLogoText() {
                 append(" CAR")
             }
         }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
+    )
+}
+/**
+ * Composable that displays User icon
+ */
+@Composable
+fun RmcUserIcon(
+    @DrawableRes userIcon: Int,
+    modifier: Modifier = Modifier, size: Dp
+){
+    Image(
+        modifier = modifier
+            .size(size)
+            .padding(dimensionResource(R.dimen.padding_small))
+            .clip(CircleShape)
+            .border(1.dp, colorResource(R.color.purple_200), CircleShape),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(userIcon),
+        contentDescription = null
     )
 }
 
@@ -605,3 +636,43 @@ fun UnderLinedTextComponent(value: String) {
     )
 
 }
+
+/**
+ * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
+ */
+@Composable
+fun RmcTopBotton(){
+    Row(
+        modifier = Modifier
+            .height(40.dp)
+            .padding(horizontal = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = { /* TODO */ }
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Color.White, shape = CircleShape)
+                    .border(1.dp, Color.LightGray, shape = CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = stringResource(R.string.close),
+                    modifier = Modifier.fillMaxSize(),
+                    tint = Color.Gray
+                )
+            }
+        }
+        Text(
+            text = stringResource(R.string.my_vehicles),
+            style = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(start = 12.dp)
+        )
+    }
+}
+
