@@ -152,7 +152,11 @@ fun RmcApp(
                 val listOfRentals = DummyRentalDTO()
                 val listOfVehicles = DummyVehicleDTO()
                 val user = DummyUserDTO()
-                RentOutMyCarScreen(list = listOfRentals, vehicles = listOfVehicles, user = user)
+                RentOutMyCarScreen(
+                    list = listOfRentals,
+                    vehicles = listOfVehicles,
+                    user = user
+                )
             }
             composable(route = RmcScreen.MyVehicles.name) {
                 val listOfVehicles = DummyVehicleDTO()
@@ -164,7 +168,16 @@ fun RmcApp(
             }
             composable(route = RmcScreen.MyAccount.name) {
                 val user = DummyUserDTO()
-                MyAccountScreen(user = user)
+                MyAccountScreen(
+                    user = user,
+                    // edit account not operable yet
+                    onEditMyAccountButtonClicked = { /*navController.navigate(RmcScreen.EditAccount.name)*/ },
+                    onMyVehiclesButtonClicked = { navController.navigate(RmcScreen.MyVehicles.name) },
+                    onRentOutMyCarButtonClicked = { navController.navigate(RmcScreen.RentMyCar.name) },
+                    // my rentals not operable yet
+                    onMyRentalsButtonClicked = { /*navController.navigate(RmcScreen.MyRentals.name)*/ },
+                    onLogoutButtonClicked = { navController.navigate(RmcScreen.Login.name) }
+                )
             }
             composable(route = RmcScreen.EditAccount.name) {
                 TODO("Implement EditAccount screen")

@@ -28,7 +28,14 @@ import com.digitalarchitects.rmc_app.model.User
 
 
 @Composable
-fun MyAccountScreen(user: User) {
+fun MyAccountScreen(
+    user: User,
+    onRentOutMyCarButtonClicked: () -> Unit,
+    onEditMyAccountButtonClicked: () -> Unit,
+    onMyVehiclesButtonClicked: () -> Unit,
+    onMyRentalsButtonClicked: () -> Unit,
+    onLogoutButtonClicked: () -> Unit
+) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -40,15 +47,37 @@ fun MyAccountScreen(user: User) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
-        ){
+        ) {
             RmcLogoText()
-            RmcUserIcon(userIcon = user.imageResourceId, size = dimensionResource(R.dimen.image_size_large))
-            SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+            RmcUserIcon(
+                userIcon = user.imageResourceId,
+                size = dimensionResource(R.dimen.image_size_large),
+                onClick = onEditMyAccountButtonClicked
+            )
+            SmallHeadingTextComponent(
+                value = "${user.firstName} ${user.lastName}"
+            )
             RmcSpacer()
-            RmcFilledButton(value = stringResource(R.string.my_vehicles), icon = Icons.Filled.DirectionsCar) {}
-            RmcFilledButton(value = stringResource(R.string.rent_out_my_car), icon = Icons.Filled.Key) {}
-            RmcFilledButton(value = stringResource(R.string.my_rentals), icon = Icons.Filled.CarRental) {}
-            RmcOutlinedButton(value = stringResource(R.string.logout), icon = Icons.Filled.Output) {}
+            RmcFilledButton(
+                value = stringResource(R.string.my_vehicles),
+                icon = Icons.Filled.DirectionsCar,
+                onClick = onMyVehiclesButtonClicked
+            )
+            RmcFilledButton(
+                value = stringResource(R.string.rent_out_my_car),
+                icon = Icons.Filled.Key,
+                onClick = onRentOutMyCarButtonClicked
+            )
+            RmcFilledButton(
+                value = stringResource(R.string.my_rentals),
+                icon = Icons.Filled.CarRental,
+                onClick = onMyRentalsButtonClicked
+            )
+            RmcOutlinedButton(
+                value = stringResource(R.string.logout),
+                icon = Icons.Filled.Output,
+                onClick = onLogoutButtonClicked
+            )
             RmcSpacer()
         }
     }
