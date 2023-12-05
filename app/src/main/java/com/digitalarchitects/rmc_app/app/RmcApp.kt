@@ -120,7 +120,8 @@ fun RmcApp(
             composable(route = RmcScreen.RentOutMyCar.name){
                 val listOfRentals = DummyRentalDTO()
                 val listOfVehicles = DummyVehicleDTO()
-                RentOutMyCarScreen(list = listOfRentals,vehicles = listOfVehicles)
+                val user = DummyUserDTO()
+                RentOutMyCarScreen(list = listOfRentals,vehicles = listOfVehicles, user = user)
             }
         }
     }

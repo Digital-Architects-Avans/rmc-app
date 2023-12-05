@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Rent My Car</string>
+    <string name="accept_rental">Accept Rental</string>
+    <string name="reject_rental">Reject Rental</string>
+    <string name="pending">Pending</string>
+    <string name="open">Open</string>
+    <string name="renter">Renter</string>
+    <string name="status">Status</string>
+    <string name="history">History</string>
     <string name="register">Register</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>

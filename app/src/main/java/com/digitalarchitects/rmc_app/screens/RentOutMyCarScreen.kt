@@ -42,11 +42,12 @@ import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
 import com.digitalarchitects.rmc_app.model.Rental
 import com.digitalarchitects.rmc_app.model.RentalStatus
+import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.model.Vehicle
 import java.time.LocalDate
 
 @Composable
-fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>) {
+fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>, user: User) {
     var selectedTab by remember { mutableStateOf(RentalTab.PENDING) }
 
     Column(
@@ -77,22 +78,22 @@ fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>) {
 
             items(filteredList) { rental ->
                 vehicles.find { it.id == rental.vehicleId }
-                    ?.let { RentalItem(rental = rental, vehicle = it) }
+                    ?.let { RentalItem(rental = rental, vehicle = it, user = user) }
             }
         }
     }
 }
 
 enum class RentalTab(val tabName: String) {
-    PENDING("Pending"),
-    APPROVED("Open"),
-    HISTORY("History")
+    PENDING("${R.string.pending}"),
+    OPEN("${R.string.open}"),
+    HISTORY("${R.string.history}")
 }
 
 fun getFilteredRentals(list: List<Rental>, selectedTab: RentalTab): List<Rental> {
     return when (selectedTab) {
         RentalTab.PENDING -> list.filter { it.status == RentalStatus.PENDING }
-        RentalTab.APPROVED -> list.filter { it.status == RentalStatus.APPROVED && it.date.isAfter(LocalDate.now()) }
+        RentalTab.OPEN -> list.filter { it.status == RentalStatus.APPROVED && it.date.isAfter(LocalDate.now()) }
         RentalTab.HISTORY -> list.filter {
             it.status == RentalStatus.DENIED || it.status == RentalStatus.CANCELLED || (it.status == RentalStatus.APPROVED && it.date.isBefore(LocalDate.now()))
         }
@@ -102,7 +103,7 @@ fun getFilteredRentals(list: List<Rental>, selectedTab: RentalTab): List<Rental>
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RentalItem(rental: Rental, vehicle: Vehicle) {
+fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
@@ -115,24 +116,23 @@ fun RentalItem(rental: Rental, vehicle: Vehicle) {
                 isSheetOpen = true
             },
         verticalArrangement = Arrangement.SpaceEvenly,
-
         ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Car ID: ${rental.vehicleId}")
-            Text(text = "Date: ${rental.date}")
-            Text(text = "Price: €${rental.price}")
+            Text(text = "${R.string.vehicle}: ${rental.vehicleId}")
+            Text(text = "${R.string.date}: ${rental.date}")
+            Text(text = "${R.string.price}: €${rental.price}")
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "User ID: ${rental.userId}")
-            Text(text = "Status: ${rental.status}")
+            Text(text = "${R.string.renter}: ${rental.userId}")
+            Text(text = "${R.string.status}: ${rental.status}")
         }
     }
     Divider(modifier = Modifier.padding(8.dp))
@@ -141,7 +141,6 @@ fun RentalItem(rental: Rental, vehicle: Vehicle) {
             modifier = Modifier.height(500.dp),
             sheetState = sheetState,
             onDismissRequest = { isSheetOpen = false },
-
         ) {
             Column(
                 modifier = Modifier
@@ -158,7 +157,7 @@ fun RentalItem(rental: Rental, vehicle: Vehicle) {
             )
             Row {
                 RmcUserIcon(userIcon = R.drawable.usericon, size = dimensionResource(R.dimen.image_size_medium))
-                SmallHeadingTextComponent(value = "John Doe")
+                SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -173,7 +172,7 @@ fun RentalItem(rental: Rental, vehicle: Vehicle) {
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 18.dp),
-                        text = "Reject Rental",
+                        text = "${R.string.reject_rental}",
                         color = Color.White,
                     )
                 }
@@ -187,19 +186,17 @@ fun RentalItem(rental: Rental, vehicle: Vehicle) {
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
-                        text = "Accept Rental",
+                        text = "${R.string.accept_rental}",
                         color = Color.White,
                     )
                 }
             }
-
             RmcSpacer()
             Column {
                 VehicleListItem(vehicle = vehicle)
             }
-                RmcSpacer()
-                RmcSpacer()
-
+            RmcSpacer()
+            RmcSpacer()
         }
     }
     }

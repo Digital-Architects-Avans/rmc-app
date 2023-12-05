@@ -41,7 +41,6 @@ fun MyAccountScreen(user: User) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ){
-
             RmcLogoText()
             RmcUserIcon(userIcon = user.imageResourceId, size = dimensionResource(R.dimen.image_size_userIcon))
             SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
@@ -51,7 +50,6 @@ fun MyAccountScreen(user: User) {
             RmcFilledButton(value = stringResource(R.string.my_rentals), icon = Icons.Filled.CarRental) {}
             RmcOutlinedButton(value = stringResource(R.string.logout), icon = Icons.Filled.Output) {}
             RmcSpacer()
-
         }
     }
 }
