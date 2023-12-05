@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,7 +64,7 @@ fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>, user: User) 
         ) {
             RentalTab.values().forEachIndexed { index, tab ->
                 Tab(
-                    text = { Text(tab.tabName) },
+                    text = { Text(stringResource(id = tab.tabNameResourceId)) },
                     selected = selectedTab == tab,
                     onClick = { selectedTab = tab },
                     modifier = Modifier.padding(8.dp)
@@ -84,10 +85,10 @@ fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>, user: User) 
     }
 }
 
-enum class RentalTab(val tabName: String) {
-    PENDING("${R.string.pending}"),
-    OPEN("${R.string.open}"),
-    HISTORY("${R.string.history}")
+enum class RentalTab(val tabNameResourceId: Int) {
+    PENDING(R.string.pending),
+    OPEN(R.string.open),
+    HISTORY(R.string.history)
 }
 
 fun getFilteredRentals(list: List<Rental>, selectedTab: RentalTab): List<Rental> {
@@ -122,17 +123,32 @@ fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "${R.string.vehicle}: ${rental.vehicleId}")
-            Text(text = "${R.string.date}: ${rental.date}")
-            Text(text = "${R.string.price}: €${rental.price}")
+            Row {
+                Text(text = stringResource(id = R.string.vehicle))
+                Text(text = ": ${rental.vehicleId}")
+            }
+            Row {
+                Text(text = stringResource(id = R.string.date))
+                Text(text = ": ${rental.date}")
+            }
+            Row {
+                Text(text = stringResource(id = R.string.price))
+                Text(text = ": ${rental.price}")
+            }
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "${R.string.renter}: ${rental.userId}")
-            Text(text = "${R.string.status}: ${rental.status}")
+            Row {
+                Text(text = stringResource(id = R.string.renter))
+                Text(text = ": ${rental.userId}")
+            }
+            Row {
+                Text(text = stringResource(id = R.string.status))
+                Text(text = ": ${rental.status}")
+            }
         }
     }
     Divider(modifier = Modifier.padding(8.dp))
