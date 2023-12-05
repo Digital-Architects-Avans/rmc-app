@@ -182,13 +182,13 @@ fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
                     modifier = Modifier
                         .height(24.dp)
                         .background(
-                            color = Color.Green,
+                            color = Color.Red,
                             shape = RoundedCornerShape(12.dp)
                         )
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 18.dp),
-                        text = "${R.string.reject_rental}",
+                        text = stringResource(id = R.string.reject_rental),
                         color = Color.White,
                     )
                 }
@@ -196,13 +196,13 @@ fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
                     modifier = Modifier
                         .height(24.dp)
                         .background(
-                            color = Color.Red,
+                            color = Color.Green,
                             shape = RoundedCornerShape(12.dp)
                         )
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
-                        text = "${R.string.accept_rental}",
+                        text = stringResource(id = R.string.accept_rental),
                         color = Color.White,
                     )
                 }
