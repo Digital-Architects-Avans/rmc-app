@@ -18,7 +18,7 @@
     <string name="building_number">Building nr.</string>
     <string name="city">City</string>
     <string name="close">Close</string>
-    <string name="my_account">My Account</string>
+    <string name="my_account">My account</string>
     <string name="add_vehicle">Add Vehicle</string>
     <string name="rent_out_my_car">Rent out my car</string>
     <string name="my_rentals">My rentals</string>
@@ -73,13 +73,13 @@
     <string name="screen_title_terms">Term of Use</string>
     <string name="screen_title_rent_a_car">Rent A Car</string>
     <string name="screen_title_search">Search</string>
-    <string name="screen_title_vehicle_details">Vehicle details</string>
+    <string name="screen_title_vehicle_details">Vehicle Details</string>
     <string name="screen_title_my_rentals">My rentals</string>
-    <string name="screen_title_rent_my_car">Rent out my vehicle</string>
-    <string name="screen_title_my_vehicles">My vehicles</string>
-    <string name="screen_title_register_vehicle">Register vehicle</string>
-    <string name="screen_title_my_account">My account</string>
-    <string name="screen_title_edit_account">Edit account</string>
+    <string name="screen_title_rent_my_car">Rent Out My Vehicle</string>
+    <string name="screen_title_my_vehicles">My Vehicles</string>
+    <string name="screen_title_register_vehicle">Register Vehicle</string>
+    <string name="screen_title_my_account">My Account</string>
+    <string name="screen_title_edit_account">Edit Account</string>
     <string name="welcome_title">Welcome to Rent My Car</string>
     <string name="welcome_body">Join a movement towards a green planet with shared mobility of everyone, for everyone.</string>
 </resources>
