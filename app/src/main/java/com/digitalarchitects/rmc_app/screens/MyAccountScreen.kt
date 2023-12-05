@@ -42,7 +42,7 @@ fun MyAccountScreen(user: User) {
             verticalArrangement = Arrangement.SpaceEvenly
         ){
             RmcLogoText()
-            RmcUserIcon(userIcon = user.imageResourceId, size = dimensionResource(R.dimen.image_size_userIcon))
+            RmcUserIcon(userIcon = user.imageResourceId, size = dimensionResource(R.dimen.image_size_large))
             SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
             RmcSpacer()
             RmcFilledButton(value = stringResource(R.string.my_vehicles), icon = Icons.Filled.DirectionsCar) {}
