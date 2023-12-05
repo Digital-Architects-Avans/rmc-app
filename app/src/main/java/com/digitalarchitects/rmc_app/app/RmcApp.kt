@@ -33,6 +33,7 @@ import com.digitalarchitects.rmc_app.screens.MyAccountScreen
 import com.digitalarchitects.rmc_app.screens.MyVehiclesScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
 import com.digitalarchitects.rmc_app.screens.RentACarScreen
+import com.digitalarchitects.rmc_app.screens.RentOutMyCarScreen
 import com.digitalarchitects.rmc_app.screens.SearchScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
 import com.digitalarchitects.rmc_app.screens.WelcomeScreen
@@ -148,20 +149,22 @@ fun RmcApp(
                 // MyRentalsScreen()
             }
             composable(route = RmcScreen.RentMyCar.name) {
-                TODO("Implement RentMyCar screen")
-                // RentMyCarScreen()
+                val listOfRentals = DummyRentalDTO()
+                val listOfVehicles = DummyVehicleDTO()
+                val user = DummyUserDTO()
+                RentOutMyCarScreen(list = listOfRentals, vehicles = listOfVehicles, user = user)
             }
             composable(route = RmcScreen.MyVehicles.name) {
-                TODO("Implement MyVehicles screen")
-                // MyVehiclesScreen()
+                val listOfVehicles = DummyVehicleDTO()
+                MyVehiclesScreen(list = listOfVehicles)
             }
             composable(route = RmcScreen.RegisterVehicle.name) {
                 TODO("Implement RegisterVehicle screen")
                 // RegisterVehicleScreen()
             }
             composable(route = RmcScreen.MyAccount.name) {
-                TODO("Implement MyAccount screen")
-                // MyAccountScreen()
+                val user = DummyUserDTO()
+                MyAccountScreen(user = user)
             }
             composable(route = RmcScreen.EditAccount.name) {
                 TODO("Implement EditAccount screen")
