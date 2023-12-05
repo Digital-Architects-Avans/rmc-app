@@ -13,8 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcFilledTonalButton
@@ -33,7 +34,7 @@ fun WelcomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
+                .padding(dimensionResource(R.dimen.padding_large))
                 .verticalScroll(rememberScrollState())
         ) {
             RmcLogoText()
@@ -41,14 +42,14 @@ fun WelcomeScreen(
             RmcSpacer()
 
             Text(
-                text = "Welcome to Rent My Car",
+                text = stringResource(R.string.welcome_title),
                 style = MaterialTheme.typography.titleLarge
             )
 
             RmcSpacer(8)
 
             Text(
-                text = "Join a movement towards a green planet with shared mobility of everyone, for everyone.",
+                text = stringResource(R.string.welcome_body),
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -56,7 +57,7 @@ fun WelcomeScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
             ) {
                 Column(Modifier.weight(1f)) {
                     RmcFilledTonalButton(
