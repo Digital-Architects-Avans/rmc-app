@@ -375,7 +375,7 @@ fun HyperlinkTextComponent(
  * Stateless Button Composable
  */
 @Composable
-fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boolean = false) {
+fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boolean = true) {
     Button(
         modifier = Modifier
             .fillMaxWidth()

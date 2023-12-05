@@ -21,10 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.components.ButtonComponent
 import com.digitalarchitects.rmc_app.components.ClickableLoginTextComponent
 import com.digitalarchitects.rmc_app.components.DividerTextComponent
@@ -38,8 +35,9 @@ import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = viewModel(),
+    onLoginButtonClicked: () -> Unit,
+    onRegisterTextClicked: (String) -> Unit,
 ) {
     Surface(
         modifier = Modifier
@@ -83,6 +81,7 @@ fun LoginScreen(
                 value = stringResource(id = R.string.login),
                 onButtonClicked = {
                     loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                    onLoginButtonClicked()
                 }
             )
 
@@ -92,9 +91,7 @@ fun LoginScreen(
 
             ClickableLoginTextComponent(
                 tryingToLogin = false,
-                onTextSelected = {
-                    navController.navigate(RmcScreen.Register.name)
-                }
+                onTextSelected = onRegisterTextClicked
             )
         }
     }
@@ -103,6 +100,9 @@ fun LoginScreen(
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(navController = rememberNavController())
+    LoginScreen(
+        onLoginButtonClicked = {},
+        onRegisterTextClicked = {}
+    )
 }
 

@@ -29,9 +29,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.components.ButtonComponent
 import com.digitalarchitects.rmc_app.components.CheckboxComponent
 import com.digitalarchitects.rmc_app.components.ClickableLoginTextComponent
@@ -45,7 +43,9 @@ import com.digitalarchitects.rmc_app.data.register.RegisterViewModel
 fun RegisterScreen(
     modifier: Modifier = Modifier,
     registerViewModel: RegisterViewModel = viewModel(),
-    navController: NavController
+    onTermsAndConditionsTextClicked: (String) -> Unit,
+    onLoginTextClicked: (String) -> Unit,
+    onRegisterButtonClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -157,10 +157,9 @@ fun RegisterScreen(
                     )
                 )
 
-                CheckboxComponent(value = stringResource(id = R.string.terms_and_conditions),
-                    onTextSelected = {
-                        navController.navigate(RmcScreen.TermsAndConditions.name)
-                    }
+                CheckboxComponent(
+                    value = stringResource(id = R.string.terms_and_conditions),
+                    onTextSelected = onTermsAndConditionsTextClicked
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -169,6 +168,7 @@ fun RegisterScreen(
                     value = stringResource(id = R.string.register),
                     onButtonClicked = {
                         registerViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
+                        onRegisterButtonClicked()
                     }
                 )
 
@@ -178,9 +178,8 @@ fun RegisterScreen(
 
                 ClickableLoginTextComponent(
                     tryingToLogin = true,
-                    onTextSelected = {
-                        navController.navigate(RmcScreen.Login.name)
-                    })
+                    onTextSelected = onLoginTextClicked
+                )
 
             }
         }
