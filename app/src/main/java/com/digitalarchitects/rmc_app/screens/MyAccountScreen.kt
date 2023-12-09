@@ -24,17 +24,18 @@ import com.digitalarchitects.rmc_app.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.login.LoginUIEvent
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIState
 import com.digitalarchitects.rmc_app.model.User
+import kotlin.reflect.KFunction1
 
 
 @Composable
 fun MyAccountScreen(
-    user: User,
-    onRentOutMyCarButtonClicked: () -> Unit,
-    onEditMyAccountButtonClicked: () -> Unit,
-    onMyVehiclesButtonClicked: () -> Unit,
-    onMyRentalsButtonClicked: () -> Unit,
-    onLogoutButtonClicked: () -> Unit
+    state: MyAccountUIState,
+    onEvent: (MyAccountUIEvent) -> Unit,
+    user: User
 ) {
     Surface(
         modifier = Modifier
@@ -52,7 +53,9 @@ fun MyAccountScreen(
             RmcUserIcon(
                 userIcon = user.imageResourceId,
                 size = dimensionResource(R.dimen.image_size_large),
-                onClick = onEditMyAccountButtonClicked
+                onClick = {
+                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
+                }
             )
             SmallHeadingTextComponent(
                 value = "${user.firstName} ${user.lastName}"
@@ -61,22 +64,30 @@ fun MyAccountScreen(
             RmcFilledButton(
                 value = stringResource(R.string.my_vehicles),
                 icon = Icons.Filled.DirectionsCar,
-                onClick = onMyVehiclesButtonClicked
+                onClick = {
+                    onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
+                }
             )
             RmcFilledButton(
                 value = stringResource(R.string.rent_out_my_car),
                 icon = Icons.Filled.Key,
-                onClick = onRentOutMyCarButtonClicked
+                onClick = {
+                    onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
+                }
             )
             RmcFilledButton(
                 value = stringResource(R.string.my_rentals),
                 icon = Icons.Filled.CarRental,
-                onClick = onMyRentalsButtonClicked
+                onClick = {
+                    onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
+                }
             )
             RmcOutlinedButton(
                 value = stringResource(R.string.logout),
                 icon = Icons.Filled.Output,
-                onClick = onLogoutButtonClicked
+                onClick = {
+                    onEvent(MyAccountUIEvent.onLogoutButtonClicked)
+                }
             )
             RmcSpacer()
         }

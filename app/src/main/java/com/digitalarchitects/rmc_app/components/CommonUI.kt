@@ -93,6 +93,7 @@ fun RmcLogoText() {
         }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
     )
 }
+
 /**
  * Composable that displays User icon
  */

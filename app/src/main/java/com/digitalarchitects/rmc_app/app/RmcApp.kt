@@ -11,7 +11,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,7 +23,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
-import com.digitalarchitects.rmc_app.data.login.LoginViewModel
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIState
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
@@ -86,9 +86,10 @@ fun RmcAppBar(
 @Preview(showBackground = true)
 @Composable
 fun RmcApp(
-    viewModel: LoginViewModel = viewModel(),
+    viewModel: MyAccountViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = RmcScreen.valueOf(
         backStackEntry?.destination?.route ?: RmcScreen.Login.name
@@ -103,13 +104,14 @@ fun RmcApp(
             )
         }
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
+//        val uiState by viewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
             startDestination = RmcScreen.Welcome.name,
             modifier = Modifier.padding(innerPadding)
         ) {
+
             composable(route = RmcScreen.Welcome.name) {
                 WelcomeScreen(
                     onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
@@ -167,16 +169,13 @@ fun RmcApp(
                 // RegisterVehicleScreen()
             }
             composable(route = RmcScreen.MyAccount.name) {
+
                 val user = DummyUserDTO()
                 MyAccountScreen(
                     user = user,
-                    // edit account not operable yet
-                    onEditMyAccountButtonClicked = { /*navController.navigate(RmcScreen.EditAccount.name)*/ },
-                    onMyVehiclesButtonClicked = { navController.navigate(RmcScreen.MyVehicles.name) },
-                    onRentOutMyCarButtonClicked = { navController.navigate(RmcScreen.RentMyCar.name) },
-                    // my rentals not operable yet
-                    onMyRentalsButtonClicked = { /*navController.navigate(RmcScreen.MyRentals.name)*/ },
-                    onLogoutButtonClicked = { navController.navigate(RmcScreen.Login.name) }
+                    onEvent =  viewModel::onEvent,
+                    state = MyAccountUIState()
+
                 )
             }
             composable(route = RmcScreen.EditAccount.name) {
