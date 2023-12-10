@@ -19,11 +19,13 @@ class MyAccountViewModel(
     // private val _users = dao.getUsersOrderedByFirstName()
     private val _uiState = _state
     val uiState: StateFlow<MyAccountUIState> = _uiState.asStateFlow()
+
     fun onEvent(event: MyAccountUIEvent){
         when (event) {
             is MyAccountUIEvent.ShowUser -> {
                 viewModelScope.launch {
-//                    dao.getUser()
+                    dao.getFirstName()
+                    //dao.showUser()
                 }
             }
             MyAccountUIEvent.onEditMyAccountButtonClicked -> {

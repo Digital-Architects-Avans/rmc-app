@@ -33,8 +33,8 @@ import kotlin.reflect.KFunction1
 
 @Composable
 fun MyAccountScreen(
-//    state: MyAccountUIState,
-    onEvent: (MyAccountUIEvent) -> Unit,
+    state: MyAccountUIState,
+//    onEvent: (MyAccountUIEvent) -> Unit,
     user: User
 ) {
     Surface(
@@ -54,39 +54,41 @@ fun MyAccountScreen(
                 userIcon = user.imageResourceId,
                 size = dimensionResource(R.dimen.image_size_large),
                 onClick = {
-                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
+//                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
                 }
             )
+//            val b = onEvent(MyAccountUIEvent.ShowUser()).toString()
             SmallHeadingTextComponent(
-                value = "${user.firstName} ${user.lastName}"
+                value = "yes"
+            //                "${user.firstName} ${user.lastName}"
             )
             RmcSpacer()
             RmcFilledButton(
                 value = stringResource(R.string.my_vehicles),
                 icon = Icons.Filled.DirectionsCar,
                 onClick = {
-                    onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
+//                    onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
                 }
             )
             RmcFilledButton(
                 value = stringResource(R.string.rent_out_my_car),
                 icon = Icons.Filled.Key,
                 onClick = {
-                    onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
+//                    onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
                 }
             )
             RmcFilledButton(
                 value = stringResource(R.string.my_rentals),
                 icon = Icons.Filled.CarRental,
                 onClick = {
-                    onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
+//                    onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
                 }
             )
             RmcOutlinedButton(
                 value = stringResource(R.string.logout),
                 icon = Icons.Filled.Output,
                 onClick = {
-                    onEvent(MyAccountUIEvent.onLogoutButtonClicked)
+//                    onEvent(MyAccountUIEvent.onLogoutButtonClicked)
                 }
             )
             RmcSpacer()

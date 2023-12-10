@@ -13,8 +13,11 @@ interface UserDao {
     fun getUsersOrderedByFirstName(): Flow<List<UserTable>>
 
     // TODO GET CURRENT USER
-//    @Query("SELECT * FROM usertable")
-//    fun getUser(user:UserTable)
+//    @Query("SELECT * FROM usertable LIMIT 1")
+//    fun getUser(): UserTable?
+
+    @Query("SELECT firstName FROM usertable LIMIT 1")
+    fun getFirstName(): String?
 
     @Upsert
     suspend fun upsertUser(user:UserTable)

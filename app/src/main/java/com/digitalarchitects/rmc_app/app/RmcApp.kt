@@ -11,28 +11,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.digitalarchitects.rmc_app.MainActivity
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
-import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIState
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
-import com.digitalarchitects.rmc_app.room.UserDatabase
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.MyAccountScreen
 import com.digitalarchitects.rmc_app.screens.MyVehiclesScreen
@@ -91,12 +87,12 @@ fun RmcAppBar(
 @Preview
 @Composable
 fun RmcApp(
-    viewModel: ViewModel = viewModel(),
+    viewModel: MyAccountViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = RmcScreen.valueOf(
-        backStackEntry?.destination?.route ?: RmcScreen.Login.name
+        backStackEntry?.destination?.route ?: RmcScreen.MyAccount.name
     )
 
     Scaffold(
@@ -112,7 +108,7 @@ fun RmcApp(
 
         NavHost(
             navController = navController,
-            startDestination = RmcScreen.Welcome.name,
+            startDestination = RmcScreen.MyAccount.name,
             modifier = Modifier.padding(innerPadding)
         ) {
 
@@ -175,12 +171,11 @@ fun RmcApp(
             composable(route = RmcScreen.MyAccount.name) {
 
                 val user = DummyUserDTO()
-//                MyAccountScreen(
-//                    user = user,
+                MyAccountScreen(
+                    user = user,
 //                    onEvent =  viewModel::onEvent,
-//                    state = MyAccountUIState()
-//
-//                )
+                    state = MyAccountUIState()
+                )
             }
             composable(route = RmcScreen.EditAccount.name) {
                 TODO("Implement EditAccount screen")
