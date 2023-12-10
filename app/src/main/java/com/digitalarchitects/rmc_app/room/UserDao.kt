@@ -12,8 +12,9 @@ interface UserDao {
     @Query("SELECT * FROM usertable ORDER BY firstName ASC")
     fun getUsersOrderedByFirstName(): Flow<List<UserTable>>
 
-    @Query("SELECT id = 1 FROM usertable")
-    fun getUser()
+    // TODO GET CURRENT USER
+//    @Query("SELECT * FROM usertable")
+//    fun getUser(user:UserTable)
 
     @Upsert
     suspend fun upsertUser(user:UserTable)
@@ -21,6 +22,6 @@ interface UserDao {
     @Insert
     suspend fun insertUser(user:UserTable)
 
-    @Delete
-    suspend fun deleteUser()
+//    @Delete
+//    suspend fun deleteUser()
 }

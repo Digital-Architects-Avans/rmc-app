@@ -110,7 +110,7 @@ class EditMyAccountViewModel(
             }
             EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
                 viewModelScope.launch {
-                    dao.deleteUser()
+//                    dao.deleteUser()
                 }
                 navController.navigate(RmcScreen.Welcome.name)
             }

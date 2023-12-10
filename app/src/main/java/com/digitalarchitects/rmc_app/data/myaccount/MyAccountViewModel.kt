@@ -23,7 +23,7 @@ class MyAccountViewModel(
         when (event) {
             is MyAccountUIEvent.ShowUser -> {
                 viewModelScope.launch {
-                    dao.getUser()
+//                    dao.getUser()
                 }
             }
             MyAccountUIEvent.onEditMyAccountButtonClicked -> {
