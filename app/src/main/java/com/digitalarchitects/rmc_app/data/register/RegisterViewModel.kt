@@ -76,6 +76,10 @@ class RegisterViewModel : ViewModel() {
                     privacyPolicyAccepted = event.status
                 )
             }
+
+            else -> {
+                //TODO Implement other events
+            }
         }
     }
 
