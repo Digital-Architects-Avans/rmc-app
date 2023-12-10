@@ -1,7 +1,8 @@
-package com.digitalarchitects.rmc_app.network
+package com.digitalarchitects.rmc_app.fake
 
 import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.model.Vehicle
+import com.digitalarchitects.rmc_app.network.RmcApiService
 
 class FakeRmcApiService : RmcApiService {
 
