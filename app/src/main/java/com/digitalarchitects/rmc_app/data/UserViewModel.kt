@@ -1,0 +1,85 @@
+/*
+ * Copyright (C) 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.digitalarchitects.rmc_app.data
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.digitalarchitects.rmc_app.RmcApplication
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
+
+/**
+ * UI state for the Home screen
+ */
+sealed interface UserUiState {
+    data class Success(val users: String) : UserUiState
+    object Error : UserUiState
+    object Loading : UserUiState
+}
+
+class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
+    /** The mutable State that stores the status of the most recent request */
+    var userUiState: UserUiState by mutableStateOf(UserUiState.Loading)
+        private set
+
+    /**
+     * Call getUsers() on init so we can display status immediately.
+     */
+    init {
+        getUsers()
+    }
+
+    /**
+     * Gets user information from the Rmc API Retrofit service and updates the
+     * [User] [List] [MutableList].
+     */
+    fun getUsers() {
+        viewModelScope.launch {
+            userUiState = UserUiState.Loading
+            userUiState = try {
+                val listResult = userRepository.getUsers()
+                UserUiState.Success(
+                    "Success: ${listResult.size} user retrieved"
+                )
+            } catch (e: IOException) {
+                UserUiState.Error
+            } catch (e: HttpException) {
+                UserUiState.Error
+            }
+        }
+    }
+
+    /**
+     * Factory for [UserViewModel] that takes [UserRepository] as a dependency
+     */
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as RmcApplication)
+                val userRepository = application.container.userRepository
+                UserViewModel(userRepository = userRepository)
+            }
+        }
+    }
+}
