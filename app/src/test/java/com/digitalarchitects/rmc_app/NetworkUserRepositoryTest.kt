@@ -12,8 +12,8 @@ class NetworkUserRepositoryTest {
     @Test
     fun networkUserRepository_getUsers_verifyUserList() = runTest {
 
-        /* By passing the fake API service, any calls to the marsApiService property in the repository
-     * result in a call to the FakeMarsApiService. By passing fake classes for dependencies, you can
+        /* By passing the fake API service, any calls to the rmcApiService property in the repository
+     * result in a call to the FakeRmcApiService. By passing fake classes for dependencies, you can
      * control exactly what the dependency returns. This approach ensures that the code you are
      * testing doesn't depend on untested code or APIs that could change or have unforeseen problems
      */

@@ -12,7 +12,7 @@ interface UserRepository {
 class NetworkUserRepository(
     private val rmcApiService: RmcApiService
 ) : UserRepository {
-    /** Fetches list of MarsPhoto from marsApi*/
+    /** Fetches list of User from rmcApi*/
     override suspend fun getUsers(): List<User> = rmcApiService.getUsers()
 
     override suspend fun getVehicles(): List<Vehicle> = rmcApiService.getVehicles()
