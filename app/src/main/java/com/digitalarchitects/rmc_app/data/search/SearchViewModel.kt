@@ -65,6 +65,10 @@ class SearchViewModel : ViewModel() {
                     engineTypeFbev = !event.selected
                 )
             }
+
+            else -> {
+                //TODO Implement other events
+            }
         }
     }
 
