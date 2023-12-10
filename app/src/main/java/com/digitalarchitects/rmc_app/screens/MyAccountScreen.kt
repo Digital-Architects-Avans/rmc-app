@@ -33,7 +33,7 @@ import kotlin.reflect.KFunction1
 
 @Composable
 fun MyAccountScreen(
-    state: MyAccountUIState,
+//    state: MyAccountUIState,
     onEvent: (MyAccountUIEvent) -> Unit,
     user: User
 ) {

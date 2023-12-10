@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -24,7 +25,6 @@ class MainActivity : ComponentActivity() {
         ).build()
     }
 
-
     private val viewModel by viewModels<MyAccountViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory{
@@ -40,9 +40,10 @@ class MainActivity : ComponentActivity() {
         installSplashScreen().setKeepOnScreenCondition {
             false
         }
+
         setContent {
             RmcAppTheme {
-                RmcApp()
+                RmcApp(viewModel = viewModel)
             }
         }
     }
