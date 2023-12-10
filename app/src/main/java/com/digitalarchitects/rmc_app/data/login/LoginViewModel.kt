@@ -29,6 +29,10 @@ class LoginViewModel : ViewModel() {
                 login()
             }
 
+            else -> {
+                //TODO Implement other events
+            }
+
         }
     }
 
