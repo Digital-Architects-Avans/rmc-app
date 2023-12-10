@@ -69,4 +69,6 @@
     <string name="screen_title_register_vehicle">Register vehicle</string>
     <string name="screen_title_my_account">My account</string>
     <string name="screen_title_edit_account">Edit account</string>
+    <string name="welcome_title">Welcome to Rent My Car</string>
+    <string name="welcome_body">Join a movement towards a green planet with shared mobility of everyone, for everyone.</string>
 </resources>
