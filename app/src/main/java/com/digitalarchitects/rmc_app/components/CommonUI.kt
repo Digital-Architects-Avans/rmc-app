@@ -612,7 +612,9 @@ fun RmcOutlinedButton(
 @Composable
 fun DividerTextComponent() {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

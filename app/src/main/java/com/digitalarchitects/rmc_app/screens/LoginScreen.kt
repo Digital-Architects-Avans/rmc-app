@@ -1,10 +1,7 @@
 package com.digitalarchitects.rmc_app.screens
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,22 +14,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.components.ButtonComponent
 import com.digitalarchitects.rmc_app.components.ClickableLoginTextComponent
 import com.digitalarchitects.rmc_app.components.DividerTextComponent
-import com.digitalarchitects.rmc_app.components.MyTextFieldComponent
-import com.digitalarchitects.rmc_app.components.PasswordTextFieldComponent
 import com.digitalarchitects.rmc_app.components.RmcAppBar
+import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
+import com.digitalarchitects.rmc_app.components.RmcTextField
 import com.digitalarchitects.rmc_app.components.UnderLinedTextComponent
 import com.digitalarchitects.rmc_app.data.login.LoginUIEvent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
@@ -44,6 +41,8 @@ fun LoginScreen(
     onLoginButtonClicked: () -> Unit,
     onRegisterTextClicked: (String) -> Unit,
 ) {
+    val loginUiState by loginViewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             RmcAppBar(
@@ -61,47 +60,49 @@ fun LoginScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        start = dimensionResource(R.dimen.padding_large),
-                        end = dimensionResource(R.dimen.padding_large)
-                    )
+                    .padding(dimensionResource(R.dimen.padding_large))
                     .verticalScroll(rememberScrollState())
             ) {
-                MyTextFieldComponent(
-                    labelValue = stringResource(id = R.string.email),
-                    icon = Icons.Default.Email,
-                    onTextSelected = {
+                RmcTextField(
+                    label = stringResource(id = R.string.email),
+                    icon = Icons.Filled.Email,
+                    value = loginUiState.email,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    onValueChange = {
                         loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
-                    },
-                    Modifier.fillMaxWidth()
+                    }
                 )
+
                 RmcSpacer()
-                PasswordTextFieldComponent(
-                    labelValue = stringResource(id = R.string.password),
-                    icon = Icons.Default.Lock,
-                    onTextSelected = {
-                        loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
-                    },
-                    Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(
+
+                RmcTextField(
+                    label = stringResource(id = R.string.password),
+                    icon = Icons.Filled.Lock,
+                    value = loginUiState.password,
+                    keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
+                    isPassword = true,
+                    onValueChange = {
+                        loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
+                    }
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                RmcSpacer()
 
                 UnderLinedTextComponent(value = stringResource(id = R.string.forgot_password))
 
-                ButtonComponent(
+                RmcFilledButton(
                     value = stringResource(id = R.string.login),
-                    onButtonClicked = {
+                    onClick = {
                         loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
                         onLoginButtonClicked()
                     }
                 )
-
-                Spacer(modifier = Modifier.height(20.dp))
 
                 DividerTextComponent()
 
