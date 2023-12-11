@@ -21,10 +21,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.digitalarchitects.rmc_app.MainActivity
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
-import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIState
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
@@ -83,12 +81,11 @@ fun RmcAppBar(
         }
     )
 }
-
 @Preview
 @Composable
 fun RmcApp(
     viewModel: MyAccountViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = RmcScreen.valueOf(
@@ -169,12 +166,8 @@ fun RmcApp(
                 // RegisterVehicleScreen()
             }
             composable(route = RmcScreen.MyAccount.name) {
-
-                val user = DummyUserDTO()
                 MyAccountScreen(
-                    user = user,
-//                    onEvent =  viewModel::onEvent,
-                    state = MyAccountUIState()
+                    viewModel = viewModel
                 )
             }
             composable(route = RmcScreen.EditAccount.name) {

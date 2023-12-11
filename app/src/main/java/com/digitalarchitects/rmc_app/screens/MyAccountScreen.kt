@@ -12,6 +12,9 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Output
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -24,19 +27,19 @@ import com.digitalarchitects.rmc_app.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
-import com.digitalarchitects.rmc_app.data.login.LoginUIEvent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
-import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIState
-import com.digitalarchitects.rmc_app.model.User
-import kotlin.reflect.KFunction1
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 
 
 @Composable
 fun MyAccountScreen(
-    state: MyAccountUIState,
-//    onEvent: (MyAccountUIEvent) -> Unit,
-    user: User
+    viewModel: MyAccountViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(MyAccountUIEvent.ShowUser)
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -51,16 +54,15 @@ fun MyAccountScreen(
         ) {
             RmcLogoText()
             RmcUserIcon(
-                userIcon = user.imageResourceId,
+                userIcon = uiState.imageResourceId,
                 size = dimensionResource(R.dimen.image_size_large),
                 onClick = {
 //                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
                 }
             )
-//            val b = onEvent(MyAccountUIEvent.ShowUser()).toString()
             SmallHeadingTextComponent(
-                value = "yes"
-            //                "${user.firstName} ${user.lastName}"
+                value = uiState.firstName
+//                {{ onEvent(MyAccountUIEvent.ShowUser(viewModel.currentUser)), state.firstname} }
             )
             RmcSpacer()
             RmcFilledButton(
