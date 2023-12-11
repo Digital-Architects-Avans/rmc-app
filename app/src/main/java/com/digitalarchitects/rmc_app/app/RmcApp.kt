@@ -29,7 +29,6 @@ enum class RmcScreen(@StringRes val title: Int) {
     Login(title = R.string.screen_title_login),
     RentACar(title = R.string.screen_title_rent_a_car),
     Search(title = R.string.screen_title_search),
-    VehicleDetails(title = R.string.screen_title_vehicle_details),
     MyRentals(title = R.string.screen_title_my_rentals),
     RentMyCar(title = R.string.screen_title_rent_my_car),
     MyVehicles(title = R.string.screen_title_my_vehicles),
