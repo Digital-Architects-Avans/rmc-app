@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.components
 
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,13 +22,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -92,6 +96,35 @@ fun RmcLogoText() {
         }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
     )
 }
+
+/**
+ * Composable that displays the topBar and displays back button if back navigation is possible.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RmcAppBar(
+    @StringRes currentScreenTitle: Int,
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    CenterAlignedTopAppBar(
+        title = { LargeHeadingTextComponent(stringResource(currentScreenTitle)) },
+        modifier = modifier,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = stringResource(R.string.back_button)
+                    )
+                }
+            }
+        }
+    )
+}
+
 /**
  * Composable that displays User icon
  */
@@ -99,7 +132,7 @@ fun RmcLogoText() {
 fun RmcUserIcon(
     @DrawableRes userIcon: Int,
     modifier: Modifier = Modifier, size: Dp
-){
+) {
     Image(
         modifier = modifier
             .size(size)
@@ -641,7 +674,7 @@ fun UnderLinedTextComponent(value: String) {
  * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
  */
 @Composable
-fun RmcTopBotton(){
+fun RmcTopBotton() {
     Row(
         modifier = Modifier
             .height(40.dp)
