@@ -3,6 +3,7 @@ package com.digitalarchitects.rmc_app.network
 import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.model.Vehicle
 import retrofit2.http.GET
+import retrofit2.http.Header
 
 
 interface RmcApiService {
@@ -12,7 +13,8 @@ interface RmcApiService {
      * HTTP method
      */
     @GET("user/users")
-    suspend fun getUsers(): List<User>
+    //suspend fun getUsers(): List<User>
+    suspend fun getUsers(@Header("Authorization") token: String): List<User>
 
     /**
      * Returns a [List] of [Vehicle] and this method can be called from a Coroutine.
