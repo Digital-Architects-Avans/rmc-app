@@ -24,10 +24,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.UserViewModel
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
 import com.digitalarchitects.rmc_app.screens.RentACarScreen
+import com.digitalarchitects.rmc_app.screens.RmcApiTestScreen
 import com.digitalarchitects.rmc_app.screens.SearchScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
 import com.digitalarchitects.rmc_app.screens.WelcomeScreen
@@ -46,7 +48,8 @@ enum class RmcScreen(@StringRes val title: Int) {
     MyVehicles(title = R.string.screen_title_my_vehicles),
     RegisterVehicle(title = R.string.screen_title_register_vehicle),
     MyAccount(title = R.string.screen_title_my_account),
-    EditAccount(title = R.string.screen_title_edit_account)
+    EditAccount(title = R.string.screen_title_edit_account),
+    RmcApiTestScreen(title = R.string.rmcTestScreenTitle)
 }
 
 /**
@@ -101,7 +104,7 @@ fun RmcApp(
 
         NavHost(
             navController = navController,
-            startDestination = RmcScreen.Welcome.name,
+            startDestination = RmcScreen.RmcApiTestScreen.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = RmcScreen.Welcome.name) {
@@ -161,6 +164,11 @@ fun RmcApp(
             composable(route = RmcScreen.EditAccount.name) {
                 TODO("Implement EditAccount screen")
                 // EditAccountScreen()
+            }
+            composable(route = RmcScreen.RmcApiTestScreen.name) {
+                val userViewModel: UserViewModel =
+                    viewModel(factory = UserViewModel.Factory)
+                RmcApiTestScreen(userUiState = userViewModel.userUiState )
             }
         }
     }
