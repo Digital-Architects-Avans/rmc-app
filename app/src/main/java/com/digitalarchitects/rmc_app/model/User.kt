@@ -1,13 +1,17 @@
 package com.digitalarchitects.rmc_app.model
 
-data class User(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class User (
+    val id: Int,
+    val email: String,
+    val userType: String,
     val firstName: String,
     val lastName: String,
-    val email: String,
-    val telephone: String,
-    val password: String,
-    val address: String,
-    val postalCode: String,
+    val phone: String,
+    val street: String,
     val buildingNumber: String,
+    val zipCode: String,
     val city: String
 )
