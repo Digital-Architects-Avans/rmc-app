@@ -4,11 +4,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,7 +14,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcAppBar
-import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
@@ -50,7 +47,6 @@ enum class RmcScreen(@StringRes val title: Int) {
 @Preview(showBackground = true)
 @Composable
 fun RmcApp(
-    viewModel: LoginViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -67,8 +63,6 @@ fun RmcApp(
             )
         }
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
-
         NavHost(
             navController = navController,
             startDestination = RmcScreen.Welcome.name,
