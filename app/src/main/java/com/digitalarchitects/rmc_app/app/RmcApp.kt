@@ -66,6 +66,7 @@ fun RmcApp(
         composable(route = RmcScreen.Login.name) {
             LoginScreen(
                 // onForgotPasswordTextClicked = { navController.navigate(RmcScreen.ForgotPassword.name) },
+                onNavigateUp = { navController.navigate(RmcScreen.Welcome.name) },
                 onLoginButtonClicked = { navController.navigate(RmcScreen.RentACar.name) },
                 onRegisterTextClicked = { navController.navigate(RmcScreen.Register.name) }
             )

@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -46,7 +47,8 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             RmcAppBar(
-                currentScreenTitle = R.string.screen_title_register,
+                title = R.string.screen_title_login,
+                navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = { onNavigateUp() })
         }
     ) { innerPadding ->
@@ -59,7 +61,10 @@ fun LoginScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(dimensionResource(R.dimen.padding_large))
+                    .padding(
+                        start = dimensionResource(R.dimen.padding_large),
+                        end = dimensionResource(R.dimen.padding_large)
+                    )
                     .verticalScroll(rememberScrollState())
             ) {
                 MyTextFieldComponent(

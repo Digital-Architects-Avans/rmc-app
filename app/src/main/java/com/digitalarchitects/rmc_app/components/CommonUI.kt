@@ -37,9 +37,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,6 +69,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -102,7 +105,7 @@ fun RmcLogoText() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RmcAppBar(
+fun RmcAppBarBackup(
     @StringRes currentScreenTitle: Int,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
@@ -118,6 +121,40 @@ fun RmcAppBar(
                     contentDescription = stringResource(R.string.back_button)
                 )
             }
+        }
+    )
+}
+
+/**
+ * Composable that show a App bar with navigation and title
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RmcAppBar(
+    @StringRes title: Int,
+    navigationIcon: ImageVector,
+    navigateUp: () -> Unit,
+) {
+    TopAppBar(
+        navigationIcon = {
+            OutlinedIconButton(
+                onClick = { navigateUp() },
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 8.dp)
+            ) {
+                Icon(
+                    imageVector = navigationIcon,
+                    contentDescription = "Close"
+                )
+            }
+        },
+        title = {
+            Text(
+                text = stringResource(title),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     )
 }

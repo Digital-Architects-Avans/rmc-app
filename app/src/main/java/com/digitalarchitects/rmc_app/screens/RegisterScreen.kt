@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -52,8 +53,10 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             RmcAppBar(
-                currentScreenTitle = R.string.screen_title_register,
-                navigateUp = { onNavigateUp() })
+                title = R.string.screen_title_register,
+                navigationIcon = Icons.Rounded.ArrowBack,
+                navigateUp = { onNavigateUp() }
+            )
         }
     ) { innerPadding ->
         Surface(
@@ -65,7 +68,10 @@ fun RegisterScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(dimensionResource(R.dimen.padding_large))
+                    .padding(
+                        start = dimensionResource(R.dimen.padding_large),
+                        end = dimensionResource(R.dimen.padding_large)
+                    )
                     .verticalScroll(rememberScrollState())
             ) {
                 Row(
