@@ -104,7 +104,6 @@ fun RmcLogoText() {
 @Composable
 fun RmcAppBar(
     @StringRes currentScreenTitle: Int,
-    canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -112,14 +111,12 @@ fun RmcAppBar(
         title = { LargeHeadingTextComponent(stringResource(currentScreenTitle)) },
         modifier = modifier,
         navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = stringResource(R.string.back_button)
-                    )
-                }
+            IconButton(onClick = navigateUp) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = stringResource(R.string.back_button)
+                )
             }
         }
     )
