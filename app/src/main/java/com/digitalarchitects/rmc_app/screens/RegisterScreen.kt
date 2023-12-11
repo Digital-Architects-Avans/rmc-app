@@ -1,7 +1,6 @@
 package com.digitalarchitects.rmc_app.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,8 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
@@ -19,11 +19,12 @@ import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,29 +37,41 @@ import com.digitalarchitects.rmc_app.components.ClickableLoginTextComponent
 import com.digitalarchitects.rmc_app.components.DividerTextComponent
 import com.digitalarchitects.rmc_app.components.MyTextFieldComponent
 import com.digitalarchitects.rmc_app.components.PasswordTextFieldComponent
+import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.data.register.RegisterUIEvent
 import com.digitalarchitects.rmc_app.data.register.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
-    modifier: Modifier = Modifier,
     registerViewModel: RegisterViewModel = viewModel(),
+    onNavigateUp: () -> Unit,
     onTermsAndConditionsTextClicked: (String) -> Unit,
     onLoginTextClicked: (String) -> Unit,
     onRegisterButtonClicked: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+    Scaffold(
+        topBar = {
+            RmcAppBar(
+                currentScreenTitle = R.string.screen_title_register,
+                navigateUp = { onNavigateUp() })
+        }
+    ) { innerPadding ->
         Surface(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(28.dp)
+                .padding(innerPadding)
+                .fillMaxSize(),
+            color = MaterialTheme.colorScheme.surface
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Row(Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(dimensionResource(R.dimen.padding_large))
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Row(
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                ) {
                     MyTextFieldComponent(
                         labelValue = stringResource(id = R.string.first_name),
                         icon = Icons.Default.Person,
@@ -71,7 +84,6 @@ fun RegisterScreen(
                         ),
                         modifier = Modifier.weight(1f) // Apply weight to distribute horizontal space
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
                     MyTextFieldComponent(
                         labelValue = stringResource(id = R.string.last_name),
                         icon = Icons.Default.Person,
@@ -124,7 +136,10 @@ fun RegisterScreen(
                     Modifier.fillMaxWidth()
                 )
 
-                Row(Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                ) {
                     MyTextFieldComponent(
                         labelValue = stringResource(id = R.string.postal_code),
                         icon = Icons.Default.Numbers,
@@ -133,7 +148,6 @@ fun RegisterScreen(
                         },
                         modifier = Modifier.weight(1f) // Apply weight to distribute horizontal space
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
                     MyTextFieldComponent(
                         labelValue = stringResource(id = R.string.building_number),
                         icon = Icons.Default.Numbers,
@@ -180,7 +194,6 @@ fun RegisterScreen(
                     tryingToLogin = true,
                     onTextSelected = onLoginTextClicked
                 )
-
             }
         }
     }
