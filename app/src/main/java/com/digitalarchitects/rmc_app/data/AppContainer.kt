@@ -19,8 +19,17 @@ interface AppContainer {
 
 class DefaultAppContainer : AppContainer {
 
-    private val BASE_URL = "https://10.0.2.2:8443"
+    /* Each instance of the emulator runs behind a virtual router or firewall service that isolates
+     * it from your development machine network interfaces and settings and from the internet. An
+     * emulated device can't detect your development machine or other emulator instances on the
+     * network. It detects only that it is connected through ethernet to a router or firewall.
+     * The virtual router for each instance manages the 10.0.2/24 network address space. All
+     * addresses managed by the router are in the form of 10.0.2.xx, where xx is a number.
+     */
 
+     private val BASE_URL = "https://10.0.2.2:8443/"
+
+    //  Fetch a JSON response from the web service and return it as a String
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
