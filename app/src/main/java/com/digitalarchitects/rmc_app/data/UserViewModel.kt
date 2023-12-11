@@ -25,7 +25,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.digitalarchitects.rmc_app.RmcApplication
+import com.digitalarchitects.rmc_app.model.User
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -33,9 +36,9 @@ import java.io.IOException
  * UI state for the Home screen
  */
 sealed interface UserUiState {
-    data class Success(val users: String) : UserUiState
-    object Error : UserUiState
-    object Loading : UserUiState
+    data class Success(val msg: String, val users: String) : UserUiState
+    data class Error(val error: String) : UserUiState
+    data object Loading : UserUiState
 }
 
 class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
@@ -58,14 +61,22 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
         viewModelScope.launch {
             userUiState = UserUiState.Loading
             userUiState = try {
+                // Get the list of users from the Rmc API Retrofit service
                 val listResult = userRepository.getUsers()
+
+                // Convert each User to its JSON representation with pretty print
+                val formattedJsonList = listResult.map { user ->
+                    Json { prettyPrint = true }.encodeToString(user)
+                }
+
                 UserUiState.Success(
-                    "Success: ${listResult.size} user retrieved"
+                    "Success: ${listResult.size} user retrieved",
+                    formattedJsonList.joinToString("\n") // Combine the JSON strings with line breaks
                 )
             } catch (e: IOException) {
-                UserUiState.Error
+                UserUiState.Error(e.message ?: "Error: IOException")
             } catch (e: HttpException) {
-                UserUiState.Error
+                UserUiState.Error(e.message ?: "Error: HttpException")
             }
         }
     }
