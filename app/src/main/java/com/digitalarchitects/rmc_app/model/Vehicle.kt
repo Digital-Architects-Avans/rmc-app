@@ -4,10 +4,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Vehicle(
-    val plateNumber: String,
-    val status: String,
+    val id: Int,
+    val userId: Int,
+    val brand: String,
     val model: String,
-    val location: String,
-    val price: String,
-    val img: Int
+    val year: Int,
+    val vehicleClass: String,
+    val engineType: String,
+    val licensePlate: String,
+    val imgLink: String,
+    val latitude: Float,
+    val longitude: Float,
+    val price: Double,
+    val availability: Boolean
 )
