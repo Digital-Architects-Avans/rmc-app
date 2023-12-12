@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.components
 
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,21 +22,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +69,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -92,6 +99,66 @@ fun RmcLogoText() {
         }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
     )
 }
+
+/**
+ * Composable that displays the topBar and displays back button if back navigation is possible.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RmcAppBarBackup(
+    @StringRes currentScreenTitle: Int,
+    navigateUp: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    CenterAlignedTopAppBar(
+        title = { LargeHeadingTextComponent(stringResource(currentScreenTitle)) },
+        modifier = modifier,
+        navigationIcon = {
+            IconButton(onClick = navigateUp) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = stringResource(R.string.back_button)
+                )
+            }
+        }
+    )
+}
+
+/**
+ * Composable that show a App bar with navigation and title
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RmcAppBar(
+    @StringRes title: Int,
+    navigationIcon: ImageVector,
+    navigateUp: () -> Unit,
+) {
+    TopAppBar(
+        navigationIcon = {
+            OutlinedIconButton(
+                onClick = { navigateUp() },
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 8.dp)
+            ) {
+                Icon(
+                    imageVector = navigationIcon,
+                    contentDescription = "Close"
+                )
+            }
+        },
+        title = {
+            Text(
+                text = stringResource(title),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+    )
+}
+
 /**
  * Composable that displays User icon
  */
@@ -99,7 +166,7 @@ fun RmcLogoText() {
 fun RmcUserIcon(
     @DrawableRes userIcon: Int,
     modifier: Modifier = Modifier, size: Dp
-){
+) {
     Image(
         modifier = modifier
             .size(size)
@@ -545,7 +612,9 @@ fun RmcOutlinedButton(
 @Composable
 fun DividerTextComponent() {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -641,7 +710,7 @@ fun UnderLinedTextComponent(value: String) {
  * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
  */
 @Composable
-fun RmcTopBotton(){
+fun RmcTopButton() {
     Row(
         modifier = Modifier
             .height(40.dp)
