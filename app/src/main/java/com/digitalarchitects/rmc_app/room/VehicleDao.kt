@@ -14,15 +14,15 @@ interface VehicleDao {
     // TODO GET CURRENT Vehicle
 //    @Query("SELECT * FROM vehicletable LIMIT 1")
 //    fun getVehicle(): VehicleTable
-
-    @Query("SELECT model FROM vehicletable LIMIT 1")
-    fun getVehicleModel(): String?
-
-    @Upsert
-    suspend fun upsertVehicle(vehicle: VehicleTable)
-
-    @Insert
-    suspend fun insertUser(vehicle: VehicleTable)
+//
+//    @Query("SELECT model FROM vehicletable LIMIT 1")
+//    fun getVehicleModel(): String?
+//
+//    @Upsert
+//    suspend fun upsertVehicle(vehicle: VehicleTable)
+//
+//    @Insert
+//    suspend fun insertUser(vehicle: VehicleTable)
 
 //    @Delete
 //    suspend fun deleteVehicle()

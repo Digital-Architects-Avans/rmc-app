@@ -1,6 +1,9 @@
 package com.digitalarchitects.rmc_app.data.myaccount
 import androidx.lifecycle.ViewModel
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
+import com.digitalarchitects.rmc_app.model.UserType
 import com.digitalarchitects.rmc_app.room.UserDao
+import com.digitalarchitects.rmc_app.room.UserTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +31,31 @@ class MyAccountViewModel(
                 } catch(e: Exception){
                     _state.value = _state.value.copy(firstName = "Error")
                 }
-
+            }
+            is MyAccountUIEvent.UpsertUser -> {
+//                try{
+                val user= UserTable(
+                    email = "john.doe@example.com",
+                    userType = UserType.CLIENT,
+                    firstName = "John",
+                    lastName = "Doe",
+                    phone = "+1234567890",
+                    street = "Main St",
+                    buildingNumber = "123",
+                    zipCode = "12345",
+                    city = "Cityville",
+                    id = 1,
+                    imageResourceId = 123
+                )
+                    runBlocking {
+                        val firstName = withContext(Dispatchers.IO) {
+                            dao.upsertUser(user)
+                        }
+                        _state.value =  _state.value.copy(firstName = "$firstName")
+                    }
+//                } catch(e: Exception){
+//                    _state.value = _state.value.copy(firstName = "Error")
+//                }
             }
             MyAccountUIEvent.onEditMyAccountButtonClicked -> {
                 /*navController.navigate(RmcScreen.EditAccount.name)*/

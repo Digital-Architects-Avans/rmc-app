@@ -20,7 +20,7 @@ interface UserDao {
     fun getFirstName(): String?
 
     @Upsert
-    suspend fun upsertUser(user:UserTable)
+    suspend fun upsertUser(user: UserTable)
 
     @Insert
     suspend fun insertUser(user:UserTable)

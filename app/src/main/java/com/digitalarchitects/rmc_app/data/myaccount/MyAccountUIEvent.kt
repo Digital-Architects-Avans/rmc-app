@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.data.myaccount
 
 
 sealed interface MyAccountUIEvent {
+    object UpsertUser: MyAccountUIEvent
     object ShowUser: MyAccountUIEvent
     object onEditMyAccountButtonClicked: MyAccountUIEvent
     object onMyVehiclesButtonClicked : MyAccountUIEvent
