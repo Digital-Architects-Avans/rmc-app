@@ -17,5 +17,5 @@ data class UserTable(
     val city: String,
     val imageResourceId: Int = 0,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
 )

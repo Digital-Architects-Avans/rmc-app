@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.digitalarchitects.rmc_app.app.RmcApp
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
-import com.digitalarchitects.rmc_app.room.UserDatabase
+import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,15 +18,15 @@ class MainActivity : ComponentActivity() {
     private val db by lazy{
         Room.databaseBuilder(
             applicationContext,
-            UserDatabase::class.java,
-            "users.db"
+            RmcRoomDatabase::class.java,
+            "RmcRoomDatabase.db"
         ).build()
     }
 
     private val viewModel: MyAccountViewModel by viewModels {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MyAccountViewModel(db.dao) as T
+                return MyAccountViewModel(db.userDao) as T
             }
         }
     }
