@@ -89,39 +89,67 @@ fun VehicleList() {
         ) {
 
             val vehicle1 = Vehicle(
-                plateNumber = "YW - 790 - 2",
-                status = "Available",
-                model = "2011 - Toyota Yaris",
-                location = "Eindhoven",
-                price = "95,-",
-                img = R.drawable.yaris
+                id = 1,
+                userId = 1,
+                brand = "Toyota",
+                model = "Yaris",
+                year = 2011,
+                vehicleClass = "Hatchback",
+                engineType = "Gasoline",
+                licensePlate = "YW - 790 - 2",
+                imgLink = R.drawable.yaris,
+                latitude = 2.0f,
+                longitude = 2.0f,
+                price = 95.0,
+                availability = true
             )
 
             val vehicle2 = Vehicle(
-                plateNumber = "ABC - 123",
-                status = "Not Available",
-                model = "2020 - Honda Civic",
-                location = "Amsterdam",
-                price = "120,-",
-                img = R.drawable.civic
+                id = 2,
+                userId = 2,
+                brand = "Honda",
+                model = "Civic",
+                year = 2020,
+                vehicleClass = "Sedan",
+                engineType = "Gasoline",
+                licensePlate = "ABC - 123",
+                imgLink = R.drawable.civic,
+                latitude = 2.0f,
+                longitude = 2.0f,
+                price = 120.0,
+                availability = false
             )
 
             val vehicle3 = Vehicle(
-                plateNumber = "XYZ - 456",
-                status = "Available",
-                model = "2019 - Ford Focus",
-                location = "Rotterdam",
-                price = "80,-",
-                img = R.drawable.focus
+                id = 3,
+                userId = 3,
+                brand = "Ford",
+                model = "Focus",
+                year = 2019,
+                vehicleClass = "Hatchback",
+                engineType = "Gasoline",
+                licensePlate = "XYZ - 456",
+                imgLink = R.drawable.focus,
+                latitude = 2.0f,
+                longitude = 2.0f,
+                price = 80.0,
+                availability = true
             )
 
             val vehicle4 = Vehicle(
-                plateNumber = "DEF - 789",
-                status = "Available",
-                model = "2022 - Chevrolet Malibu",
-                location = "Utrecht",
-                price = "110,-",
-                img = R.drawable.malibu
+                id = 4,
+                userId = 4,
+                brand = "Chevrolet",
+                model = "Malibu",
+                year = 2022,
+                vehicleClass = "Sedan",
+                engineType = "Gasoline",
+                licensePlate = "DEF - 789",
+                imgLink = R.drawable.malibu,
+                latitude = 2.0f,
+                longitude = 2.0f,
+                price = 110.0,
+                availability = true
             )
 
 
@@ -160,7 +188,7 @@ fun VehicleListItem(vehicle: Vehicle) {
     Row(modifier = Modifier.height(92.dp)) {
 
         Image(
-            painter = painterResource(id = vehicle.img),
+            painter = painterResource(id = vehicle.imgLink),
             contentDescription = stringResource(R.string.vehicle),
             modifier = Modifier
                 .padding(end = 6.dp)
@@ -180,7 +208,7 @@ fun VehicleListItem(vehicle: Vehicle) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = vehicle.plateNumber,
+                    text = vehicle.licensePlate,
                     color = Color.Red,
                     fontSize = 16.sp,
                     fontStyle = FontStyle.Italic,
@@ -215,7 +243,7 @@ fun VehicleListItem(vehicle: Vehicle) {
                         imageVector = Icons.Default.Place,
                         contentDescription = stringResource(R.string.location)
                     )
-                    Text(text = vehicle.location)
+                    Text(text = vehicle.latitude.toString())
                 }
                 Row {
                     Icon(
@@ -223,7 +251,7 @@ fun VehicleListItem(vehicle: Vehicle) {
                         contentDescription = stringResource(R.string.price)
                     )
                     Text(
-                        text = vehicle.price,
+                        text = vehicle.price.toString(),
                         modifier = Modifier
                             .padding(end = 24.dp)
                             .width(54.dp)
