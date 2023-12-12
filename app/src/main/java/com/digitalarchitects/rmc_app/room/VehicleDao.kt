@@ -4,13 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VehicleDao {
 
-    @Query("SELECT * FROM vehicletable ORDER BY id ASC")
-    fun getVehiclessOrderedById(): Flow<List<VehicleTable>>
+//    @Query("SELECT * FROM vehicletable ORDER BY id ASC")
+//    fun getVehiclesOrderedById(): Flow<List<VehicleTable>>
 
     // TODO GET CURRENT Vehicle
 //    @Query("SELECT * FROM vehicletable LIMIT 1")
