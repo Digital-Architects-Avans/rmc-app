@@ -9,7 +9,7 @@ import retrofit2.http.Header
 interface RmcApiService {
     /**
      * Returns a [List] of [User] and this method can be called from a Coroutine.
-     * The @GET annotation indicates that the "photos" endpoint will be requested with the GET
+     * The @GET annotation indicates that the "users" endpoint will be requested with the GET
      * HTTP method
      */
     @GET("user/users")
@@ -18,7 +18,7 @@ interface RmcApiService {
 
     /**
      * Returns a [List] of [Vehicle] and this method can be called from a Coroutine.
-     * The @GET annotation indicates that the "photos" endpoint will be requested with the GET
+     * The @GET annotation indicates that the "users" endpoint will be requested with the GET
      * HTTP method
      */
     @GET("vehicle/vehicles")
