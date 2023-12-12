@@ -710,7 +710,7 @@ fun UnderLinedTextComponent(value: String) {
  * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
  */
 @Composable
-fun RmcTopBotton() {
+fun RmcTopButton() {
     Row(
         modifier = Modifier
             .height(40.dp)
