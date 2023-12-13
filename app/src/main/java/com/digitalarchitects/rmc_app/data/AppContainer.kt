@@ -6,17 +6,18 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
-/* In summary, the DefaultAppContainer class acts as a centralized container for managing
- * dependencies related to network requests and data retrieval. It follows principles of dependency
- * injection, lazy initialization, and separation of concerns. This design enhances the
- * maintainability and testability of the codebase by abstracting the creation and management of
- * dependencies.
+/**
+ * Dependency Injection container at the application level.
  */
-
 interface AppContainer {
     val userRepository: UserRepository
 }
 
+/**
+ * Implementation for the Dependency Injection container at the application level.
+ *
+ * Variables are initialized lazily and the same instance is shared across the whole app.
+ */
 class DefaultAppContainer : AppContainer {
 
     /* Each instance of the emulator runs behind a virtual router or firewall service that isolates
@@ -29,16 +30,24 @@ class DefaultAppContainer : AppContainer {
 
      private val BASE_URL = "https://10.0.2.2:8443/"
 
-    //  Fetch a JSON response from the web service and return it as a String
+    /**
+     * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
+     */
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
         .build()
 
+    /**
+     * Retrofit service object for creating api calls
+     */
     private val retrofitService: RmcApiService by lazy {
         retrofit.create(RmcApiService::class.java)
     }
 
+    /**
+     * DI implementation for User repository
+     */
     override val userRepository: UserRepository by lazy {
         NetworkUserRepository(retrofitService)
     }

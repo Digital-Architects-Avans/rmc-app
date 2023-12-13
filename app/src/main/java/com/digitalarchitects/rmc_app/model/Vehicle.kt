@@ -2,6 +2,10 @@ package com.digitalarchitects.rmc_app.model
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Data class that defines a Vehicle which includes an id (vehicleId), userId, brand, model, year,
+ * vehicleClass, engineType, licensePlate, imgLink, latitude, longitude, price, and availability.
+ */
 @Serializable
 data class Vehicle(
     val id: Int,
