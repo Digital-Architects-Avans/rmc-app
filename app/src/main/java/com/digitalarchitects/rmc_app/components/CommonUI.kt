@@ -21,6 +21,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
@@ -653,6 +655,36 @@ fun RmcImgFilledIconButton(
                 .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
         )
     }
+}
+
+@Composable
+fun RmcFloatingActionButton(
+    icon: ImageVector,
+    @StringRes label: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ExtendedFloatingActionButton(
+        onClick = onClick,
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 0.dp
+        ),
+        icon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(label),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        },
+        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+    )
 }
 
 /**
