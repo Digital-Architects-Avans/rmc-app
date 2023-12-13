@@ -101,32 +101,6 @@ fun RmcLogoText() {
 }
 
 /**
- * Composable that displays the topBar and displays back button if back navigation is possible.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RmcAppBarBackup(
-    @StringRes currentScreenTitle: Int,
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    CenterAlignedTopAppBar(
-        title = { LargeHeadingTextComponent(stringResource(currentScreenTitle)) },
-        modifier = modifier,
-        navigationIcon = {
-            IconButton(onClick = navigateUp) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = stringResource(R.string.back_button)
-                )
-            }
-        }
-    )
-}
-
-/**
- * Composable that show a App bar with navigation and title
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
