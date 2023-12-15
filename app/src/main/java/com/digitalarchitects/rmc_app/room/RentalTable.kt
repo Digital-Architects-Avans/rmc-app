@@ -7,16 +7,14 @@ import com.digitalarchitects.rmc_app.model.RentalStatus
 import java.time.LocalDate
 
 @Entity
-@TypeConverters(LocalDateConverter::class, BigDecimalConverter::class)
+@TypeConverters(LocalDateConverter::class)
 class RentalTable (
     val vehicleId: Int,
     val userId: Int,
     @TypeConverters(LocalDateConverter::class)
     val date: LocalDate,
     val price: Double,
-    @TypeConverters(BigDecimalConverter::class)
     val latitude: Float = 50.50f,
-    @TypeConverters(BigDecimalConverter::class)
     val longitude: Float = 50.50f,
     val status: RentalStatus = RentalStatus.PENDING,
     val distanceTravelled: Double,

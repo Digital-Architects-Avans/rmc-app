@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,10 +44,10 @@ enum class RmcScreen(@StringRes val title: Int) {
 }
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 fun RmcApp(
-      viewModel: MyAccountViewModel = viewModel(),
+    viewModel: MyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
@@ -110,8 +111,9 @@ fun RmcApp(
             // RegisterVehicleScreen()
         }
         composable(route = RmcScreen.MyAccount.name) {
-            viewModel = viewModel
-        }
+            MyAccountScreen(
+                viewModel = viewModel
+            )        }
         composable(route = RmcScreen.EditAccount.name) {
             TODO("Implement EditAccount screen")
             // EditAccountScreen()

@@ -7,7 +7,6 @@ import androidx.room.TypeConverters
 import com.digitalarchitects.rmc_app.model.EngineType
 
 @Entity
-@TypeConverters(BigDecimalConverter::class)
 class VehicleTable (
     val userId: Int,
     val brand: String,
