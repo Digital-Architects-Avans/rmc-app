@@ -1,25 +1,14 @@
 package com.digitalarchitects.rmc_app.app
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
@@ -45,7 +34,6 @@ enum class RmcScreen(@StringRes val title: Int) {
     Login(title = R.string.screen_title_login),
     RentACar(title = R.string.screen_title_rent_a_car),
     Search(title = R.string.screen_title_search),
-    VehicleDetails(title = R.string.screen_title_vehicle_details),
     MyRentals(title = R.string.screen_title_my_rentals),
     RentMyCar(title = R.string.screen_title_rent_my_car),
     MyVehicles(title = R.string.screen_title_my_vehicles),
@@ -54,126 +42,80 @@ enum class RmcScreen(@StringRes val title: Int) {
     EditAccount(title = R.string.screen_title_edit_account)
 }
 
-/**
- * Composable that displays the topBar and displays back button if back navigation is possible.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RmcAppBar(
-    @StringRes currentScreenTitle: Int,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    CenterAlignedTopAppBar(
-        title = { LargeHeadingTextComponent(stringResource(currentScreenTitle)) },
-        modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        tint = MaterialTheme.colorScheme.primary,
-                        contentDescription = stringResource(R.string.back_button)
-                    )
-                }
-            }
-        }
-    )
-}
-@Preview
+
+@Preview(showBackground = true)
 @Composable
 fun RmcApp(
-    viewModel: MyAccountViewModel = viewModel(),
-    navController: NavHostController = rememberNavController(),
+      viewModel: MyAccountViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
 ) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = RmcScreen.valueOf(
-        backStackEntry?.destination?.route ?: RmcScreen.MyAccount.name
-    )
-
-    Scaffold(
-        topBar = {
-            RmcAppBar(
-                currentScreenTitle = currentScreen.title,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() },
+    NavHost(
+        navController = navController,
+        startDestination = RmcScreen.Welcome.name,
+    ) {
+        composable(route = RmcScreen.Welcome.name) {
+            WelcomeScreen(
+                onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
+                onLoginButtonClicked = { navController.navigate(RmcScreen.Login.name) }
             )
         }
-    ) { innerPadding ->
-//        val uiState by viewModel.uiState.collectAsState()
+        composable(route = RmcScreen.Register.name) {
+            RegisterScreen(
+                onNavigateUp = { navController.navigate(RmcScreen.Welcome.name) },
+                onTermsAndConditionsTextClicked = { navController.navigate(RmcScreen.TermsAndConditions.name) },
+                onLoginTextClicked = { navController.navigate(RmcScreen.Login.name) },
+                onRegisterButtonClicked = { navController.navigate(RmcScreen.RentACar.name) }
+            )
+        }
+        composable(route = RmcScreen.TermsAndConditions.name) {
+            TermsAndConditionsScreen(navController = navController)
+        }
+        composable(route = RmcScreen.Login.name) {
+            LoginScreen(
+                // onForgotPasswordTextClicked = { navController.navigate(RmcScreen.ForgotPassword.name) },
+                onNavigateUp = { navController.navigate(RmcScreen.Welcome.name) },
+                onLoginButtonClicked = { navController.navigate(RmcScreen.RentACar.name) },
+                onRegisterTextClicked = { navController.navigate(RmcScreen.Register.name) }
+            )
+        }
+        composable(route = RmcScreen.RentACar.name) {
+            RentACarScreen(
+                onSearchButtonClicked = { navController.navigate(RmcScreen.Search.name) },
+                onRentMyCarButtonClicked = { navController.navigate(RmcScreen.RentMyCar.name) },
+                onMyRentalsButtonClicked = { navController.navigate(RmcScreen.MyRentals.name) },
+                onMyAccountButtonClicked = { navController.navigate(RmcScreen.MyAccount.name) }
+            )
+        }
+        composable(route = RmcScreen.Search.name) {
+            SearchScreen(
+                onNavigateUp = { navController.navigate(RmcScreen.RentACar.name) },
+            )
+        }
+        composable(route = RmcScreen.MyRentals.name) {
+            TODO("Implement MyRentals screen")
+            // MyRentalsScreen()
+        }
+        composable(route = RmcScreen.RentMyCar.name) {
+            val listOfRentals = DummyRentalDTO()
+            val listOfVehicles = DummyVehicleDTO()
+            val user = DummyUserDTO()
+            RentOutMyCarScreen(list = listOfRentals, vehicles = listOfVehicles, user = user)
+        }
+        composable(route = RmcScreen.MyVehicles.name) {
+            val listOfVehicles = DummyVehicleDTO()
+            MyVehiclesScreen(list = listOfVehicles)
+        }
+        composable(route = RmcScreen.RegisterVehicle.name) {
+            TODO("Implement RegisterVehicle screen")
+            // RegisterVehicleScreen()
+        }
+        composable(route = RmcScreen.MyAccount.name) {
+            viewModel = viewModel
+        }
+        composable(route = RmcScreen.EditAccount.name) {
+            TODO("Implement EditAccount screen")
+            // EditAccountScreen()
 
-        NavHost(
-            navController = navController,
-            startDestination = RmcScreen.MyAccount.name,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-
-            composable(route = RmcScreen.Welcome.name) {
-                WelcomeScreen(
-                    onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
-                    onLoginButtonClicked = { navController.navigate(RmcScreen.Login.name) }
-                )
-            }
-            composable(route = RmcScreen.Register.name) {
-                RegisterScreen(
-                    onTermsAndConditionsTextClicked = { navController.navigate(RmcScreen.TermsAndConditions.name) },
-                    onLoginTextClicked = { navController.navigate(RmcScreen.Login.name) },
-                    onRegisterButtonClicked = { navController.navigate(RmcScreen.RentACar.name) }
-                )
-            }
-            composable(route = RmcScreen.TermsAndConditions.name) {
-                TermsAndConditionsScreen(navController = navController)
-            }
-            composable(route = RmcScreen.Login.name) {
-                LoginScreen(
-                    // onForgotPasswordTextClicked = { navController.navigate(RmcScreen.ForgotPassword.name) },
-                    onLoginButtonClicked = { navController.navigate(RmcScreen.RentACar.name) },
-                    onRegisterTextClicked = { navController.navigate(RmcScreen.Register.name) }
-                )
-            }
-            composable(route = RmcScreen.RentACar.name) {
-                RentACarScreen(
-                    onSearchButtonClicked = { navController.navigate(RmcScreen.Search.name) },
-                    onRentMyCarButtonClicked = { navController.navigate(RmcScreen.RentMyCar.name) },
-                    onMyRentalsButtonClicked = { navController.navigate(RmcScreen.MyRentals.name) },
-                    onMyAccountButtonClicked = { navController.navigate(RmcScreen.MyAccount.name) }
-                )
-            }
-            composable(route = RmcScreen.Search.name) {
-                SearchScreen()
-            }
-            composable(route = RmcScreen.MyRentals.name) {
-                TODO("Implement MyRentals screen")
-                // MyRentalsScreen()
-            }
-            composable(route = RmcScreen.RentMyCar.name) {
-                val listOfRentals = DummyRentalDTO()
-                val listOfVehicles = DummyVehicleDTO()
-                val user = DummyUserDTO()
-                RentOutMyCarScreen(
-                    list = listOfRentals,
-                    vehicles = listOfVehicles,
-                    user = user
-                )
-            }
-            composable(route = RmcScreen.MyVehicles.name) {
-                val listOfVehicles = DummyVehicleDTO()
-                MyVehiclesScreen(list = listOfVehicles)
-            }
-            composable(route = RmcScreen.RegisterVehicle.name) {
-                TODO("Implement RegisterVehicle screen")
-                // RegisterVehicleScreen()
-            }
-            composable(route = RmcScreen.MyAccount.name) {
-                MyAccountScreen(
-                    viewModel = viewModel
-                )
-            }
-            composable(route = RmcScreen.EditAccount.name) {
-                TODO("Implement EditAccount screen")
-                // EditAccountScreen()
-            }
         }
     }
 }
