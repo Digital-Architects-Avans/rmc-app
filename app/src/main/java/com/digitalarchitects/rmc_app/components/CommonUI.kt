@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -102,6 +103,7 @@ fun RmcLogoText() {
     )
 }
 
+
 /**
  * Composable that show the topBar with navigation and title
  */
@@ -146,14 +148,18 @@ fun RmcSpacer(height: Int = 24) {
 @Composable
 fun RmcUserIcon(
     @DrawableRes userIcon: Int,
-    modifier: Modifier = Modifier, size: Dp
+    modifier: Modifier = Modifier,
+    size: Dp,
+    onClick: () -> Unit
+
 ) {
     Image(
         modifier = modifier
             .size(size)
             .padding(dimensionResource(R.dimen.padding_small))
             .clip(CircleShape)
-            .border(1.dp, colorResource(R.color.purple_200), CircleShape),
+            .border(1.dp, colorResource(R.color.purple_200), CircleShape)
+            .clickable { onClick },
         contentScale = ContentScale.Crop,
         painter = painterResource(userIcon),
         contentDescription = null

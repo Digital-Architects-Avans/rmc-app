@@ -172,7 +172,7 @@ fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
                 fontWeight = FontWeight.Bold
             )
             Row {
-                RmcUserIcon(userIcon = R.drawable.usericon, size = dimensionResource(R.dimen.image_size_medium))
+                RmcUserIcon(userIcon = R.drawable.usericon, size = dimensionResource(R.dimen.image_size_medium), onClick = {})
                 SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
             }
             Row(

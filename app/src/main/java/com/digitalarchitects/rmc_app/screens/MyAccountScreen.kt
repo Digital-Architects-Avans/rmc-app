@@ -12,6 +12,9 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Output
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -24,11 +27,20 @@ import com.digitalarchitects.rmc_app.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
-import com.digitalarchitects.rmc_app.model.User
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 
 
 @Composable
-fun MyAccountScreen(user: User) {
+fun MyAccountScreen(
+    viewModel: MyAccountViewModel
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(MyAccountUIEvent.UpsertUser)
+        viewModel.onEvent(MyAccountUIEvent.ShowUser)
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -40,15 +52,48 @@ fun MyAccountScreen(user: User) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
-        ){
+        ) {
             RmcLogoText()
-            RmcUserIcon(userIcon = user.imageResourceId, size = dimensionResource(R.dimen.image_size_large))
-            SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+            RmcUserIcon(
+                userIcon = uiState.imageResourceId,
+                size = dimensionResource(R.dimen.image_size_large),
+                onClick = {
+//                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
+                }
+            )
+            SmallHeadingTextComponent(
+                value = uiState.firstName
+//                {{ onEvent(MyAccountUIEvent.ShowUser(viewModel.currentUser)), state.firstname} }
+            )
             RmcSpacer()
-            RmcFilledButton(value = stringResource(R.string.my_vehicles), icon = Icons.Filled.DirectionsCar) {}
-            RmcFilledButton(value = stringResource(R.string.rent_out_my_car), icon = Icons.Filled.Key) {}
-            RmcFilledButton(value = stringResource(R.string.my_rentals), icon = Icons.Filled.CarRental) {}
-            RmcOutlinedButton(value = stringResource(R.string.logout), icon = Icons.Filled.Output) {}
+            RmcFilledButton(
+                value = stringResource(R.string.my_vehicles),
+                icon = Icons.Filled.DirectionsCar,
+                onClick = {
+//                    onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
+                }
+            )
+            RmcFilledButton(
+                value = stringResource(R.string.rent_out_my_car),
+                icon = Icons.Filled.Key,
+                onClick = {
+//                    onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
+                }
+            )
+            RmcFilledButton(
+                value = stringResource(R.string.my_rentals),
+                icon = Icons.Filled.CarRental,
+                onClick = {
+//                    onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
+                }
+            )
+            RmcOutlinedButton(
+                value = stringResource(R.string.logout),
+                icon = Icons.Filled.Output,
+                onClick = {
+//                    onEvent(MyAccountUIEvent.onLogoutButtonClicked)
+                }
+            )
             RmcSpacer()
         }
     }
