@@ -80,7 +80,9 @@ fun RmcApp(
             )
         }
         composable(route = RmcScreen.Search.name) {
-            SearchScreen()
+            SearchScreen(
+                onNavigateUp = { navController.navigate(RmcScreen.RentACar.name) },
+            )
         }
         composable(route = RmcScreen.MyRentals.name) {
             TODO("Implement MyRentals screen")
