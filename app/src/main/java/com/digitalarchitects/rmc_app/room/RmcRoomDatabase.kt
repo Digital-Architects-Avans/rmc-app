@@ -32,14 +32,14 @@ class LocalDateConverter {
     }
 }
 
-
-class BigDecimalConverter {
-    @TypeConverter
-    fun fromBigDecimal(value: BigDecimal?): String? {
-        return value?.toString()
-    }
-    @TypeConverter
-    fun toBigDecimal(value: String?): BigDecimal? {
-        return value?.let { BigDecimal(it) }
-    }
-}
+//
+//class BigDecimalConverter {
+//    @TypeConverter
+//    fun fromBigDecimal(value: BigDecimal?): String? {
+//        return value?.toString()
+//    }
+//    @TypeConverter
+//    fun toBigDecimal(value: String?): BigDecimal? {
+//        return value?.let { BigDecimal(it) }
+//    }
+//}

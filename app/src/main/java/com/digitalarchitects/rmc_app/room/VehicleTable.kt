@@ -3,10 +3,9 @@ package com.digitalarchitects.rmc_app.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.digitalarchitects.rmc_app.model.EngineType
-import java.math.BigDecimal
+
 @Entity
 @TypeConverters(BigDecimalConverter::class)
 class VehicleTable (
@@ -19,9 +18,9 @@ class VehicleTable (
     val licensePlate: String,
     val imgLink: Int,
     @ColumnInfo(name = "latitude")
-    val latitude: BigDecimal,
+    val latitude: Float,
     @ColumnInfo(name = "longitude")
-    val longitude: BigDecimal,
+    val longitude: Float,
     val price: Double,
     val availability: Boolean,
     @PrimaryKey(autoGenerate = true)
