@@ -52,7 +52,7 @@ fun EditMyAccountScreen(
     Scaffold(
         topBar = {
             RmcAppBar(
-                title = R.string.screen_title_register,
+                title = R.string.screen_title_edit_account,
                 navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = { onNavigateUp() },
             )
