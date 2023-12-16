@@ -15,11 +15,11 @@ import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val db by lazy{
+    private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
             RmcRoomDatabase::class.java,
-            "RmcRoomDatabase.db"
+            "RmcRoomTest1.db"
         ).build()
     }
 
