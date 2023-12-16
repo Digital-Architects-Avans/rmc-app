@@ -8,6 +8,7 @@ sealed interface EditMyAccountUIEvent {
     data class SetFirstName(val firstName: String): EditMyAccountUIEvent
     data class SetLastName(val lastName: String) : EditMyAccountUIEvent
     data class SetPhone(val phone: String) : EditMyAccountUIEvent
+    data class SetPassword(val password: String) : EditMyAccountUIEvent
     data class SetStreet(val street: String) : EditMyAccountUIEvent
     data class SetBuildingNumber(val buildingNumber: String) : EditMyAccountUIEvent
     data class SetZipCode(val zipCode: String) : EditMyAccountUIEvent
