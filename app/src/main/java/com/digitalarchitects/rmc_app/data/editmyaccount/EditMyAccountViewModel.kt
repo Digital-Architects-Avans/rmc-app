@@ -1,22 +1,14 @@
 package com.digitalarchitects.rmc_app.data.editmyaccount
 
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.digitalarchitects.rmc_app.app.RmcScreen
-import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
-import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIState
 import com.digitalarchitects.rmc_app.model.UserType
 import com.digitalarchitects.rmc_app.room.UserDao
 import com.digitalarchitects.rmc_app.room.UserTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -29,14 +21,8 @@ class EditMyAccountViewModel(
 
     private val _state = MutableStateFlow(EditMyAccountUIState())
     private val _uiState = _state
-    val uiState: StateFlow<EditMyAccountUIState> = _uiState.asStateFlow()
+    val uiState: StateFlow<EditMyAccountUIState> get() = _uiState.asStateFlow()
 
-    //    private val _state = MutableStateFlow(EditMyAccountUIState())
-//    val state = _state.stateIn(
-//        viewModelScope,
-//        SharingStarted.WhileSubscribed(5000),
-//        EditMyAccountUIState()
-//    )
     fun onEvent(event: EditMyAccountUIEvent) {
         when (event) {
             is EditMyAccountUIEvent.ShowUser -> {
@@ -55,75 +41,59 @@ class EditMyAccountViewModel(
                         val city = getUser.city
 
                         _state.value = _state.value.copy(
-                            email = "$email",
-                            firstName = "$firstName",
-                            lastName = "$lastName",
-                            phone = "$phone",
-                            street = "$street",
-                            buildingNumber = "$buildingNumber",
-                            zipCode = "$zipCode",
-                            city = "$city"
+                            email = email,
+                            firstName = firstName,
+                            lastName = lastName,
+                            phone = phone,
+                            street = street,
+                            buildingNumber = buildingNumber,
+                            zipCode = zipCode,
+                            city = city
                         )
                     }
+
                 } catch (e: Exception) {
-                    _state.value = _state.value.copy(firstName = "Error")
+//                    _state.value = _state.value.copy(firstName = "Error")
                 }
             }
 
-            is EditMyAccountUIEvent.UpsertUser -> {
-//                try{
-                val user = UserTable(
-                    email = "john.doe@example.com",
-                    userType = UserType.CLIENT,
-                    firstName = "John",
-                    lastName = "Doe",
-                    phone = "+1234567890",
-                    street = "Main St",
-                    buildingNumber = "123",
-                    zipCode = "12345",
-                    city = "Cityville",
-                    id = 1,
-                    imageResourceId = 123
-                )
-                runBlocking {
-                    val email = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    val firstName = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    val lastName = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    val phone = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    val street = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    val buildingNumber = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    val zipCode = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    val city = withContext(Dispatchers.IO) {
-                        dao.upsertUser(user)
-                    }
-                    _state.value = _state.value.copy(
-                        email = "$email",
-                        firstName = "$firstName",
-                        lastName = "$lastName",
-                        phone = "$phone",
-                        street = "$street",
-                        buildingNumber = "$buildingNumber",
-                        zipCode = "$zipCode",
-                        city = "$city"
+            is EditMyAccountUIEvent.InsertUser -> {
+                try {
+                    val user = UserTable(
+                        email = "john.doe@example.com",
+                        userType = UserType.CLIENT,
+                        firstName = "John",
+                        lastName = "Doe",
+                        phone = "+1234567890",
+                        street = "Main St",
+                        buildingNumber = "123",
+                        zipCode = "12345",
+                        city = "Cityville",
+                        id = 1,
+                        imageResourceId = 123
                     )
+
+                    runBlocking {
+                        withContext(Dispatchers.IO) {
+                            dao.insertUser(user)
+                        }
+
+                        _state.value = _state.value.copy(
+                            email = user.email,
+                            firstName = user.firstName,
+                            lastName = user.lastName,
+                            phone = user.phone,
+                            street = user.street,
+                            buildingNumber = user.buildingNumber,
+                            zipCode = user.zipCode,
+                            city = user.city
+                        )
+                    }
+                } catch (e: Exception) {
+                    // Handle the exception or log an error
+                    // TODO ERROR MESSAGE
+                    // _state.value = _state.value.copy(firstName = "Error")
                 }
-//                } catch(e: Exception){
-//                    _state.value = _state.value.copy(firstName = "Error")
-//                }
             }
 
             is EditMyAccountUIEvent.SetBuildingNumber -> {
@@ -202,23 +172,22 @@ class EditMyAccountViewModel(
             }
 
             is EditMyAccountUIEvent.User -> TODO()
+
             EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked -> {
-                val email = uiState.value.email
+                val email = _uiState.value.email
 //                val userType = state.value.userType
-                val firstName = uiState.value.firstName
-                val lastName = uiState.value.lastName
-                val phone = uiState.value.phone
-                val street = uiState.value.street
-                val buildingNumber = uiState.value.buildingNumber
-                val zipCode = uiState.value.zipCode
-                val city = uiState.value.city
+                val firstName = _uiState.value.firstName
+                val lastName = _uiState.value.lastName
+                val phone = _uiState.value.phone
+                val street = _uiState.value.street
+                val buildingNumber = _uiState.value.buildingNumber
+                val zipCode = _uiState.value.zipCode
+                val city = _uiState.value.city
 //                val imageResourceId = state.value.imageResourceId
 //                val id = state.value.id
                 // TODO ADD MORE PROPERTIES TO IF
-                if (firstName.isBlank() || lastName.isBlank() || phone.isBlank()) {
-                    return
-                }
-                val user = UserTable(
+
+                val updatedUser = UserTable(
                     email = email,
                     firstName = firstName,
                     lastName = lastName,
@@ -226,10 +195,11 @@ class EditMyAccountViewModel(
                     street = street,
                     buildingNumber = buildingNumber,
                     zipCode = zipCode,
-                    city = city
+                    city = city,
+                    id = 1
                 )
                 viewModelScope.launch {
-                    dao.upsertUser(user = user)
+                    dao.upsertUser(user = updatedUser)
 //                    navController.navigate(RmcScreen.MyAccount.name)
                 }
 
@@ -246,6 +216,8 @@ class EditMyAccountViewModel(
                 }
 //                navController.navigate(RmcScreen.Welcome.name)
             }
+
+            EditMyAccountUIEvent.UpsertUser -> TODO()
         }
     }
 }

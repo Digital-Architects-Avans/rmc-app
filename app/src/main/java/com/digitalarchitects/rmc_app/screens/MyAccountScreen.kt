@@ -38,7 +38,7 @@ fun MyAccountScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
-        viewModel.onEvent(MyAccountUIEvent.UpsertUser)
+        viewModel.onEvent(MyAccountUIEvent.InsertUser)
         viewModel.onEvent(MyAccountUIEvent.ShowUser)
     }
 

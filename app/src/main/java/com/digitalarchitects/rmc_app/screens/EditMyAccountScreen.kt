@@ -30,18 +30,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.components.CheckboxComponent
-import com.digitalarchitects.rmc_app.components.ClickableLoginTextComponent
-import com.digitalarchitects.rmc_app.components.DividerTextComponent
 import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
-import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
-import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
-import com.digitalarchitects.rmc_app.data.register.RegisterUIEvent
 
 
 @Composable
@@ -51,7 +45,7 @@ fun EditMyAccountScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
-        viewModel.onEvent(EditMyAccountUIEvent.UpsertUser)
+        viewModel.onEvent(EditMyAccountUIEvent.InsertUser)
         viewModel.onEvent(EditMyAccountUIEvent.ShowUser)
     }
 
@@ -157,20 +151,21 @@ fun EditMyAccountScreen(
                     }
                 )
 
+
                 RmcSpacer(8)
 
-//                RmcTextField(
-//                    label = stringResource(id = R.string.address),
-//                    icon = Icons.Filled.Home,
-//                    value = uiState.buildingNumber,
-//                    keyboardOptions = KeyboardOptions.Default.copy(
-//                        keyboardType = KeyboardType.Number,
-//                        imeAction = ImeAction.Next
-//                    ),
-//                    onValueChange = {
-//                        viewModel.onEvent(EditMyAccountUIEvent.SetStreet(it))
-//                    }
-//                )
+                RmcTextField(
+                    label = stringResource(id = R.string.address),
+                    icon = Icons.Filled.Home,
+                    value = uiState.street,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    onValueChange = {
+                        viewModel.onEvent(EditMyAccountUIEvent.SetStreet(it))
+                    }
+                )
 
                 RmcSpacer(8)
 
@@ -226,16 +221,16 @@ fun EditMyAccountScreen(
                 RmcFilledButton(
                     value = stringResource(id = R.string.cancel),
                     onClick = {
+
                     }
                 )
                 RmcFilledButton(
                     value = stringResource(id = R.string.apply),
                     onClick = {
-//                        registerViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
-//                        onRegisterButtonClicked()
+                        viewModel.onEvent(EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked)
+                        onNavigateUp()
                     }
                 )
-
 
 
             }

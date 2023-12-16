@@ -4,7 +4,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
-import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
 import kotlinx.coroutines.flow.Flow
 
 @Dao
