@@ -30,6 +30,7 @@
     <string name="search">Search</string>
     <string name="distance">Distance</string>
     <string name="date">Date</string>
+    <string name="my_location">My location</string>
     <string name="engine_type">Engine type</string>
     <string name="label_distance_km">%1$s km</string>
     <string name="label_distance_miles">%1$s miles</string>
