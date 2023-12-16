@@ -40,11 +40,13 @@ import com.digitalarchitects.rmc_app.components.RmcImgFilledIconButton
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.AdvancedMarker
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -204,7 +206,33 @@ fun RmcMap(
         properties = properties,
         uiSettings = uiSettings,
         cameraPositionState = cameraPositionState
-    )
+    ) {
+        AdvancedMarker(
+            state = MarkerState(position = LatLng(51.583698, 4.797110)),
+            title = "Avans Hogeschool",
+            snippet = "Hogeschoollaan 1"
+        )
+        AdvancedMarker(
+            state = MarkerState(position = LatLng(51.585720, 4.793230)),
+            title = "Avans Hogeschool",
+            snippet = "Lovensdijkstraat 61"
+        )
+        AdvancedMarker(
+            state = MarkerState(position = LatLng(51.58656, 4.77596)),
+            title = "Avans Hogeschool",
+            snippet = "Bijster 7-21"
+        )
+        AdvancedMarker(
+            state = MarkerState(position = LatLng(51.5794365, 4.810962)),
+            title = "Avans Hogeschool",
+            snippet = "Beukenlaan 1"
+        )
+        AdvancedMarker(
+            state = MarkerState(position = LatLng(51.4698905, 5.5466656)),
+            title = "Home",
+            snippet = "is where the heart is"
+        )
+    }
 }
 
 @Preview
