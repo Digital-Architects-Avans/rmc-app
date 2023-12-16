@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -38,6 +39,7 @@ import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.data.register.RegisterUIEvent
 
@@ -48,13 +50,17 @@ fun EditMyAccountScreen(
     onNavigateUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(EditMyAccountUIEvent.UpsertUser)
+        viewModel.onEvent(EditMyAccountUIEvent.ShowUser)
+    }
 
     Scaffold(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_register,
                 navigationIcon = Icons.Rounded.ArrowBack,
-                navigateUp = { onNavigateUp() }
+                navigateUp = { onNavigateUp() },
             )
         }
     ) { innerPadding ->
@@ -153,18 +159,18 @@ fun EditMyAccountScreen(
 
                 RmcSpacer(8)
 
-                RmcTextField(
-                    label = stringResource(id = R.string.address),
-                    icon = Icons.Filled.Home,
-                    value = uiState.buildingNumber,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    onValueChange = {
-                        viewModel.onEvent(EditMyAccountUIEvent.SetStreet(it))
-                    }
-                )
+//                RmcTextField(
+//                    label = stringResource(id = R.string.address),
+//                    icon = Icons.Filled.Home,
+//                    value = uiState.buildingNumber,
+//                    keyboardOptions = KeyboardOptions.Default.copy(
+//                        keyboardType = KeyboardType.Number,
+//                        imeAction = ImeAction.Next
+//                    ),
+//                    onValueChange = {
+//                        viewModel.onEvent(EditMyAccountUIEvent.SetStreet(it))
+//                    }
+//                )
 
                 RmcSpacer(8)
 
@@ -218,14 +224,19 @@ fun EditMyAccountScreen(
                 RmcSpacer(32)
 
                 RmcFilledButton(
-                    value = stringResource(id = R.string.register),
+                    value = stringResource(id = R.string.cancel),
+                    onClick = {
+                    }
+                )
+                RmcFilledButton(
+                    value = stringResource(id = R.string.apply),
                     onClick = {
 //                        registerViewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
 //                        onRegisterButtonClicked()
                     }
                 )
 
-                DividerTextComponent()
+
 
             }
         }

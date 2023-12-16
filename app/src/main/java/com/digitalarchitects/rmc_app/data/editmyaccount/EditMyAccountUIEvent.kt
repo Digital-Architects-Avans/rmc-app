@@ -1,8 +1,12 @@
 package com.digitalarchitects.rmc_app.data.editmyaccount
 
+import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
 import com.digitalarchitects.rmc_app.model.UserType
 
 sealed interface EditMyAccountUIEvent {
+
+    object UpsertUser: EditMyAccountUIEvent
+    object ShowUser: EditMyAccountUIEvent
     data class SetEmail(val email: String) : EditMyAccountUIEvent
     data class SetUserType(val userType: UserType) : EditMyAccountUIEvent
     data class SetFirstName(val firstName: String): EditMyAccountUIEvent

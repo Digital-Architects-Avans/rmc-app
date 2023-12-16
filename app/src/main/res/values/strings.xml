@@ -41,6 +41,7 @@
     <string name="engine_type_fbev">FBEV</string>
     <string name="ok">Ok</string>
     <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
     <string name="clear">Clear</string>
     <string name="hide_password">\"Hide password\"</string>
     <string name="show_password">\"Show password\"</string>

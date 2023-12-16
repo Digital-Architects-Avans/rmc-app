@@ -33,7 +33,8 @@ import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 
 @Composable
 fun MyAccountScreen(
-    viewModel: MyAccountViewModel
+    viewModel: MyAccountViewModel,
+    onEditMyAccountButtonClicked: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
@@ -58,6 +59,7 @@ fun MyAccountScreen(
                 userIcon = uiState.imageResourceId,
                 size = dimensionResource(R.dimen.image_size_large),
                 onClick = {
+                    onEditMyAccountButtonClicked()
 //                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
                 }
             )
@@ -70,6 +72,7 @@ fun MyAccountScreen(
                 value = stringResource(R.string.my_vehicles),
                 icon = Icons.Filled.DirectionsCar,
                 onClick = {
+
 //                    onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
                 }
             )

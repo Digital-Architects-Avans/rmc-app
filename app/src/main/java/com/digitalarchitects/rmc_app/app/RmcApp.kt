@@ -111,7 +111,8 @@ fun RmcApp(
         }
         composable(route = RmcScreen.MyAccount.name) {
             MyAccountScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onEditMyAccountButtonClicked = { navController.navigate(RmcScreen.EditMyAccount.name) }
             )
         }
         composable(route = RmcScreen.EditMyAccount.name) {
