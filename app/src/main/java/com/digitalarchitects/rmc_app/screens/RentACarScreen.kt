@@ -131,18 +131,20 @@ fun RentACarScreen(
                 Row {
                     Row(
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(dimensionResource(R.dimen.padding_small))
                     ) {
                         RmcFilledIconButton(
                             icon = Icons.Filled.Search,
                             label = R.string.search,
                             onClick = onSearchButtonClicked,
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            modifier = Modifier.padding(
+                                horizontal = dimensionResource(R.dimen.padding_extra_small)
+                            )
                         )
                     }
                     Row(
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(dimensionResource(R.dimen.padding_small))
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
                     ) {
@@ -155,13 +157,17 @@ fun RentACarScreen(
                             icon = Icons.Filled.CarRental,
                             label = R.string.my_rentals,
                             onClick = onMyRentalsButtonClicked,
-                            modifier = Modifier.padding(horizontal = 8.dp)
+                            modifier = Modifier.padding(
+                                horizontal = dimensionResource(R.dimen.padding_extra_small)
+                            )
                         )
                         RmcImgFilledIconButton(
                             image = R.drawable.civic,
                             label = R.string.my_rentals,
                             onClick = onMyAccountButtonClicked,
-                            modifier = Modifier.padding(end = 4.dp)
+                            modifier = Modifier.padding(
+                                end = dimensionResource(R.dimen.padding_extra_small)
+                            )
                         )
                     }
                 }
@@ -170,7 +176,10 @@ fun RentACarScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(end = 16.dp, bottom = 16.dp),
+                        .padding(
+                            end = dimensionResource(R.dimen.padding_medium),
+                            bottom = dimensionResource(R.dimen.padding_medium)
+                        ),
                     horizontalArrangement = Arrangement.End
                 ) {
                     Column(
@@ -182,7 +191,9 @@ fun RentACarScreen(
                             onClick = {
                                 cameraPositionState.move(CameraUpdateFactory.newLatLng(userLocation))
                             },
-                            modifier = Modifier.padding(bottom = 16.dp)
+                            modifier = Modifier.padding(
+                                bottom = dimensionResource(R.dimen.padding_medium)
+                            )
                         )
                         RmcFloatingActionButton(
                             icon = Icons.Filled.List,
