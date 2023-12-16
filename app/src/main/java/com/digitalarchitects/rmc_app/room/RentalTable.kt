@@ -1,7 +1,6 @@
 package com.digitalarchitects.rmc_app.room
 
 import androidx.room.Entity
-//import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.digitalarchitects.rmc_app.model.RentalStatus
@@ -10,6 +9,8 @@ import java.time.LocalDate
 @Entity
 @TypeConverters(LocalDateConverter::class)
 class RentalTable(
+    val vehicleId: Int,
+    val userId: Int,
     @TypeConverters(LocalDateConverter::class)
     val date: LocalDate,
     val price: Double,
@@ -19,14 +20,5 @@ class RentalTable(
     val distanceTravelled: Double,
     val score: Int,
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
-//    @ForeignKey(
-//        entity = VehicleTable::class,
-//        parentColumns = ["id"],
-//        childColumns = ["vehicleId"],
-//        onDelete = ForeignKey.CASCADE
-//    )
-    val vehicleId: Int,
-//    @ForeignKey()
-    val userId: Int,
+    val id: Int
 )
