@@ -10,4 +10,6 @@
     <dimen name="image_size_large">200dp</dimen>
     <dimen name="icon_size_small">16dp</dimen>
     <dimen name="icon_size_normal">24dp</dimen>
+    <dimen name="icon_size_large">32dp</dimen>
+    <dimen name="icon_size_extra_large">40dp</dimen>
 </resources>
