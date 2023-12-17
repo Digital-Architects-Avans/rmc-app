@@ -3,6 +3,7 @@ package com.digitalarchitects.rmc_app.components
 import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,10 +25,12 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -832,3 +835,48 @@ fun RmcTopButton() {
     }
 }
 
+@Composable
+fun RmcMapVehicleCluster(
+    number: Int,
+) {
+    Surface(
+        modifier = Modifier
+            .size(dimensionResource(R.dimen.icon_size_large)),
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        border = BorderStroke(1.dp, Color.White)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            androidx.compose.material.Text(
+                text = number.toString(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+        }
+    }
+}
+
+@Composable
+fun RmcMapVehicleItem() {
+    Surface(
+        modifier = Modifier
+            .size(dimensionResource(R.dimen.icon_size_normal)),
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        border = BorderStroke(1.dp, Color.White)
+    ) {
+        Box {
+            Icon(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 2.dp, bottom = 4.dp),
+                imageVector = Icons.Rounded.DirectionsCar,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
