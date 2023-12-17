@@ -24,8 +24,8 @@ class NetworkUserRepository(
     // TODO(): Add token dynamically to header after a user logs in
     // TODO(): Separate User/Vehicle/Rental repositories?
     /** Retrieves list of User from underlying data source */
-    override suspend fun getUsers(): List<User> = rmcApiService.getUsers("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwL2hlbGxvIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6ODA4MC8iLCJlbWFpbCI6InN0YWZmQGVtYWlsLmNvbSIsInVzZXJUeXBlIjoiU1RBRkYiLCJ1c2VySWQiOjIzLCJleHAiOjE3MDIzNDI1NjR9.OcdtZK2pRiNIn0QYVhctGgRCvR3f_lpsJ6lyQtOO1E0")
+    override suspend fun getUsers(): List<User> = rmcApiService.getUsers("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwL2hlbGxvIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6ODA4MC8iLCJlbWFpbCI6InN0YWZmQGVtYWlsLmNvbSIsInVzZXJUeXBlIjoiU1RBRkYiLCJ1c2VySWQiOjIsImV4cCI6MTcwMjgyOTc1M30.r1GpmwDksozPmwKIheRitM-zglueKG-aMnYuI4MABag")
 
     /** Retrieves list of Vehicle from underlying data source */
-    override suspend fun getVehicles(): List<Vehicle> = rmcApiService.getVehicles()
+    override suspend fun getVehicles(): List<Vehicle> = rmcApiService.getVehicles("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo4MDgwL2hlbGxvIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6ODA4MC8iLCJlbWFpbCI6InN0YWZmQGVtYWlsLmNvbSIsInVzZXJUeXBlIjoiU1RBRkYiLCJ1c2VySWQiOjIsImV4cCI6MTcwMjgyOTc1M30.r1GpmwDksozPmwKIheRitM-zglueKG-aMnYuI4MABag")
 }
