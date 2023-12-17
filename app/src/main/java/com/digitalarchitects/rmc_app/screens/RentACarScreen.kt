@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.screens
 
+import android.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,8 +40,11 @@ import com.digitalarchitects.rmc_app.components.RmcFilledTonalIconButton
 import com.digitalarchitects.rmc_app.components.RmcFloatingActionButton
 import com.digitalarchitects.rmc_app.components.RmcImgFilledIconButton
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PinConfig
 import com.google.maps.android.compose.AdvancedMarker
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
@@ -214,34 +219,29 @@ fun RmcMap(
     cameraPositionState: CameraPositionState
 ) {
     GoogleMap(
+        googleMapOptionsFactory = {
+            GoogleMapOptions().mapId("DEMO_MAP_ID")
+        },
         properties = properties,
         uiSettings = uiSettings,
         cameraPositionState = cameraPositionState
     ) {
+        // Setup pinConfig RMC
+        val glyphImage: Int = R.drawable.ic_map_marker
+        val descriptor = BitmapDescriptorFactory.fromResource(glyphImage)
+
+        val pinConfig = PinConfig.builder()
+            .setGlyph(PinConfig.Glyph(descriptor))
+            .setBackgroundColor(MaterialTheme.colorScheme.primary.toArgb())
+            .setBorderColor(Color.WHITE)
+            .build()
+
+        // Placing test marker
         AdvancedMarker(
             state = MarkerState(position = LatLng(51.583698, 4.797110)),
             title = "Avans Hogeschool",
-            snippet = "Hogeschoollaan 1"
-        )
-        AdvancedMarker(
-            state = MarkerState(position = LatLng(51.585720, 4.793230)),
-            title = "Avans Hogeschool",
-            snippet = "Lovensdijkstraat 61"
-        )
-        AdvancedMarker(
-            state = MarkerState(position = LatLng(51.58656, 4.77596)),
-            title = "Avans Hogeschool",
-            snippet = "Bijster 7-21"
-        )
-        AdvancedMarker(
-            state = MarkerState(position = LatLng(51.5794365, 4.810962)),
-            title = "Avans Hogeschool",
-            snippet = "Beukenlaan 1"
-        )
-        AdvancedMarker(
-            state = MarkerState(position = LatLng(51.4698905, 5.5466656)),
-            title = "Home",
-            snippet = "is where the heart is"
+            snippet = "Hogeschoollaan 1",
+            pinConfig = pinConfig
         )
     }
 }
