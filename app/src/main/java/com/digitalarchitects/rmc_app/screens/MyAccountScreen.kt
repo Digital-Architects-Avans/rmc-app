@@ -34,12 +34,17 @@ import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 @Composable
 fun MyAccountScreen(
     viewModel: MyAccountViewModel,
-    onEditMyAccountButtonClicked: () -> Unit
+    navigateToScreen: (String) -> Unit
+//    onEditMyAccountButtonClicked: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.onEvent(MyAccountUIEvent.InsertUser)
         viewModel.onEvent(MyAccountUIEvent.ShowUser)
+    }
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
     }
 
     Surface(
@@ -59,7 +64,8 @@ fun MyAccountScreen(
                 userIcon = uiState.imageResourceId,
                 size = dimensionResource(R.dimen.image_size_large),
                 onClick = {
-                    onEditMyAccountButtonClicked()
+                    viewModel.onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
+
 //                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
                 }
             )

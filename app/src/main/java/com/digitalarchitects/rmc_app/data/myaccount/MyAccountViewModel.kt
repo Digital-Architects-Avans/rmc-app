@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.data.myaccount
 
 import androidx.lifecycle.ViewModel
+import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.model.UserType
 import com.digitalarchitects.rmc_app.room.UserDao
 import com.digitalarchitects.rmc_app.room.UserTable
@@ -12,9 +13,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class MyAccountViewModel(
-    private val dao: UserDao
+    private val userDao: UserDao
 //    private val navController: NavController
 ) : ViewModel() {
+    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
+    val navigateToScreen = _navigateToScreen.asStateFlow()
     private val _state = MutableStateFlow(MyAccountUIState())
     private val _uiState = _state
     val uiState: StateFlow<MyAccountUIState> = _uiState.asStateFlow()
@@ -24,7 +27,7 @@ class MyAccountViewModel(
                 try {
                     runBlocking {
                         val firstName = withContext(Dispatchers.IO) {
-                            dao.getFirstName()
+                            userDao.getFirstName()
                         }
                         _state.value = _state.value.copy(firstName = "$firstName")
                     }
@@ -50,7 +53,7 @@ class MyAccountViewModel(
                     )
                     runBlocking {
                         val firstName = withContext(Dispatchers.IO) {
-                            dao.insertUser(user)
+                            userDao.insertUser(user)
                         }
                         _state.value = _state.value.copy(firstName = "$firstName")
                     }
@@ -60,7 +63,7 @@ class MyAccountViewModel(
             }
 
             MyAccountUIEvent.onEditMyAccountButtonClicked -> {
-                /*navController.navigate(RmcScreen.EditAccount.name)*/
+                _navigateToScreen.value = RmcScreen.EditMyAccount
             }
 
             MyAccountUIEvent.onLogoutButtonClicked -> {

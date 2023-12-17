@@ -32,9 +32,7 @@ fun WelcomeScreen(
     navigateToScreen: (String) -> Unit
 ) {
     val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-
     if (navigateToScreenEvent != null) {
-        // Perform navigation based on the event
         navigateToScreen(navigateToScreenEvent!!.name)
     }
 
@@ -81,7 +79,9 @@ fun WelcomeScreen(
                 Column(Modifier.weight(1f)) {
                     RmcFilledButton(
                         value = stringResource(id = R.string.login),
-                        onClick = { viewModel.onLogInButtonClicked() }
+                        onClick = {
+                            viewModel.onLogInButtonClicked()
+                        }
                     )
                 }
             }
