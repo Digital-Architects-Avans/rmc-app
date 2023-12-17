@@ -2,14 +2,20 @@ package com.digitalarchitects.rmc_app.app
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
+import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
+import com.digitalarchitects.rmc_app.data.register.RegisterViewModel
+import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
@@ -24,39 +30,57 @@ import com.digitalarchitects.rmc_app.screens.SearchScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
 import com.digitalarchitects.rmc_app.screens.WelcomeScreen
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
+import kotlin.reflect.KClass
 
-enum class RmcScreen(@StringRes val title: Int) {
-    Welcome(title = R.string.screen_title_welcome),
-    Register(title = R.string.screen_title_register),
-    TermsAndConditions(title = R.string.screen_title_terms),
-    Login(title = R.string.screen_title_login),
-    RentACar(title = R.string.screen_title_rent_a_car),
-    Search(title = R.string.screen_title_search),
-    MyRentals(title = R.string.screen_title_my_rentals),
-    RentMyCar(title = R.string.screen_title_rent_my_car),
-    MyVehicles(title = R.string.screen_title_my_vehicles),
-    RegisterVehicle(title = R.string.screen_title_register_vehicle),
-    MyAccount(title = R.string.screen_title_my_account),
-    EditMyAccount(title = R.string.screen_title_edit_account)
+enum class RmcScreen(@StringRes val title: Int, val viewModel: KClass<out ViewModel>) {
+    Welcome(title = R.string.screen_title_welcome, viewModel = WelcomeViewModel::class),
+    Register(title = R.string.screen_title_register, viewModel = RegisterViewModel::class),
+    TermsAndConditions(title = R.string.screen_title_terms, viewModel = WelcomeViewModel::class ),
+    Login(title = R.string.screen_title_login, viewModel = LoginViewModel::class),
+    RentACar(title = R.string.screen_title_rent_a_car, viewModel = WelcomeViewModel::class),
+    Search(title = R.string.screen_title_search, viewModel = WelcomeViewModel::class),
+    MyRentals(title = R.string.screen_title_my_rentals, viewModel = WelcomeViewModel::class),
+    RentMyCar(title = R.string.screen_title_rent_my_car, viewModel = WelcomeViewModel::class),
+    MyVehicles(title = R.string.screen_title_my_vehicles, viewModel = WelcomeViewModel::class),
+    RegisterVehicle(title = R.string.screen_title_register_vehicle, viewModel = WelcomeViewModel::class),
+    MyAccount(title = R.string.screen_title_my_account, viewModel = WelcomeViewModel::class),
+    EditMyAccount(title = R.string.screen_title_edit_account, viewModel = WelcomeViewModel::class)
 }
+
+
 
 
 @Preview(showBackground = true)
 @Composable
 fun RmcApp(
-    viewModel: MyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    viewModel2: EditMyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    navController: NavHostController = rememberNavController()
+    viewModel1: MyAccountViewModel = viewModel(),
+    viewModel2: EditMyAccountViewModel = viewModel(),
+    navController: NavHostController = rememberNavController(),
+//    navigationViewModel: NavigationViewModel = viewModel(),
+    viewModel3: WelcomeViewModel = viewModel()
 ) {
+
+    val viewModelMap = rememberSaveable {
+        RmcScreen.values().associateBy({ it }, { it.viewModel.java })
+    }
+
     NavHost(
         navController = navController,
         startDestination = RmcScreen.Welcome.name,
     ) {
         composable(route = RmcScreen.Welcome.name) {
+            val viewModel = viewModelMap[RmcScreen.Welcome]?.let {
+                viewModel(it)
+            }
             WelcomeScreen(
-                onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
-                onLoginButtonClicked = { navController.navigate(RmcScreen.Login.name) }
+                viewModel = viewModel as? WelcomeViewModel ?: error("Unexpected ViewModel type"),
+                navigateToScreen = { route -> navController.navigate(route) }
             )
+
+//            WelcomeScreen(
+//                onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
+//                onLoginButtonClicked = { navController.navigate(RmcScreen.Login.name) }
+//            )
 
         }
         composable(route = RmcScreen.Register.name) {
@@ -111,7 +135,7 @@ fun RmcApp(
         }
         composable(route = RmcScreen.MyAccount.name) {
             MyAccountScreen(
-                viewModel = viewModel,
+                viewModel = viewModel1,
                 onEditMyAccountButtonClicked = { navController.navigate(RmcScreen.EditMyAccount.name) }
             )
         }

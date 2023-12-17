@@ -11,6 +11,7 @@ import androidx.room.Room
 import com.digitalarchitects.rmc_app.app.RmcApp
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
+import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
         ).build()
     }
 
-    private val viewModel: MyAccountViewModel by viewModels {
+    private val viewModel1: MyAccountViewModel by viewModels {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return MyAccountViewModel(db.userDao) as T
@@ -40,6 +41,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val viewModel3: WelcomeViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return WelcomeViewModel() as T
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {
@@ -48,7 +57,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             RmcAppTheme {
-                RmcApp(viewModel = viewModel, viewModel2 = viewModel2)
+                RmcApp(
+                    viewModel1 = viewModel1,
+                    viewModel2 = viewModel2,
+                    viewModel3 = viewModel3)
             }
         }
     }
