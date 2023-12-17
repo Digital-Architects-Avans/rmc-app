@@ -3,6 +3,7 @@ package com.digitalarchitects.rmc_app.app
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -10,7 +11,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.data.ViewModelFactory
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
@@ -19,6 +22,7 @@ import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
+import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.screens.EditMyAccountScreen
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.MyAccountScreen
@@ -53,16 +57,23 @@ enum class RmcScreen(@StringRes val title: Int, val viewModel: KClass<out ViewMo
 @Preview(showBackground = true)
 @Composable
 fun RmcApp(
-    viewModel1: MyAccountViewModel = viewModel(),
-    viewModel2: EditMyAccountViewModel = viewModel(),
+//    viewModel1: MyAccountViewModel = viewModel(),
+//    viewModel2: EditMyAccountViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 //    navigationViewModel: NavigationViewModel = viewModel(),
-    viewModel3: WelcomeViewModel = viewModel()
+//    viewModel3: WelcomeViewModel = viewModel(),
+    db: RmcRoomDatabase = Room.databaseBuilder(
+        LocalContext.current.applicationContext,
+        RmcRoomDatabase::class.java,
+        "RmcRoomTest1.db"
+    ).build()
 ) {
 
     val viewModelMap = rememberSaveable {
         RmcScreen.values().associateBy({ it }, { it.viewModel.java })
     }
+
+    val ViewModelFactory = ViewModelFactory(db)
 
     NavHost(
         navController = navController,
@@ -70,7 +81,7 @@ fun RmcApp(
     ) {
         composable(route = RmcScreen.Welcome.name) {
             val viewModel = viewModelMap[RmcScreen.Welcome]?.let {
-                viewModel(it)
+                viewModel(it, factory = ViewModelFactory)
             }
             WelcomeScreen(
                 viewModel = viewModel as? WelcomeViewModel ?: error("Unexpected ViewModel type"),
@@ -133,19 +144,19 @@ fun RmcApp(
             TODO("Implement RegisterVehicle screen")
             // RegisterVehicleScreen()
         }
-        composable(route = RmcScreen.MyAccount.name) {
-            MyAccountScreen(
-                viewModel = viewModel1,
-                onEditMyAccountButtonClicked = { navController.navigate(RmcScreen.EditMyAccount.name) }
-            )
-        }
-        composable(route = RmcScreen.EditMyAccount.name) {
-            EditMyAccountScreen(
-                onNavigateUp = { navController.navigate(RmcScreen.MyAccount.name) },
-                viewModel = viewModel2
-            )
-
-        }
+//        composable(route = RmcScreen.MyAccount.name) {
+//            MyAccountScreen(
+//                viewModel = viewModel1,
+//                onEditMyAccountButtonClicked = { navController.navigate(RmcScreen.EditMyAccount.name) }
+//            )
+//        }
+//        composable(route = RmcScreen.EditMyAccount.name) {
+//            EditMyAccountScreen(
+//                onNavigateUp = { navController.navigate(RmcScreen.MyAccount.name) },
+//                viewModel = viewModel2
+//            )
+//
+//        }
     }
 }
 

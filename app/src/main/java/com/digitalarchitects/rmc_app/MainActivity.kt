@@ -3,51 +3,43 @@ package com.digitalarchitects.rmc_app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
 import com.digitalarchitects.rmc_app.app.RmcApp
-import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
-import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
-import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
-import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            RmcRoomDatabase::class.java,
-            "RmcRoomTest1.db"
-        ).build()
-    }
-
-    private val viewModel1: MyAccountViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MyAccountViewModel(db.userDao) as T
-            }
-        }
-    }
-
-    private val viewModel2: EditMyAccountViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return EditMyAccountViewModel(db.userDao) as T
-            }
-        }
-    }
-
-    private val viewModel3: WelcomeViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return WelcomeViewModel() as T
-            }
-        }
-    }
+//    private val db by lazy {
+//        Room.databaseBuilder(
+//            applicationContext,
+//            RmcRoomDatabase::class.java,
+//            "RmcRoomTest1.db"
+//        ).build()
+//    }
+//
+//    private val viewModel1: MyAccountViewModel by viewModels {
+//        object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return MyAccountViewModel(db.userDao) as T
+//            }
+//        }
+//    }
+//
+//    private val viewModel2: EditMyAccountViewModel by viewModels {
+//        object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return EditMyAccountViewModel(db.userDao) as T
+//            }
+//        }
+//    }
+//
+//    private val viewModel3: WelcomeViewModel by viewModels {
+//        object : ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return WelcomeViewModel() as T
+//            }
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +50,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             RmcAppTheme {
                 RmcApp(
-                    viewModel1 = viewModel1,
-                    viewModel2 = viewModel2,
-                    viewModel3 = viewModel3)
+//                    viewModel1 = viewModel1,
+//                    viewModel2 = viewModel2,
+//                    viewModel3 = viewModel3
+                                )
             }
         }
     }
