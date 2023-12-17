@@ -22,7 +22,7 @@ interface RmcApiService {
      * HTTP method
      */
     @GET("vehicle/vehicles")
-    suspend fun getVehicles(): List<Vehicle>
+    suspend fun getVehicles(@Header("Authorization") token: String): List<Vehicle>
 
     // Add more endpoint calls ...
 }
