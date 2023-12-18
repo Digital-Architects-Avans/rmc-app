@@ -8,7 +8,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +33,8 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.DirectionsCar
+import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.PriceChange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -82,6 +86,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
 
 /*
@@ -879,4 +884,89 @@ fun RmcMapVehicleItem() {
             )
         }
     }
+}
+
+@Composable
+fun RmcVehicleListItem(vehicle: Vehicle) {
+    Row(
+        modifier = Modifier.padding(
+            horizontal = dimensionResource(R.dimen.padding_large)
+        ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = vehicle.imgLink),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(dimensionResource(R.dimen.image_size_medium))
+                .clip(RoundedCornerShape(8.dp))
+        )
+        Column(
+            modifier = Modifier
+                .padding(start = dimensionResource(R.dimen.padding_large))
+        ) {
+            Text(
+                text = vehicle.licensePlate,
+                style = MaterialTheme.typography.displayMedium,
+                color = Color(0xFFC00000)
+            )
+            Text(
+                modifier = Modifier
+                    .padding(bottom = dimensionResource(R.dimen.padding_small)),
+                text = "${vehicle.year} ${vehicle.brand} ${vehicle.model}",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.LocationOn,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.icon_size_normal))
+                            .padding(end = dimensionResource(R.dimen.padding_small)),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Text(
+                        text = "Eindhoven",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.PriceChange,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.icon_size_normal))
+                            .padding(end = dimensionResource(R.dimen.padding_small)),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                    Text(
+                        text = vehicle.price.toString(),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RmcListItemDivider() {
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = dimensionResource(R.dimen.padding_medium)),
+        color = MaterialTheme.colorScheme.outlineVariant,
+        thickness = 1.dp
+    )
 }
