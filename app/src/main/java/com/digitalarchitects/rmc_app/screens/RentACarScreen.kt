@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.screens
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -210,6 +212,7 @@ fun RentACarScreen(
                 // Bottom sheet #2
                 val sheetState = rememberModalBottomSheetState()
                 val scope = rememberCoroutineScope()
+                val context = LocalContext.current
 
                 if (rentACarUIState.showListViewSheet) {
                     ModalBottomSheet(
@@ -224,9 +227,14 @@ fun RentACarScreen(
                                 rentACarViewModel.listOfVehicles.forEach { vehicle ->
                                     RmcVehicleListItem(
                                         vehicle,
-                                        onClick = {
+                                        onClick = { vehicleId ->
                                             scope.launch { sheetState.hide() }.invokeOnCompletion {
                                                 rentACarViewModel.viewListButtonClicked()
+                                                Toast.makeText(
+                                                    context,
+                                                    "Vehicle $vehicleId selected",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         }
                                     )

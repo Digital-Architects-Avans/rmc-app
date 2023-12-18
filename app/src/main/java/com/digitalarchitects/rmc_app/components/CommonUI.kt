@@ -889,12 +889,12 @@ fun RmcMapVehicleItem() {
 @Composable
 fun RmcVehicleListItem(
     vehicle: Vehicle,
-    onClick: () -> Unit
+    onClick: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
-            .clickable { onClick() },
+            .clickable { onClick(vehicle.id) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
