@@ -69,6 +69,7 @@ import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.launch
 
 val startLocation = LatLng(51.583698, 4.797110)
 val userLocation = LatLng(51.469890, 5.546670)
@@ -208,6 +209,7 @@ fun RentACarScreen(
                 }
                 // Bottom sheet #2
                 val sheetState = rememberModalBottomSheetState()
+                val scope = rememberCoroutineScope()
 
                 if (rentACarUIState.showListViewSheet) {
                     ModalBottomSheet(
@@ -220,7 +222,14 @@ fun RentACarScreen(
                         ) {
                             repeat(2) {
                                 rentACarViewModel.listOfVehicles.forEach { vehicle ->
-                                    RmcVehicleListItem(vehicle)
+                                    RmcVehicleListItem(
+                                        vehicle,
+                                        onClick = {
+                                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                                rentACarViewModel.viewListButtonClicked()
+                                            }
+                                        }
+                                    )
                                     RmcListItemDivider()
                                 }
                             }
