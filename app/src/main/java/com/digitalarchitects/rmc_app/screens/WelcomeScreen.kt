@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
@@ -75,4 +76,13 @@ fun WelcomeScreen(
 
         }
     }
+}
+
+@Preview
+@Composable
+fun WelcomeScreenPreview() {
+    WelcomeScreen(
+        onLoginButtonClicked = {},
+        onRegisterButtonClicked = {}
+    )
 }
