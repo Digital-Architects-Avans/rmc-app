@@ -2,10 +2,15 @@ package com.digitalarchitects.rmc_app.data
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsViewModel
+import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
+import com.digitalarchitects.rmc_app.data.rentoutmycar.RentOutMyCarViewModel
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.data.register.RegisterViewModel
+import com.digitalarchitects.rmc_app.data.registervehicle.RegisterVehicleViewModel
+import com.digitalarchitects.rmc_app.data.rentacar.RentACarViewModel
 import com.digitalarchitects.rmc_app.data.search.SearchViewModel
 import com.digitalarchitects.rmc_app.data.termsandconditions.TermsAndConditionsViewModel
 import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
@@ -28,28 +33,28 @@ class ViewModelFactory(
             return LoginViewModel() as T
         }
         if (modelClass.isAssignableFrom(RentACarViewModel::class.java)) {
-            return RentACarViewModel() as T
+            return RentACarViewModel(vehicleDao = db.vehicleDao) as T
         }
         if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return SearchViewModel() as T
         }
         if (modelClass.isAssignableFrom(MyRentalsViewModel::class.java)) {
-            return MyRentalsViewModel() as T
+            return MyRentalsViewModel(vehicleDao = db.vehicleDao) as T
         }
-        if (modelClass.isAssignableFrom(RentMyCarViewModel::class.java)) {
-            return RentMyCarViewModel() as T
+        if (modelClass.isAssignableFrom(RentOutMyCarViewModel::class.java)) {
+            return RentOutMyCarViewModel(vehicleDao = db.vehicleDao, rentalDao = db.rentalDao) as T
         }
         if (modelClass.isAssignableFrom(MyVehiclesViewModel::class.java)) {
-            return MyVehiclesViewModel() as T
+            return MyVehiclesViewModel(db.vehicleDao) as T
         }
         if (modelClass.isAssignableFrom(RegisterVehicleViewModel::class.java)) {
-            return RegisterVehicleViewModel() as T
+            return RegisterVehicleViewModel(db.vehicleDao) as T
         }
         if (modelClass.isAssignableFrom(MyAccountViewModel::class.java)) {
-            return MyAccountViewModel(db.userDao) as T
+            return MyAccountViewModel(userDao = db.userDao) as T
         }
         if (modelClass.isAssignableFrom(EditMyAccountViewModel::class.java)) {
-            return EditMyAccountViewModel(db.userDao) as T
+            return EditMyAccountViewModel(userDao = db.userDao) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
