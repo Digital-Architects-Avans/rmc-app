@@ -34,8 +34,10 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.DirectionsCar
+import androidx.compose.material.icons.rounded.LocalGasStation
 import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.PriceChange
+import androidx.compose.material.icons.rounded.Straighten
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -1006,5 +1008,103 @@ fun RmcIconLabel(
             text = label,
             style = MaterialTheme.typography.labelMedium
         )
+    }
+}
+
+
+@Composable
+fun RmcVehicleDetails(
+    vehicle: Vehicle,
+    showAvailability: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = vehicle.licensePlate,
+                style = MaterialTheme.typography.displayMedium,
+                color = Color(0xFFC00000)
+            )
+            if (showAvailability) {
+                if (!vehicle.availability) {
+                    RmcTextBadge(
+                        label = stringResource(R.string.available),
+                        labelTextColor = MaterialTheme.colorScheme.primary,
+                        labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                } else {
+                    RmcTextBadge(
+                        label = stringResource(R.string.unavailable),
+                        labelTextColor = MaterialTheme.colorScheme.error,
+                        labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                }
+            }
+        }
+        Text(
+            modifier = Modifier
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_large)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = "Eindhoven",
+                icon = Icons.Rounded.LocationOn
+            )
+            RmcIconLabel(
+                label = vehicle.price.toInt().toString(),
+                icon = Icons.Rounded.PriceChange
+            )
+        }
+    }
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(height = 160.dp, width = 20.dp),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(R.drawable.civic),
+        contentDescription = null
+    )
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(
+                    top = dimensionResource(R.dimen.padding_large),
+                    bottom = dimensionResource(R.dimen.padding_small)
+                ),
+            text = "A cheap car to go away for a day.",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = vehicle.vehicleClass,
+                icon = Icons.Rounded.Straighten
+            )
+            RmcIconLabel(
+                label = vehicle.engineType.toString(),
+                icon = Icons.Rounded.LocalGasStation
+            )
+        }
     }
 }
