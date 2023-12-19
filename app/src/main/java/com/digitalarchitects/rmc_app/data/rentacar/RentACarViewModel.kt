@@ -12,6 +12,10 @@ class RentACarViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RentACarUIState())
     val uiState: StateFlow<RentACarUIState> = _uiState.asStateFlow()
 
+    // Get search settings
+    // Get all vehicles
+    // Filter all vehicles on search settings
+    // pass vehicleList to screen
     val listOfVehicles = DummyVehicleDTO()
 
     fun onEvent(event: RentACarUIEvent) {
