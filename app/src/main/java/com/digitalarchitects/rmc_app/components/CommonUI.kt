@@ -941,7 +941,7 @@ fun RmcVehicleListItem(
             Text(
                 modifier = Modifier
                     .padding(bottom = dimensionResource(R.dimen.padding_small)),
-                text = "${vehicle.year} ${vehicle.brand} ${vehicle.model}",
+                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
                 style = MaterialTheme.typography.titleMedium,
             )
             Row(
@@ -960,6 +960,29 @@ fun RmcVehicleListItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun RmcTextBadge(
+    label: String,
+    labelTextColor: Color,
+    labelBackgroundColor: Color
+) {
+    Surface(
+        color = labelBackgroundColor,
+        shape = RoundedCornerShape(50)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = labelTextColor,
+            modifier = Modifier
+                .padding(
+                    vertical = dimensionResource(R.dimen.padding_extra_small),
+                    horizontal = dimensionResource(R.dimen.padding_medium)
+                )
+        )
     }
 }
 
