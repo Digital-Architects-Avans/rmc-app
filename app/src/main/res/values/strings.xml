@@ -25,6 +25,7 @@
     <string name="my_vehicles">My vehicles</string>
     <string name="vehicle">Vehicle</string>
     <string name="available">Available</string>
+    <string name="unavailable">Unavailable</string>
     <string name="location">Location</string>
     <string name="price">Price</string>
     <string name="search">Search</string>
