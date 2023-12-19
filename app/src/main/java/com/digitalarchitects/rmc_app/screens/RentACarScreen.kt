@@ -56,6 +56,7 @@ import com.digitalarchitects.rmc_app.components.RmcMapVehicleCluster
 import com.digitalarchitects.rmc_app.components.RmcMapVehicleItem
 import com.digitalarchitects.rmc_app.components.RmcVehicleListItem
 import com.digitalarchitects.rmc_app.data.rentacar.RentACarViewModel
+import com.digitalarchitects.rmc_app.model.Vehicle
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
@@ -87,9 +88,12 @@ fun RentACarScreen(
 ) {
     val rentACarUIState by rentACarViewModel.uiState.collectAsState()
 
+    val vehicleList = rentACarViewModel.listOfVehicles
+
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(startLocation, 13f)
     }
+
 
     BottomSheetScaffold(
         sheetContent = {
@@ -124,7 +128,8 @@ fun RentACarScreen(
             ) {
                 Box(Modifier.fillMaxSize()) {
                     RmcMapClustering(
-                        cameraPositionState = cameraPositionState
+                        cameraPositionState = cameraPositionState,
+                        vehicleList = vehicleList
                     )
                 }
             }
@@ -223,23 +228,21 @@ fun RentACarScreen(
                             modifier = Modifier
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            repeat(2) {
-                                rentACarViewModel.listOfVehicles.forEach { vehicle ->
-                                    RmcVehicleListItem(
-                                        vehicle,
-                                        onClick = { vehicleId ->
-                                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                                rentACarViewModel.viewListButtonClicked()
-                                                Toast.makeText(
-                                                    context,
-                                                    "Vehicle $vehicleId selected",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
+                            vehicleList.forEach { vehicle ->
+                                RmcVehicleListItem(
+                                    vehicle,
+                                    onClick = { vehicleId ->
+                                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                            rentACarViewModel.viewListButtonClicked()
+                                            Toast.makeText(
+                                                context,
+                                                "Vehicle $vehicleId selected",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
-                                    )
-                                    RmcListItemDivider()
-                                }
+                                    }
+                                )
+                                RmcListItemDivider()
                             }
                         }
                     }
@@ -251,36 +254,21 @@ fun RentACarScreen(
 
 @Composable
 fun RmcMapClustering(
-    cameraPositionState: CameraPositionState
+    cameraPositionState: CameraPositionState,
+    vehicleList: List<Vehicle>
 ) {
     val items = remember { mutableStateListOf<RmcVehicleItem>() }
     LaunchedEffect(Unit) {
-        items.add(
-            RmcVehicleItem(
-                LatLng(51.583698, 4.797110),
-                "Avans Hogeschool",
-                "Hogeschoollaan 1",
-                0f
+        vehicleList.forEach { vehicle ->
+            items.add(
+                RmcVehicleItem(
+                    LatLng(vehicle.latitude.toDouble(), vehicle.longitude.toDouble()),
+                    vehicleSnippet = "${vehicle.year} ${vehicle.brand} ${vehicle.model}",
+                    vehicleTitle = vehicle.licensePlate,
+                    vehicleZIndex = 0f
+                )
             )
-        )
-        items.add(
-            RmcVehicleItem(
-                LatLng(51.585720, 4.793230),
-                "Avans Hogeschool",
-                "Lovensdijkstraat 61",
-                0f
-            )
-        )
-        items.add(RmcVehicleItem(LatLng(51.58656, 4.77596), "Avans Hogeschool", "Bijster 7-21", 0f))
-        items.add(
-            RmcVehicleItem(
-                LatLng(51.5794365, 4.810962),
-                "Avans Hogeschool",
-                "Beukenlaan 1",
-                0f
-            )
-        )
-        items.add(RmcVehicleItem(LatLng(51.4698905, 5.5466656), "Home", "where the heart is", 0f))
+        }
     }
     RmcMap(items = items, cameraPositionState)
 }
