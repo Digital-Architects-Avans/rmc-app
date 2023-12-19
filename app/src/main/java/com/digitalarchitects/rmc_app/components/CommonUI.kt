@@ -921,7 +921,7 @@ fun RmcVehicleListItem(
         ) {
             Text(
                 text = vehicle.licensePlate,
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.displaySmall,
                 color = Color(0xFFC00000)
             )
             Text(
@@ -936,42 +936,42 @@ fun RmcVehicleListItem(
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.LocationOn,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(dimensionResource(R.dimen.icon_size_normal))
-                            .padding(end = dimensionResource(R.dimen.padding_small)),
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        text = "Eindhoven",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.PriceChange,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(dimensionResource(R.dimen.icon_size_normal))
-                            .padding(end = dimensionResource(R.dimen.padding_small)),
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                    Text(
-                        text = vehicle.price.toString(),
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
+                RmcIconLabel(
+                    label = "Eindhoven",
+                    icon = Icons.Rounded.LocationOn
+                )
+                RmcIconLabel(
+                    label = vehicle.price.toString(),
+                    icon = Icons.Rounded.PriceChange
+                )
             }
         }
     }
 }
+
+@Composable
+fun RmcIconLabel(
+    label: String,
+    icon: ImageVector,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier
+                .size(dimensionResource(R.dimen.icon_size_normal))
+                .padding(end = dimensionResource(R.dimen.padding_small)),
+            tint = MaterialTheme.colorScheme.secondary
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+
 
 @Composable
 fun RmcListItemDivider() {
