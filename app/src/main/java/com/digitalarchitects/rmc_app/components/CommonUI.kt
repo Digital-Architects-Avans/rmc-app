@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.PriceChange
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -894,7 +896,15 @@ fun RmcVehicleListItem(
     Row(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
-            .clickable { onClick(vehicle.id) },
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    color = Color.Black
+                ),
+                onClick = {
+                    onClick(vehicle.id)
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
