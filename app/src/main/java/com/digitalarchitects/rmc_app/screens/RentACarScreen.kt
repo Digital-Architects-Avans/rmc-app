@@ -51,7 +51,7 @@ import com.digitalarchitects.rmc_app.components.RmcFilledIconButton
 import com.digitalarchitects.rmc_app.components.RmcFilledTonalIconButton
 import com.digitalarchitects.rmc_app.components.RmcFloatingActionButton
 import com.digitalarchitects.rmc_app.components.RmcImgFilledIconButton
-import com.digitalarchitects.rmc_app.components.RmcListItemDivider
+import com.digitalarchitects.rmc_app.components.RmcDivider
 import com.digitalarchitects.rmc_app.components.RmcMapVehicleCluster
 import com.digitalarchitects.rmc_app.components.RmcMapVehicleItem
 import com.digitalarchitects.rmc_app.components.RmcVehicleListItem
@@ -242,7 +242,7 @@ fun RentACarScreen(
                                         }
                                     }
                                 )
-                                RmcListItemDivider()
+                                RmcDivider()
                             }
                         }
                     }

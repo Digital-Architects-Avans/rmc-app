@@ -153,6 +153,20 @@ fun RmcSpacer(height: Int = 24) {
 }
 
 /**
+ * Default divider
+ */
+@Composable
+fun RmcDivider() {
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = dimensionResource(R.dimen.padding_medium)),
+        color = MaterialTheme.colorScheme.outlineVariant,
+        thickness = 1.dp
+    )
+}
+
+/**
  * Composable that displays User icon
  */
 @Composable
@@ -970,16 +984,4 @@ fun RmcIconLabel(
             style = MaterialTheme.typography.labelMedium
         )
     }
-}
-
-
-@Composable
-fun RmcListItemDivider() {
-    Divider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = dimensionResource(R.dimen.padding_medium)),
-        color = MaterialTheme.colorScheme.outlineVariant,
-        thickness = 1.dp
-    )
 }
