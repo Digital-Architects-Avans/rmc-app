@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CarRental
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.List
@@ -43,17 +45,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.components.RmcDivider
+import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcFilledIconButton
 import com.digitalarchitects.rmc_app.components.RmcFilledTonalIconButton
 import com.digitalarchitects.rmc_app.components.RmcFloatingActionButton
 import com.digitalarchitects.rmc_app.components.RmcImgFilledIconButton
-import com.digitalarchitects.rmc_app.components.RmcDivider
 import com.digitalarchitects.rmc_app.components.RmcMapVehicleCluster
 import com.digitalarchitects.rmc_app.components.RmcMapVehicleItem
+import com.digitalarchitects.rmc_app.components.RmcSpacer
+import com.digitalarchitects.rmc_app.components.RmcTextField
+import com.digitalarchitects.rmc_app.components.RmcVehicleDetails
 import com.digitalarchitects.rmc_app.components.RmcVehicleListItem
 import com.digitalarchitects.rmc_app.data.rentacar.RentACarViewModel
 import com.digitalarchitects.rmc_app.model.Vehicle
@@ -94,18 +103,29 @@ fun RentACarScreen(
         position = CameraPosition.fromLatLngZoom(startLocation, 13f)
     }
 
-
     BottomSheetScaffold(
         sheetContent = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = dimensionResource(R.dimen.padding_large))
             ) {
-                Text(text = "Vehicle info here")
+                RmcVehicleDetails(
+                    vehicleList[2],
+                    showAvailability = true
+                )
+                RmcDivider()
+
+                RmcRentCarForm(
+                    onReserveButtonClicked = {
+                        // rentACarViewModel: Add event for Reserve car
+                    },
+                    onValueChange = {
+                        // rentACarUIState: Add date for rental
+                    }
+                )
             }
         },
-        sheetPeekHeight = 0.dp,
+        sheetPeekHeight = 324.dp,
     ) {
         Surface(
             modifier = Modifier
@@ -253,6 +273,41 @@ fun RentACarScreen(
 }
 
 @Composable
+fun RmcRentCarForm(
+    onValueChange: (String) -> Unit,
+    onReserveButtonClicked: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            text = stringResource(R.string.rent_car),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        RmcTextField(
+            label = stringResource(id = R.string.date),
+            icon = Icons.Filled.CalendarMonth,
+            value = "03-12-2023",
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        RmcSpacer(16)
+        RmcFilledButton(
+            value = stringResource(id = R.string.reserve),
+            icon = Icons.Filled.Key,
+            onClick = { onReserveButtonClicked() }
+        )
+    }
+}
+
+@Composable
 fun RmcMapClustering(
     cameraPositionState: CameraPositionState,
     vehicleList: List<Vehicle>
@@ -263,7 +318,7 @@ fun RmcMapClustering(
             items.add(
                 RmcVehicleItem(
                     LatLng(vehicle.latitude.toDouble(), vehicle.longitude.toDouble()),
-                    vehicleSnippet = "${vehicle.year} ${vehicle.brand} ${vehicle.model}",
+                    vehicleSnippet = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
                     vehicleTitle = vehicle.licensePlate,
                     vehicleZIndex = 0f
                 )
