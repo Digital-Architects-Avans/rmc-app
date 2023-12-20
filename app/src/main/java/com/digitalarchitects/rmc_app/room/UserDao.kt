@@ -16,6 +16,9 @@ interface UserDao {
 //    @Query("SELECT * FROM usertable LIMIT 1")
 //    fun getUser(): UserTable?
 
+    @Query("SELECT * FROM usertable WHERE id = 1")
+    fun getUserById(): UserTable
+
     @Query("SELECT firstName FROM usertable LIMIT 1")
     fun getFirstName(): String?
 

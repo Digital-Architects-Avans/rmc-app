@@ -8,10 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
+import com.digitalarchitects.rmc_app.screens.EditMyAccountScreen
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.MyAccountScreen
 import com.digitalarchitects.rmc_app.screens.MyVehiclesScreen
@@ -35,7 +37,7 @@ enum class RmcScreen(@StringRes val title: Int) {
     MyVehicles(title = R.string.screen_title_my_vehicles),
     RegisterVehicle(title = R.string.screen_title_register_vehicle),
     MyAccount(title = R.string.screen_title_my_account),
-    EditAccount(title = R.string.screen_title_edit_account)
+    EditMyAccount(title = R.string.screen_title_edit_account)
 }
 
 
@@ -43,6 +45,7 @@ enum class RmcScreen(@StringRes val title: Int) {
 @Composable
 fun RmcApp(
     viewModel: MyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel2: EditMyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
@@ -108,12 +111,15 @@ fun RmcApp(
         }
         composable(route = RmcScreen.MyAccount.name) {
             MyAccountScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onEditMyAccountButtonClicked = { navController.navigate(RmcScreen.EditMyAccount.name) }
             )
         }
-        composable(route = RmcScreen.EditAccount.name) {
-            TODO("Implement EditAccount screen")
-            // EditAccountScreen()
+        composable(route = RmcScreen.EditMyAccount.name) {
+            EditMyAccountScreen(
+                onNavigateUp = { navController.navigate(RmcScreen.MyAccount.name) },
+                viewModel = viewModel2
+            )
 
         }
     }

@@ -159,7 +159,7 @@ fun RmcUserIcon(
             .padding(dimensionResource(R.dimen.padding_small))
             .clip(CircleShape)
             .border(1.dp, colorResource(R.color.purple_200), CircleShape)
-            .clickable { onClick },
+            .clickable { onClick() },
         contentScale = ContentScale.Crop,
         painter = painterResource(userIcon),
         contentDescription = null
