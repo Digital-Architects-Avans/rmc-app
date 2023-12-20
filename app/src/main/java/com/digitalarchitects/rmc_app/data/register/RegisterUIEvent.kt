@@ -16,5 +16,7 @@ sealed class RegisterUIEvent{
 
     object RegisterButtonClicked : RegisterUIEvent()
     object NavigateUpButtonClicked: RegisterUIEvent()
+    object LoginButtonClicked : RegisterUIEvent()
+
 
 }

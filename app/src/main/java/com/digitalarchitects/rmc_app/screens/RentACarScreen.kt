@@ -20,6 +20,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,20 +30,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcFilledIconButton
 import com.digitalarchitects.rmc_app.components.RmcFilledTonalIconButton
 import com.digitalarchitects.rmc_app.components.RmcFloatingActionButton
 import com.digitalarchitects.rmc_app.components.RmcImgFilledIconButton
+import com.digitalarchitects.rmc_app.data.rentacar.RentACarUIEvent
+import com.digitalarchitects.rmc_app.data.rentacar.RentACarViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RentACarScreen(
-    onSearchButtonClicked: () -> Unit,
-    onRentMyCarButtonClicked: () -> Unit,
-    onMyRentalsButtonClicked: () -> Unit,
-    onMyAccountButtonClicked: () -> Unit,
+    viewModel: RentACarViewModel,
+    navigateToScreen: (String) -> Unit
 ) {
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
+    }
+    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+// TODO default state
+    }
+
     BottomSheetScaffold(
         sheetContent = {
             Column(
@@ -100,7 +113,7 @@ fun RentACarScreen(
                     RmcFilledIconButton(
                         icon = Icons.Filled.Search,
                         label = R.string.search,
-                        onClick = onSearchButtonClicked,
+                        onClick = { viewModel.onEvent(RentACarUIEvent.SearchButtonClicked) },
                         modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 }
@@ -113,18 +126,18 @@ fun RentACarScreen(
                     RmcFilledTonalIconButton(
                         icon = Icons.Filled.Key,
                         label = R.string.rent_out_my_car,
-                        onClick = onRentMyCarButtonClicked,
+                        onClick = { viewModel.onEvent(RentACarUIEvent.RentOutMyVehicleButtonClicked) },
                     )
                     RmcFilledTonalIconButton(
                         icon = Icons.Filled.CarRental,
                         label = R.string.my_rentals,
-                        onClick = onMyRentalsButtonClicked,
+                        onClick = { viewModel.onEvent(RentACarUIEvent.MyRentalsButtonClicked) },
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                     RmcImgFilledIconButton(
                         image = R.drawable.civic,
                         label = R.string.my_rentals,
-                        onClick = onMyAccountButtonClicked,
+                        onClick = { viewModel.onEvent(RentACarUIEvent.MyRentalsButtonClicked) },
                         modifier = Modifier.padding(end = 4.dp)
                     )
                 }
@@ -137,9 +150,7 @@ fun RentACarScreen(
 @Composable
 fun RentACarScreenPreview() {
     RentACarScreen(
-        onSearchButtonClicked = {},
-        onRentMyCarButtonClicked = {},
-        onMyRentalsButtonClicked = {},
-        onMyAccountButtonClicked = {}
+        viewModel = viewModel(),
+        navigateToScreen = { }
     )
 }

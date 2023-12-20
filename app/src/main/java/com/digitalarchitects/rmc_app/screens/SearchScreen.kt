@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,22 +44,35 @@ import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
 import com.digitalarchitects.rmc_app.data.search.SearchUIEvent
 import com.digitalarchitects.rmc_app.data.search.SearchViewModel
 
 @Composable
 fun SearchScreen(
-    searchViewModel: SearchViewModel = viewModel(),
-    onNavigateUp: () -> Unit
+    viewModel: SearchViewModel,
+    navigateToScreen: (String) -> Unit
 ) {
-    val searchUiState by searchViewModel.uiState.collectAsState()
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
+    }
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+// TODO Default state values
+    }
 
     Scaffold(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_search,
                 navigationIcon = Icons.Rounded.Close,
-                navigateUp = { onNavigateUp() })
+                navigateUp = {
+                    viewModel.onEvent(SearchUIEvent.NavigateUpButtonClicked)
+                }
+            )
         }
     ) { innerPadding ->
         androidx.compose.material3.Surface(
@@ -78,12 +92,14 @@ fun SearchScreen(
                     RmcTextField(
                         label = stringResource(id = R.string.date),
                         icon = Icons.Filled.CalendarMonth,
-                        value = searchUiState.date ?: "",
+                        value = "searchUiState.date ?: ",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
                         ),
-                        onValueChange = { searchViewModel.onEvent(SearchUIEvent.DateChanged(it)) },
+                        onValueChange = {
+                           // TODO searchViewModel.onEvent(SearchUIEvent.DateChanged(it))
+                                        },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -92,12 +108,14 @@ fun SearchScreen(
                     RmcTextField(
                         label = stringResource(id = R.string.location),
                         icon = Icons.Filled.LocationOn,
-                        value = searchUiState.location ?: "",
+                        value = "searchUiState.location ?: ",
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.None
                         ),
-                        onValueChange = { searchViewModel.onEvent(SearchUIEvent.LocationChanged(it)) },
+                        onValueChange = {
+                           // TODO searchViewModel.onEvent(SearchUIEvent.LocationChanged(it))
+                                        },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -106,9 +124,11 @@ fun SearchScreen(
                     RmcSlider(
                         label = stringResource(id = R.string.price),
                         icon = Icons.Filled.PriceChange,
-                        sliderPosition = searchUiState.price?.toFloat() ?: 0.0F,
+                        sliderPosition = /*searchUiState.price?.toFloat() ?:*/ 0.0F,
                         maxValue = 250.0F,
-                        onValueChange = { searchViewModel.onEvent(SearchUIEvent.PriceChanged(it)) }
+                        onValueChange = {
+                       //TODO     searchViewModel.onEvent(SearchUIEvent.PriceChanged(it))
+                        }
                     )
 
                     RmcSpacer()
@@ -116,9 +136,11 @@ fun SearchScreen(
                     RmcSlider(
                         label = stringResource(id = R.string.distance),
                         icon = Icons.Filled.LocationOn,
-                        sliderPosition = searchUiState.distance?.toFloat() ?: 0.0F,
+                        sliderPosition = /*searchUiState.distance?.toFloat() ?:*/ 0.0F,
                         maxValue = 250.0F,
-                        onValueChange = { searchViewModel.onEvent(SearchUIEvent.DistanceChanged(it)) }
+                        onValueChange = {
+                          //TODO  searchViewModel.onEvent(SearchUIEvent.DistanceChanged(it))
+                        }
                     )
 
                     RmcSpacer()
@@ -132,39 +154,27 @@ fun SearchScreen(
                         Column(Modifier.weight(1f)) {
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_ice),
-                                selected = searchUiState.engineTypeIce,
+                                selected = uiState.engineTypeIce,
                                 onClick = {
-                                    searchViewModel.onEvent(
-                                        SearchUIEvent.EngineTypeIceChanged(
-                                            it
-                                        )
-                                    )
+                                    //TODO
                                 }
                             )
                         }
                         Column(Modifier.weight(1f)) {
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_cev),
-                                selected = searchUiState.engineTypeCev,
+                                selected = uiState.engineTypeCev,
                                 onClick = {
-                                    searchViewModel.onEvent(
-                                        SearchUIEvent.EngineTypeCevChanged(
-                                            it
-                                        )
-                                    )
+                                 //   TODO
                                 }
                             )
                         }
                         Column(Modifier.weight(1f)) {
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_fbev),
-                                selected = searchUiState.engineTypeFbev,
+                                selected = uiState.engineTypeFbev,
                                 onClick = {
-                                    searchViewModel.onEvent(
-                                        SearchUIEvent.EngineTypeFbevChanged(
-                                            it
-                                        )
-                                    )
+                                  // TODO
                                 }
                             )
                         }
@@ -179,7 +189,9 @@ fun SearchScreen(
                     Column(Modifier.weight(1f)) {
                         RmcOutlinedButton(
                             value = stringResource(id = R.string.clear),
-                            onClick = { searchViewModel.clearFilters() }
+                            onClick = {
+                                //TODO
+                            }
                         )
                     }
                     Column(Modifier.weight(1f)) {
@@ -187,7 +199,8 @@ fun SearchScreen(
                             value = stringResource(id = R.string.apply),
                             onClick = {
                                 // searchViewModel.applyFilters()
-                                onNavigateUp()
+                                viewModel.onEvent(SearchUIEvent.NavigateUpButtonClicked)
+
                             }
                         )
                     }
@@ -326,6 +339,7 @@ fun RmcFilterChip(
 @Composable
 fun SearchScreenPreview() {
     SearchScreen(
-        onNavigateUp = {}
+        viewModel = viewModel(),
+        navigateToScreen = { }
     )
 }

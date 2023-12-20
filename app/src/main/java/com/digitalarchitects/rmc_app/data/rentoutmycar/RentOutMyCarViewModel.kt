@@ -5,6 +5,7 @@ import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.room.RentalDao
 import com.digitalarchitects.rmc_app.room.VehicleDao
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 data class RentOutMyCarViewModel(
@@ -14,6 +15,11 @@ data class RentOutMyCarViewModel(
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
+
+    private val _state = MutableStateFlow(RentOutMyCarUIState())
+    private val _uiState = _state
+    val uiState: StateFlow<RentOutMyCarUIState> get() = _uiState.asStateFlow()
+
     fun onEvent(event: RentOutMyCarUIEvent) {
         when (event) {
             RentOutMyCarUIEvent.NavigateUpButtonClicked -> {

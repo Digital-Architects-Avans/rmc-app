@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.data.login
 
 import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,8 +13,9 @@ class LoginViewModel : ViewModel() {
     val navigateToScreen = _navigateToScreen.asStateFlow()
 
     // Login UI state
-    private val _uiState = MutableStateFlow(LoginUIState())
-    val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(LoginUIState())
+    private val _uiState = _state
+    val uiState: StateFlow<LoginUIState> get() = _uiState.asStateFlow()
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {
@@ -36,6 +38,10 @@ class LoginViewModel : ViewModel() {
 
             is LoginUIEvent.RegisterButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.Register
+            }
+
+            LoginUIEvent.NavigateUpButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.Welcome
             }
         }
     }

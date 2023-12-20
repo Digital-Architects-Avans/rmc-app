@@ -24,6 +24,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +43,11 @@ import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
+import com.digitalarchitects.rmc_app.data.rentoutmycar.RentOutMyCarUIEvent
+import com.digitalarchitects.rmc_app.data.rentoutmycar.RentOutMyCarViewModel
+import com.digitalarchitects.rmc_app.data.rentoutmycar.RentalTab
 import com.digitalarchitects.rmc_app.model.Rental
 import com.digitalarchitects.rmc_app.model.RentalStatus
 import com.digitalarchitects.rmc_app.model.User
@@ -48,8 +55,18 @@ import com.digitalarchitects.rmc_app.model.Vehicle
 import java.time.LocalDate
 
 @Composable
-fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>, user: User) {
-    var selectedTab by remember { mutableStateOf(RentalTab.PENDING) }
+fun RentOutMyCarScreen(
+    viewModel: RentOutMyCarViewModel,
+    navigateToScreen: (String) -> Unit
+) {
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
+    }
+    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+// TODO
+    }
 
     Column(
         modifier = Modifier
@@ -57,7 +74,7 @@ fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>, user: User) 
             .padding(16.dp)
     ) {
         TabRow(
-            selectedTabIndex = selectedTab.ordinal,
+            selectedTabIndex = uiState.selectedTab.ordinal,
             modifier = Modifier.fillMaxWidth(),
             backgroundColor = colorResource(R.color.white),
             contentColor = colorResource(R.color.purple_500)
@@ -65,8 +82,8 @@ fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>, user: User) 
             RentalTab.values().forEachIndexed { index, tab ->
                 Tab(
                     text = { Text(stringResource(id = tab.tabNameResourceId)) },
-                    selected = selectedTab == tab,
-                    onClick = { selectedTab = tab },
+                    selected = uiState.selectedTab == tab,
+                    onClick = { uiState.selectedTab = tab },
                     modifier = Modifier.padding(8.dp)
                 )
             }
@@ -75,31 +92,27 @@ fun RentOutMyCarScreen(list: List<Rental>, vehicles: List<Vehicle>, user: User) 
         RmcSpacer()
 
         LazyColumn {
-            val filteredList = getFilteredRentals(list, selectedTab)
+//           TODO  val filteredList = getFilteredRentals(list, selectedTab)
 
-            items(filteredList) { rental ->
-                vehicles.find { it.id == rental.vehicleId }
-                    ?.let { RentalItem(rental = rental, vehicle = it, user = user) }
-            }
+//            items(filteredList) { rental ->
+//                vehicles.find { it.id == rental.vehicleId }
+//                    ?.let { RentalItem(rental = rental, vehicle = it, user = user) }
+//            }
         }
     }
 }
 
-enum class RentalTab(val tabNameResourceId: Int) {
-    PENDING(R.string.pending),
-    OPEN(R.string.open),
-    HISTORY(R.string.history)
-}
 
-fun getFilteredRentals(list: List<Rental>, selectedTab: RentalTab): List<Rental> {
-    return when (selectedTab) {
-        RentalTab.PENDING -> list.filter { it.status == RentalStatus.PENDING }
-        RentalTab.OPEN -> list.filter { it.status == RentalStatus.APPROVED && it.date.isAfter(LocalDate.now()) }
-        RentalTab.HISTORY -> list.filter {
-            it.status == RentalStatus.DENIED || it.status == RentalStatus.CANCELLED || (it.status == RentalStatus.APPROVED && it.date.isBefore(LocalDate.now()))
-        }
-    }
-}
+
+//fun getFilteredRentals(list: List<Rental>, selectedTab: RentalTab): List<Rental> {
+//    return when (selectedTab) {
+//        RentalTab.PENDING -> list.filter { it.status == RentalStatus.PENDING }
+//        RentalTab.OPEN -> list.filter { it.status == RentalStatus.APPROVED && it.date.isAfter(LocalDate.now()) }
+//        RentalTab.HISTORY -> list.filter {
+//            it.status == RentalStatus.DENIED || it.status == RentalStatus.CANCELLED || (it.status == RentalStatus.APPROVED && it.date.isBefore(LocalDate.now()))
+//        }
+//    }
+//}
 
 
 @OptIn(ExperimentalMaterial3Api::class)

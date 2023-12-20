@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
 import com.digitalarchitects.rmc_app.model.Vehicle
 
 // BottomSheets and scaffolds, used resources below:
@@ -41,7 +42,10 @@ import com.digitalarchitects.rmc_app.model.Vehicle
 // https://developer.android.com/jetpack/compose/components/bottom-sheets
 // https://developer.android.com/jetpack/compose/components/scaffold
 @Composable
-fun MyVehiclesScreen(list:List<Vehicle>) {
+fun MyVehiclesScreen(
+    viewModel: MyVehiclesViewModel,
+    navigateToScreen: (String) -> Unit
+) {
     Column(modifier = Modifier.padding(vertical = 24.dp)) {
 
         Column(
@@ -50,12 +54,12 @@ fun MyVehiclesScreen(list:List<Vehicle>) {
                 .padding(24.dp)
 
         ) {
-            list.forEachIndexed { index, vehicle ->
-                VehicleListItem(vehicle)
-                if (index < list.size - 1) {
-                    Divider(modifier = Modifier.padding(8.dp))
-                }
-            }
+//            list.forEachIndexed { index, vehicle ->
+//                VehicleListItem(vehicle)
+//                if (index < list.size - 1) {
+//                    Divider(modifier = Modifier.padding(8.dp))
+//                }
+//            }
         }
         Column(
             verticalArrangement = Arrangement.Bottom,

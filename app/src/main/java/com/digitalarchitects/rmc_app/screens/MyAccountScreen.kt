@@ -35,7 +35,6 @@ import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 fun MyAccountScreen(
     viewModel: MyAccountViewModel,
     navigateToScreen: (String) -> Unit
-//    onEditMyAccountButtonClicked: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {

@@ -21,6 +21,7 @@ class EditMyAccountViewModel(
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
+
     private val _state = MutableStateFlow(EditMyAccountUIState())
     private val _uiState = _state
     val uiState: StateFlow<EditMyAccountUIState> get() = _uiState.asStateFlow()

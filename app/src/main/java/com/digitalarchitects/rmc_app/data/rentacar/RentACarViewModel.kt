@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.data.rentacar
 
 import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIState
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIState
 import com.digitalarchitects.rmc_app.room.UserDao
@@ -15,6 +16,10 @@ data class RentACarViewModel(
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
+
+    private val _state = MutableStateFlow(RentACarUIState())
+    private val _uiState = _state
+    val uiState: StateFlow<RentACarUIState> get() = _uiState.asStateFlow()
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
