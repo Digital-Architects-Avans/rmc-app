@@ -135,9 +135,9 @@ fun RentACarScreen(
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                     RmcImgFilledIconButton(
-                        image = R.drawable.civic,
-                        label = R.string.my_rentals,
-                        onClick = { viewModel.onEvent(RentACarUIEvent.MyRentalsButtonClicked) },
+                        image = R.drawable.usericon,
+                        label = R.string.my_account,
+                        onClick = { viewModel.onEvent(RentACarUIEvent.MyAccountButtonClicked) },
                         modifier = Modifier.padding(end = 4.dp)
                     )
                 }

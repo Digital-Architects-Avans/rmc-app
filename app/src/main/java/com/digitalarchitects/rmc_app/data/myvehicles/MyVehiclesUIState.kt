@@ -1,4 +1,5 @@
 package com.digitalarchitects.rmc_app.data.myvehicles
 
-class MyVehiclesUIState {
-}
+data class MyVehiclesUIState(
+    var placeholder: String = ""
+)

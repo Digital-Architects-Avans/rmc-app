@@ -27,6 +27,7 @@ import com.digitalarchitects.rmc_app.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 
@@ -64,8 +65,6 @@ fun MyAccountScreen(
                 size = dimensionResource(R.dimen.image_size_large),
                 onClick = {
                     viewModel.onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
-
-//                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
                 }
             )
             SmallHeadingTextComponent(
@@ -78,28 +77,28 @@ fun MyAccountScreen(
                 icon = Icons.Filled.DirectionsCar,
                 onClick = {
 
-//                    onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
                 }
             )
             RmcFilledButton(
                 value = stringResource(R.string.rent_out_my_car),
                 icon = Icons.Filled.Key,
                 onClick = {
-//                    onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
                 }
             )
             RmcFilledButton(
                 value = stringResource(R.string.my_rentals),
                 icon = Icons.Filled.CarRental,
                 onClick = {
-//                    onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
                 }
             )
             RmcOutlinedButton(
                 value = stringResource(R.string.logout),
                 icon = Icons.Filled.Output,
                 onClick = {
-//                    onEvent(MyAccountUIEvent.onLogoutButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onLogoutButtonClicked)
                 }
             )
             RmcSpacer()

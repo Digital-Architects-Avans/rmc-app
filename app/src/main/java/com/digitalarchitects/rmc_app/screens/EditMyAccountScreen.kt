@@ -58,7 +58,10 @@ fun EditMyAccountScreen(
             RmcAppBar(
                 title = R.string.screen_title_edit_account,
                 navigationIcon = Icons.Rounded.ArrowBack,
-                navigateUp = { },
+                navigateUp = {
+                    viewModel.onEvent(EditMyAccountUIEvent.NavigateUpButtonClicked)
+
+                },
             )
         }
     ) { innerPadding ->

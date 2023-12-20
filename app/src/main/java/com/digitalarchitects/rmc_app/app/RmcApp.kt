@@ -115,7 +115,7 @@ fun RmcApp(
             )
         }
         composable(route = RmcScreen.RentACar.name) {
-            val viewModel = viewModelMap[RmcScreen.Welcome]?.let {
+            val viewModel = viewModelMap[RmcScreen.RentACar]?.let {
                 viewModel(it, factory = ViewModelFactory)
             }
             RentACarScreen(

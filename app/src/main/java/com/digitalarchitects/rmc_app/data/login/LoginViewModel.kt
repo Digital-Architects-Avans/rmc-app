@@ -32,7 +32,7 @@ class LoginViewModel : ViewModel() {
             }
 
             is LoginUIEvent.LoginButtonClicked -> {
-                login()
+//                login()
                 _navigateToScreen.value = RmcScreen.RentACar
             }
 
