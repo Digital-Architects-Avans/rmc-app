@@ -11,6 +11,7 @@ data class MyVehiclesViewModel(
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
+
     fun onEvent(event: MyVehiclesUIEvent) {
         when (event) {
             MyVehiclesUIEvent.NavigateUpButtonClicked -> {

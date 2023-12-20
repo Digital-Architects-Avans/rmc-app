@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.data.editmyaccount
 
+import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsUIEvent
 import com.digitalarchitects.rmc_app.model.UserType
 
 sealed interface EditMyAccountUIEvent {
@@ -35,5 +36,6 @@ sealed interface EditMyAccountUIEvent {
     object ConfirmEditMyAccountButtonClicked: EditMyAccountUIEvent
     object CancelEditMyAccountButtonClicked: EditMyAccountUIEvent
     object DeleteMyAccountButtonClicked: EditMyAccountUIEvent
+    object NavigateUpButtonClicked: EditMyAccountUIEvent
 
 }

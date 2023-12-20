@@ -15,9 +15,7 @@ data class MyRentalsViewModel(
         when (event) {
             MyRentalsUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RentACar
-
             }
         }
     }
-
 }

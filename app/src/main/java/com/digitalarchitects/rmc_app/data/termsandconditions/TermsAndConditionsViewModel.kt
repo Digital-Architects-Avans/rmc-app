@@ -9,11 +9,12 @@ class TermsAndConditionsViewModel: ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
 
+    // Brian: I have no clue what this screen is
     fun onEvent(event: TermsAndConditionsUIEvent) {
         when (event) {
             TermsAndConditionsUIEvent.ConfirmTermsAndConditionsButtonClicked -> {
 //                TODO Datastore accepted, boilerplate?
-                _navigateToScreen.value = RmcScreen.Search
+                _navigateToScreen.value = RmcScreen.RentACar
             }
             TermsAndConditionsUIEvent.DeclineTermsAndConditionsButtonClicked -> {
 //                TODO Datastore declined, boilerplate?

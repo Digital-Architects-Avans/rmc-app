@@ -214,12 +214,15 @@ class EditMyAccountViewModel(
 
             EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
                 viewModelScope.launch {
-//                    dao.deleteUser()
+//                  TODO  dao.deleteUser()
                 }
-//                navController.navigate(RmcScreen.Welcome.name)
             }
 
             EditMyAccountUIEvent.UpsertUser -> TODO()
+
+            EditMyAccountUIEvent.NavigateUpButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.RentACar
+            }
         }
     }
 }

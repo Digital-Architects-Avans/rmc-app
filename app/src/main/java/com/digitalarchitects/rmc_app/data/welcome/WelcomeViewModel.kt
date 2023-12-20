@@ -9,6 +9,8 @@ class WelcomeViewModel : ViewModel() {
 
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
+
+    // TODO MAKE onEvent Logic
     fun onRegisterButtonClicked() {
         _navigateToScreen.value = RmcScreen.Register
     }

@@ -25,7 +25,7 @@ data class RentACarViewModel(
                 _navigateToScreen.value = RmcScreen.MyRentals
             }
             RentACarUIEvent.RentOutMyVehicleButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.RentMyCar
+                _navigateToScreen.value = RmcScreen.RentOutMyCar
             }
             RentACarUIEvent.SearchButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.Search

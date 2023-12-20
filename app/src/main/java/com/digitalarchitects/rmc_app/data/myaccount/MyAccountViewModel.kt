@@ -68,19 +68,20 @@ class MyAccountViewModel(
 
             MyAccountUIEvent.onLogoutButtonClicked -> {
                 // TODO: LOG OUT FUNCTION
-//                navController.navigate(RmcScreen.Login.name)
+                _navigateToScreen.value = RmcScreen.Welcome
+
             }
 
             MyAccountUIEvent.onMyRentalsButtonClicked -> {
-                /*navController.navigate(RmcScreen.MyRentals.name)*/
+                _navigateToScreen.value = RmcScreen.MyRentals
             }
 
             MyAccountUIEvent.onMyVehiclesButtonClicked -> {
-//                navController.navigate(RmcScreen.MyVehicles.name)
+                _navigateToScreen.value = RmcScreen.MyVehicles
             }
 
             MyAccountUIEvent.onRentOutMyCarButtonClicked -> {
-//                navController.navigate(RmcScreen.RentMyCar.name)
+                _navigateToScreen.value = RmcScreen.RentOutMyCar
             }
 
             MyAccountUIEvent.UpsertUser -> TODO()

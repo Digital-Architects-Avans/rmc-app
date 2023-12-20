@@ -16,6 +16,11 @@ data class RegisterVehicleViewModel(
             RegisterVehicleUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyVehicles
             }
+
+            RegisterVehicleUIEvent.RegisterVehicleButtonClicked -> {
+                //TODO ADD VEHICLE LOGIC
+                _navigateToScreen.value = RmcScreen.MyVehicles
+            }
         }
     }
 }

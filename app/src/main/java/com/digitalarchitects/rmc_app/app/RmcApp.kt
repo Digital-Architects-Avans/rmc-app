@@ -51,7 +51,7 @@ enum class RmcScreen(@StringRes val title: Int, val viewModel: KClass<out ViewMo
     RentACar(title = R.string.screen_title_rent_a_car, viewModel = RentACarViewModel::class),
     Search(title = R.string.screen_title_search, viewModel = SearchViewModel::class),
     MyRentals(title = R.string.screen_title_my_rentals, viewModel = MyRentalsViewModel::class),
-    RentMyCar(title = R.string.screen_title_rent_my_car, viewModel = RentOutMyCarViewModel::class),
+    RentOutMyCar(title = R.string.screen_title_rent_my_car, viewModel = RentOutMyCarViewModel::class),
     MyVehicles(title = R.string.screen_title_my_vehicles, viewModel = MyVehiclesViewModel::class),
     RegisterVehicle(title = R.string.screen_title_register_vehicle, viewModel = RegisterVehicleViewModel::class),
     MyAccount(title = R.string.screen_title_my_account, viewModel = MyAccountViewModel::class),
@@ -75,7 +75,7 @@ fun RmcApp(
 
     NavHost(
         navController = navController,
-        startDestination = RmcScreen.MyAccount.name,
+        startDestination = RmcScreen.Welcome.name,
     ) {
         composable(route = RmcScreen.Welcome.name) {
             val viewModel = viewModelMap[RmcScreen.Welcome]?.let {
@@ -123,7 +123,7 @@ fun RmcApp(
             }
             RentACarScreen(
                 onSearchButtonClicked = { navController.navigate(RmcScreen.Search.name) },
-                onRentMyCarButtonClicked = { navController.navigate(RmcScreen.RentMyCar.name) },
+                onRentMyCarButtonClicked = { navController.navigate(RmcScreen.RentOutMyCar.name) },
                 onMyRentalsButtonClicked = { navController.navigate(RmcScreen.MyRentals.name) },
                 onMyAccountButtonClicked = { navController.navigate(RmcScreen.MyAccount.name) }
             )
@@ -143,8 +143,8 @@ fun RmcApp(
             TODO("Implement MyRentals screen")
             // MyRentalsScreen()
         }
-        composable(route = RmcScreen.RentMyCar.name) {
-            val viewModel = viewModelMap[RmcScreen.RentMyCar]?.let {
+        composable(route = RmcScreen.RentOutMyCar.name) {
+            val viewModel = viewModelMap[RmcScreen.RentOutMyCar]?.let {
                 viewModel(it, factory = ViewModelFactory)
             }
             val listOfRentals = DummyRentalDTO()
