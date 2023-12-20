@@ -3,11 +3,10 @@ package com.digitalarchitects.rmc_app.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.digitalarchitects.rmc_app.model.EngineType
 
 @Entity
-class VehicleTable (
+class VehicleTable(
     val userId: Int,
     val brand: String,
     val model: String,

@@ -2,17 +2,12 @@ package com.digitalarchitects.rmc_app.app
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.components.LargeHeadingTextComponent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
@@ -44,7 +39,7 @@ enum class RmcScreen(@StringRes val title: Int) {
 }
 
 
-//@Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun RmcApp(
     viewModel: MyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
@@ -59,6 +54,7 @@ fun RmcApp(
                 onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
                 onLoginButtonClicked = { navController.navigate(RmcScreen.Login.name) }
             )
+
         }
         composable(route = RmcScreen.Register.name) {
             RegisterScreen(
@@ -113,7 +109,8 @@ fun RmcApp(
         composable(route = RmcScreen.MyAccount.name) {
             MyAccountScreen(
                 viewModel = viewModel
-            )        }
+            )
+        }
         composable(route = RmcScreen.EditAccount.name) {
             TODO("Implement EditAccount screen")
             // EditAccountScreen()
