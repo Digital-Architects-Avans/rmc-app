@@ -64,6 +64,7 @@ import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
 import com.digitalarchitects.rmc_app.components.RmcVehicleDetails
 import com.digitalarchitects.rmc_app.components.RmcVehicleListItem
+import com.digitalarchitects.rmc_app.data.rentacar.RentACarUIEvent
 import com.digitalarchitects.rmc_app.data.rentacar.RentACarViewModel
 import com.digitalarchitects.rmc_app.model.Vehicle
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -125,7 +126,7 @@ fun RentACarScreen(
                 )
             }
         },
-        sheetPeekHeight = 324.dp,
+        sheetPeekHeight = 0.dp, // Use 324.dp in production
     ) {
         Surface(
             modifier = Modifier
@@ -229,7 +230,7 @@ fun RentACarScreen(
                             icon = Icons.Filled.List,
                             label = R.string.view_list,
                             onClick = {
-                                rentACarViewModel.viewListButtonClicked()
+                                rentACarViewModel.onEvent(RentACarUIEvent.ToggleListView)
                             }
                         )
                     }
@@ -239,9 +240,9 @@ fun RentACarScreen(
                 val scope = rememberCoroutineScope()
                 val context = LocalContext.current
 
-                if (rentACarUIState.showListViewSheet) {
+                if (rentACarUIState.showVehicleList) {
                     ModalBottomSheet(
-                        onDismissRequest = { rentACarViewModel.viewListButtonClicked() },
+                        onDismissRequest = { rentACarViewModel.onEvent(RentACarUIEvent.ToggleListView) },
                         sheetState = sheetState,
                     ) {
                         Column(
@@ -253,7 +254,7 @@ fun RentACarScreen(
                                     vehicle,
                                     onClick = { vehicleId ->
                                         scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                            rentACarViewModel.viewListButtonClicked()
+                                            rentACarViewModel.onEvent(RentACarUIEvent.ToggleListView)
                                             Toast.makeText(
                                                 context,
                                                 "Vehicle $vehicleId selected",

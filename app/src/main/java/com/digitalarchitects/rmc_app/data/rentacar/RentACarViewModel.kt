@@ -19,13 +19,27 @@ class RentACarViewModel : ViewModel() {
     val listOfVehicles = DummyVehicleDTO()
 
     fun onEvent(event: RentACarUIEvent) {
-        TODO("Implement events")
+        when (event) {
+            is RentACarUIEvent.ToggleListView -> {
+                toggleVehicleList()
+            }
+            is RentACarUIEvent.ToggleDetailsView -> {
+                toggleVehicleDetails()
+            }
+        }
     }
 
-    fun viewListButtonClicked() {
-        val showListViewSheet = _uiState.value.showListViewSheet
+    private fun toggleVehicleList() {
+        val isListVisible = _uiState.value.showVehicleList
         _uiState.value = _uiState.value.copy(
-            showListViewSheet = !showListViewSheet
+            showVehicleList = !isListVisible
+        )
+    }
+
+    private fun toggleVehicleDetails() {
+        val isDetailsVisible = _uiState.value.showVehicleDetails
+        _uiState.value = _uiState.value.copy(
+            showVehicleDetails = !isDetailsVisible
         )
     }
 }
