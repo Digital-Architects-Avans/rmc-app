@@ -6,7 +6,7 @@ import com.digitalarchitects.rmc_app.room.VehicleDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-data class MyRentalsViewModel(
+class MyRentalsViewModel(
     private val vehicleDao: VehicleDao
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
