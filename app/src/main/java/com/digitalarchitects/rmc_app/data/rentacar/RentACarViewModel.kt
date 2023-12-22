@@ -20,26 +20,18 @@ class RentACarViewModel : ViewModel() {
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
-            is RentACarUIEvent.ToggleListView -> {
-                toggleVehicleList()
+            is RentACarUIEvent.ShowListView -> {
+                _uiState.value = _uiState.value.copy(
+                    showVehicleList = event.show
+                )
             }
-            is RentACarUIEvent.ToggleDetailsView -> {
-                toggleVehicleDetails()
+
+            is RentACarUIEvent.RmcMapVehicleItemClicked -> {
+                _uiState.value = _uiState.value.copy(
+                    detailsVehicleId = event.id - 1,
+                    showVehicleList = false,
+                )
             }
         }
-    }
-
-    private fun toggleVehicleList() {
-        val isListVisible = _uiState.value.showVehicleList
-        _uiState.value = _uiState.value.copy(
-            showVehicleList = !isListVisible
-        )
-    }
-
-    private fun toggleVehicleDetails() {
-        val isDetailsVisible = _uiState.value.showVehicleDetails
-        _uiState.value = _uiState.value.copy(
-            showVehicleDetails = !isDetailsVisible
-        )
     }
 }

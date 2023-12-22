@@ -2,7 +2,6 @@ package com.digitalarchitects.rmc_app.screens
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,10 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,7 +45,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -82,6 +83,7 @@ import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 val startLocation = LatLng(51.583698, 4.797110)
@@ -97,22 +99,33 @@ fun RentACarScreen(
     onMyAccountButtonClicked: () -> Unit,
 ) {
     val rentACarUIState by rentACarViewModel.uiState.collectAsState()
-
     val vehicleList = rentACarViewModel.listOfVehicles
+
+    val scope = rememberCoroutineScope()
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(startLocation, 13f)
     }
 
+    val detailsBottomSheet = rememberBottomSheetScaffoldState(
+        bottomSheetState = SheetState(
+            initialValue = SheetValue.Hidden,
+            skipPartiallyExpanded = false,
+            skipHiddenState = false
+        )
+    )
+
     BottomSheetScaffold(
+        scaffoldState = detailsBottomSheet,
+        sheetPeekHeight = 324.dp,
         sheetContent = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 RmcVehicleDetails(
-                    vehicleList[2],
-                    showAvailability = true
+                    vehicleList[rentACarUIState.detailsVehicleId],
+                    showAvailability = false
                 )
                 RmcDivider()
 
@@ -126,7 +139,6 @@ fun RentACarScreen(
                 )
             }
         },
-        sheetPeekHeight = 0.dp, // Use 324.dp in production
     ) {
         Surface(
             modifier = Modifier
@@ -151,7 +163,10 @@ fun RentACarScreen(
                     RmcMapClustering(
                         cameraPositionState = cameraPositionState,
                         vehicleList = vehicleList
-                    )
+                    ) { vehicleId ->
+                        rentACarViewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId))
+                        scope.launch { detailsBottomSheet.bottomSheetState.partialExpand() }
+                    }
                 }
             }
             Column(
@@ -230,20 +245,24 @@ fun RentACarScreen(
                             icon = Icons.Filled.List,
                             label = R.string.view_list,
                             onClick = {
-                                rentACarViewModel.onEvent(RentACarUIEvent.ToggleListView)
+                                rentACarViewModel.onEvent(RentACarUIEvent.ShowListView(true))
                             }
                         )
                     }
                 }
                 // Bottom sheet #2
-                val sheetState = rememberModalBottomSheetState()
-                val scope = rememberCoroutineScope()
-                val context = LocalContext.current
+                val listBottomSheet = rememberModalBottomSheetState()
 
                 if (rentACarUIState.showVehicleList) {
                     ModalBottomSheet(
-                        onDismissRequest = { rentACarViewModel.onEvent(RentACarUIEvent.ToggleListView) },
-                        sheetState = sheetState,
+                        onDismissRequest = {
+                            rentACarViewModel.onEvent(
+                                RentACarUIEvent.ShowListView(
+                                    false
+                                )
+                            )
+                        },
+                        sheetState = listBottomSheet,
                     ) {
                         Column(
                             modifier = Modifier
@@ -253,13 +272,14 @@ fun RentACarScreen(
                                 RmcVehicleListItem(
                                     vehicle,
                                     onClick = { vehicleId ->
-                                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                            rentACarViewModel.onEvent(RentACarUIEvent.ToggleListView)
-                                            Toast.makeText(
-                                                context,
-                                                "Vehicle $vehicleId selected",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
+                                        scope.launch { listBottomSheet.hide() }.invokeOnCompletion {
+                                            rentACarViewModel.onEvent(
+                                                RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId)
+                                            )
+                                        }
+                                        scope.launch {
+                                            delay(400L)
+                                            detailsBottomSheet.bottomSheetState.partialExpand()
                                         }
                                     }
                                 )
@@ -274,50 +294,17 @@ fun RentACarScreen(
 }
 
 @Composable
-fun RmcRentCarForm(
-    onValueChange: (String) -> Unit,
-    onReserveButtonClicked: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(bottom = dimensionResource(R.dimen.padding_small)),
-            text = stringResource(R.string.rent_car),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        RmcTextField(
-            label = stringResource(id = R.string.date),
-            icon = Icons.Filled.CalendarMonth,
-            value = "03-12-2023",
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth()
-        )
-        RmcSpacer(16)
-        RmcFilledButton(
-            value = stringResource(id = R.string.reserve),
-            icon = Icons.Filled.Key,
-            onClick = { onReserveButtonClicked() }
-        )
-    }
-}
-
-@Composable
 fun RmcMapClustering(
     cameraPositionState: CameraPositionState,
-    vehicleList: List<Vehicle>
+    vehicleList: List<Vehicle>,
+    showDetailsView: (Int) -> Unit
 ) {
     val items = remember { mutableStateListOf<RmcVehicleItem>() }
     LaunchedEffect(Unit) {
         vehicleList.forEach { vehicle ->
             items.add(
                 RmcVehicleItem(
+                    vehicleId = vehicle.id,
                     LatLng(vehicle.latitude.toDouble(), vehicle.longitude.toDouble()),
                     vehicleSnippet = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
                     vehicleTitle = vehicle.licensePlate,
@@ -326,14 +313,15 @@ fun RmcMapClustering(
             )
         }
     }
-    RmcMap(items = items, cameraPositionState)
+    RmcMap(items = items, cameraPositionState, showDetailsView)
 }
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun RmcMap(
     items: List<RmcVehicleItem>,
-    cameraPositionState: CameraPositionState
+    cameraPositionState: CameraPositionState,
+    showDetailsView: (Int) -> Unit,
 ) {
     val mapProperties by remember {
         mutableStateOf(
@@ -380,6 +368,7 @@ fun RmcMap(
             }
             clusterManager.setOnClusterItemClickListener {
                 Log.d(TAG, "Cluster item clicked! $it")
+                showDetailsView(it.vehicleId)
                 false
             }
             clusterManager.setOnClusterItemInfoWindowClickListener {
@@ -401,23 +390,51 @@ fun RmcMap(
     }
 }
 
-@Preview
 @Composable
-fun RentACarScreenPreview() {
-    RentACarScreen(
-        onSearchButtonClicked = {},
-        onRentMyCarButtonClicked = {},
-        onMyRentalsButtonClicked = {},
-        onMyAccountButtonClicked = {}
-    )
+fun RmcRentCarForm(
+    onValueChange: (String) -> Unit,
+    onReserveButtonClicked: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            text = stringResource(R.string.rent_car),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        RmcTextField(
+            label = stringResource(id = R.string.date),
+            icon = Icons.Filled.CalendarMonth,
+            value = "03-12-2023",
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        RmcSpacer(16)
+        RmcFilledButton(
+            value = stringResource(id = R.string.reserve),
+            icon = Icons.Filled.Key,
+            onClick = { onReserveButtonClicked() }
+        )
+    }
 }
 
 data class RmcVehicleItem(
+    val vehicleId: Int,
     val vehiclePosition: LatLng,
     val vehicleTitle: String,
     val vehicleSnippet: String,
     val vehicleZIndex: Float,
 ) : ClusterItem {
+    fun getId(): Int =
+        vehicleId
+
     override fun getPosition(): LatLng =
         vehiclePosition
 
@@ -429,4 +446,15 @@ data class RmcVehicleItem(
 
     override fun getZIndex(): Float =
         vehicleZIndex
+}
+
+@Preview
+@Composable
+fun RentACarScreenPreview() {
+    RentACarScreen(
+        onSearchButtonClicked = {},
+        onRentMyCarButtonClicked = {},
+        onMyRentalsButtonClicked = {},
+        onMyAccountButtonClicked = {}
+    )
 }
