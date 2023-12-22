@@ -1075,7 +1075,7 @@ fun RmcVehicleDetails(
             .fillMaxWidth()
             .size(height = 160.dp, width = 20.dp),
         contentScale = ContentScale.Crop,
-        painter = painterResource(R.drawable.civic),
+        painter = painterResource(vehicle.imgLink),
         contentDescription = null
     )
     Column(
