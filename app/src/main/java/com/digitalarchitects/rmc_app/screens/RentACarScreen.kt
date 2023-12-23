@@ -153,7 +153,13 @@ fun RentACarScreen(
                         googleMapOptionsFactory = {
                             GoogleMapOptions().mapId("DEMO_MAP_ID")
                         },
-                        cameraPositionState = cameraPositionState
+                        cameraPositionState = cameraPositionState,
+                        onMapClick = { location ->
+                            Log.d(TAG, "On map clicked: $location")
+                            // rentACarViewModel.onEvent(RentACarUIEvent.RmcMapClicked(location))
+                             scope.launch { detailsBottomSheet.bottomSheetState.hide() }
+                        }
+
                     ) {
                         // Set map properties & settings
                         MapProperties(
