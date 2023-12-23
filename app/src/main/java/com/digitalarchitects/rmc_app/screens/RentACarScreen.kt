@@ -86,7 +86,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-val startLocation = LatLng(51.583698, 4.797110)
+val startLocation = LatLng(51.587959, 4.775130)
 val userLocation = LatLng(51.469890, 5.546670)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,7 +104,7 @@ fun RentACarScreen(
     val scope = rememberCoroutineScope()
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(startLocation, 13f)
+        position = CameraPosition.fromLatLngZoom(startLocation, 11f)
     }
 
     val detailsBottomSheet = rememberBottomSheetScaffoldState(
@@ -328,7 +328,7 @@ fun RmcMap(
             MapProperties(
                 mapType = MapType.NORMAL,
                 maxZoomPreference = 18f,
-                minZoomPreference = 11f
+                minZoomPreference = 8f
             )
         )
     }
@@ -362,17 +362,18 @@ fun RmcMap(
         )
         SideEffect {
             clusterManager ?: return@SideEffect
-            clusterManager.setOnClusterClickListener {
-                Log.d(TAG, "Cluster clicked! $it")
+            clusterManager.setOnClusterClickListener { clusterItem ->
+                Log.d(TAG, "Cluster clicked: $clusterItem")
+                cameraPositionState.move(CameraUpdateFactory.zoomTo(12f))
                 false
             }
-            clusterManager.setOnClusterItemClickListener {
-                Log.d(TAG, "Cluster item clicked! $it")
-                showDetailsView(it.vehicleId)
+            clusterManager.setOnClusterItemClickListener { vehicleItem ->
+                Log.d(TAG, "Item clicked: $vehicleItem")
+                showDetailsView(vehicleItem.vehicleId)
                 false
             }
-            clusterManager.setOnClusterItemInfoWindowClickListener {
-                Log.d(TAG, "Cluster item info window clicked! $it")
+            clusterManager.setOnClusterItemInfoWindowClickListener { vehicleItem ->
+                Log.d(TAG, "Cluster item info window clicked: $vehicleItem")
             }
         }
         SideEffect {
