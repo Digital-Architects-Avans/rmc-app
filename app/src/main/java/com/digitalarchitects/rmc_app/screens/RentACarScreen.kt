@@ -277,6 +277,11 @@ fun RentACarScreen(
                                                 RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId)
                                             )
                                         }
+                                        cameraPositionState.move(
+                                            CameraUpdateFactory.newLatLng(
+                                                LatLng(vehicle.latitude.toDouble(),vehicle.longitude.toDouble())
+                                            )
+                                        )
                                         scope.launch {
                                             delay(400L)
                                             detailsBottomSheet.bottomSheetState.partialExpand()
@@ -370,6 +375,7 @@ fun RmcMap(
             clusterManager.setOnClusterItemClickListener { vehicleItem ->
                 Log.d(TAG, "Item clicked: $vehicleItem")
                 showDetailsView(vehicleItem.vehicleId)
+                cameraPositionState.move(CameraUpdateFactory.zoomTo(14f))
                 false
             }
             clusterManager.setOnClusterItemInfoWindowClickListener { vehicleItem ->
