@@ -8,6 +8,7 @@ import com.digitalarchitects.rmc_app.app.RmcApp
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {
@@ -20,3 +21,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

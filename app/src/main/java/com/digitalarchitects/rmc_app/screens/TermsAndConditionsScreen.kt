@@ -10,19 +10,30 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.NormalTextComponent
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.termsandconditions.TermsAndConditionsViewModel
+import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
 
 @Composable
-fun TermsAndConditionsScreen(navController: NavController) {
+fun TermsAndConditionsScreen(
+    viewModel: TermsAndConditionsViewModel,
+    navigateToScreen: (String) -> Unit
+) {
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -88,5 +99,8 @@ fun TermsAndConditionsScreen(navController: NavController) {
 @Preview
 @Composable
 fun TermsAndConditionsScreenPreview() {
-    TermsAndConditionsScreen(navController = rememberNavController())
+    TermsAndConditionsScreen(
+        viewModel = viewModel(),
+        navigateToScreen = { }
+    )
 }

@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.data.register
 
+
 sealed class RegisterUIEvent{
 
     data class FirstNameChanged(val firstName:String) : RegisterUIEvent()
@@ -14,4 +15,8 @@ sealed class RegisterUIEvent{
     data class PrivacyPolicyCheckBoxClicked(val status:Boolean) : RegisterUIEvent()
 
     object RegisterButtonClicked : RegisterUIEvent()
+    object NavigateUpButtonClicked: RegisterUIEvent()
+    object LoginButtonClicked : RegisterUIEvent()
+
+
 }

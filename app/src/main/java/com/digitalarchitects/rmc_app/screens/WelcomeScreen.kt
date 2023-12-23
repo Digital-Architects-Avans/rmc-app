@@ -12,21 +12,30 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.components.RmcLogoText
 import com.digitalarchitects.rmc_app.components.RmcSpacer
+import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
+import com.digitalarchitects.rmc_app.navigation.NavigationViewModel
 
 @Composable
 fun WelcomeScreen(
-    onLoginButtonClicked: () -> Unit,
-    onRegisterButtonClicked: () -> Unit
+    viewModel: WelcomeViewModel,
+    navigateToScreen: (String) -> Unit
 ) {
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface,
@@ -62,13 +71,17 @@ fun WelcomeScreen(
                 Column(Modifier.weight(1f)) {
                     RmcFilledTonalButton(
                         value = stringResource(id = R.string.register),
-                        onClick = onRegisterButtonClicked
+                        onClick = {
+                            viewModel.onRegisterButtonClicked()
+                        }
                     )
                 }
                 Column(Modifier.weight(1f)) {
                     RmcFilledButton(
                         value = stringResource(id = R.string.login),
-                        onClick = onLoginButtonClicked
+                        onClick = {
+                            viewModel.onLogInButtonClicked()
+                        }
                     )
                 }
             }

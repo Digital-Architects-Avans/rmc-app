@@ -1,12 +1,11 @@
 package com.digitalarchitects.rmc_app.model
 
-import kotlinx.serialization.Serializable
+import java.math.BigDecimal
+
 
 /**
- * Data class that defines a Vehicle which includes an id (vehicleId), userId, brand, model, year,
- * vehicleClass, engineType, licensePlate, imgLink, latitude, longitude, price, and availability.
+ * Note, imgLink is set to Int datatype, in the API it is String data type!
  */
-@Serializable
 data class Vehicle(
     val id: Int,
     val userId: Int,
@@ -14,11 +13,15 @@ data class Vehicle(
     val model: String,
     val year: Int,
     val vehicleClass: String,
-    val engineType: String,
+    val engineType: EngineType,
     val licensePlate: String,
     val imgLink: Int,
-    val latitude: Float,
-    val longitude: Float,
+    val latitude: BigDecimal,
+    val longitude: BigDecimal,
     val price: Double,
     val availability: Boolean
 )
+
+enum class EngineType{
+    ICE, BEV, FCEV
+}

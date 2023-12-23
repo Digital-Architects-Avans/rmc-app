@@ -1,35 +1,51 @@
 package com.digitalarchitects.rmc_app.components
 
 import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +57,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -53,7 +73,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
@@ -81,12 +103,67 @@ fun RmcLogoText() {
     )
 }
 
+
+/**
+ * Composable that show the topBar with navigation and title
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RmcAppBar(
+    @StringRes title: Int,
+    navigationIcon: ImageVector,
+    navigateUp: () -> Unit,
+) {
+    TopAppBar(
+        navigationIcon = {
+            RmcOutlinedIconButton(
+                icon = navigationIcon,
+                label = title,
+                onClick = navigateUp,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+        },
+        title = {
+            Text(
+                text = stringResource(title),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+    )
+}
+
 /**
  * Default spacer
  */
 @Composable
 fun RmcSpacer(height: Int = 24) {
     Spacer(modifier = Modifier.height(height.dp))
+}
+
+/**
+ * Composable that displays User icon
+ */
+@Composable
+fun RmcUserIcon(
+    @DrawableRes userIcon: Int,
+    modifier: Modifier = Modifier,
+    size: Dp,
+    onClick: () -> Unit
+
+) {
+    Image(
+        modifier = modifier
+            .size(size)
+            .padding(dimensionResource(R.dimen.padding_small))
+            .clip(CircleShape)
+            .border(1.dp, colorResource(R.color.purple_200), CircleShape)
+            .clickable { onClick() },
+        contentScale = ContentScale.Crop,
+        painter = painterResource(userIcon),
+        contentDescription = null
+    )
 }
 
 /**
@@ -372,7 +449,7 @@ fun HyperlinkTextComponent(
 }
 
 /**
- * Stateless Button Composable
+ * Stateless Button Composables
  */
 @Composable
 fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boolean = true) {
@@ -508,13 +585,123 @@ fun RmcOutlinedButton(
     }
 }
 
+@Composable
+fun RmcFilledIconButton(
+    icon: ImageVector,
+    @StringRes label: Int,
+    onClick: () -> Unit,
+    modifier: Modifier
+) {
+    FilledIconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(label),
+        )
+    }
+}
+
+@Composable
+fun RmcFilledTonalIconButton(
+    icon: ImageVector,
+    @StringRes label: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FilledTonalIconButton(
+        onClick = onClick,
+        colors = IconButtonDefaults.filledTonalIconButtonColors(
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(label),
+        )
+    }
+}
+
+@Composable
+fun RmcOutlinedIconButton(
+    icon: ImageVector,
+    @StringRes label: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedIconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = stringResource(label)
+        )
+    }
+}
+
+@Composable
+fun RmcImgFilledIconButton(
+    @DrawableRes image: Int,
+    @StringRes label: Int,
+    onClick: () -> Unit,
+    modifier: Modifier
+) {
+    FilledIconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Image(
+            painter = painterResource(image),
+            contentDescription = stringResource(label),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
+        )
+    }
+}
+
+@Composable
+fun RmcFloatingActionButton(
+    icon: ImageVector,
+    @StringRes label: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ExtendedFloatingActionButton(
+        onClick = onClick,
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 0.dp
+        ),
+        icon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(label),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+        },
+        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+    )
+}
+
 /**
  * Composable consisting out of two dividers with the text "or" in the middle
  */
 @Composable
 fun DividerTextComponent() {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -605,3 +792,43 @@ fun UnderLinedTextComponent(value: String) {
     )
 
 }
+
+/**
+ * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
+ */
+@Composable
+fun RmcTopButton() {
+    Row(
+        modifier = Modifier
+            .height(40.dp)
+            .padding(horizontal = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = { /* TODO */ }
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(Color.White, shape = CircleShape)
+                    .border(1.dp, Color.LightGray, shape = CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = stringResource(R.string.close),
+                    modifier = Modifier.fillMaxSize(),
+                    tint = Color.Gray
+                )
+            }
+        }
+        Text(
+            text = stringResource(R.string.my_vehicles),
+            style = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(start = 12.dp)
+        )
+    }
+}
+

@@ -1,11 +1,15 @@
 package com.digitalarchitects.rmc_app.data.search
 
 import androidx.lifecycle.ViewModel
+import com.digitalarchitects.rmc_app.app.RmcScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SearchViewModel : ViewModel() {
+    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
+    val navigateToScreen = _navigateToScreen.asStateFlow()
+
     private val _uiState = MutableStateFlow(SearchUIState())
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
 
@@ -66,8 +70,13 @@ class SearchViewModel : ViewModel() {
                 )
             }
 
-            else -> {
-                //TODO Implement other events
+            is SearchUIEvent.ApplyFiltersButtonClicked -> {
+                // TODO apply filter logic
+                _navigateToScreen.value = RmcScreen.RentACar
+            }
+
+            is SearchUIEvent.NavigateUpButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.RentACar
             }
         }
     }

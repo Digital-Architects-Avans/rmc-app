@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Rent My Car</string>
+    <string name="accept_rental">Accept Rental</string>
+    <string name="reject_rental">Reject Rental</string>
+    <string name="pending">Pending</string>
+    <string name="open">Open</string>
+    <string name="renter">Renter</string>
+    <string name="status">Status</string>
+    <string name="history">History</string>
     <string name="register">Register</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
@@ -11,7 +18,10 @@
     <string name="building_number">Building nr.</string>
     <string name="city">City</string>
     <string name="close">Close</string>
+    <string name="my_account">My account</string>
     <string name="add_vehicle">Add Vehicle</string>
+    <string name="rent_out_my_car">Rent out my car</string>
+    <string name="my_rentals">My rentals</string>
     <string name="my_vehicles">My vehicles</string>
     <string name="vehicle">Vehicle</string>
     <string name="available">Available</string>
@@ -31,6 +41,7 @@
     <string name="engine_type_fbev">FBEV</string>
     <string name="ok">Ok</string>
     <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
     <string name="clear">Clear</string>
     <string name="hide_password">\"Hide password\"</string>
     <string name="show_password">\"Show password\"</string>
@@ -38,9 +49,11 @@
     <string name="terms_and_conditions_header">Term of Use</string>
     <string name="or">or</string>
     <string name="login">Login</string>
+    <string name="logout">Log out</string>
     <string name="welcome">Welcome Back</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="back_button">Back</string>
+    <string name="view_list">View list</string>
     <string name="tac_1">By accessing and using this mobile application, you agree to comply with and be bound by the following terms and conditions of use. If you do not agree with any part of these terms, please do not use our app.</string>
     <string name="tac_acceptance_of_terms_header">1. Acceptance of Terms</string>
     <string name="tac_acceptance_of_terms_content">By downloading, installing, or using the Rent My Car application, you acknowledge that you have read, understood, and agree to be bound by these terms.</string>
@@ -62,13 +75,13 @@
     <string name="screen_title_terms">Term of Use</string>
     <string name="screen_title_rent_a_car">Rent A Car</string>
     <string name="screen_title_search">Search</string>
-    <string name="screen_title_vehicle_details">Vehicle details</string>
+    <string name="screen_title_vehicle_details">Vehicle Details</string>
     <string name="screen_title_my_rentals">My rentals</string>
-    <string name="screen_title_rent_my_car">Rent out my vehicle</string>
-    <string name="screen_title_my_vehicles">My vehicles</string>
-    <string name="screen_title_register_vehicle">Register vehicle</string>
-    <string name="screen_title_my_account">My account</string>
-    <string name="screen_title_edit_account">Edit account</string>
+    <string name="screen_title_rent_my_car">Rent Out My Vehicle</string>
+    <string name="screen_title_my_vehicles">My Vehicles</string>
+    <string name="screen_title_register_vehicle">Register Vehicle</string>
+    <string name="screen_title_my_account">My Account</string>
+    <string name="screen_title_edit_account">Edit Account</string>
     <string name="welcome_title">Welcome to Rent My Car</string>
     <string name="welcome_body">Join a movement towards a green planet with shared mobility of everyone, for everyone.</string>
     <string name="loading_failed">Failed to load</string>
