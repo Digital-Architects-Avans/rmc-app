@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.data.editmyaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.model.UserType
 import com.digitalarchitects.rmc_app.room.UserDao
 import com.digitalarchitects.rmc_app.room.UserTable
@@ -16,8 +17,10 @@ import kotlinx.coroutines.withContext
 
 
 class EditMyAccountViewModel(
-    private val dao: UserDao,
+    private val userDao: UserDao,
 ) : ViewModel() {
+    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
+    val navigateToScreen = _navigateToScreen.asStateFlow()
 
     private val _state = MutableStateFlow(EditMyAccountUIState())
     private val _uiState = _state
@@ -29,7 +32,7 @@ class EditMyAccountViewModel(
                 try {
                     runBlocking {
                         val getUser = withContext(Dispatchers.IO) {
-                            dao.getUserById()
+                            userDao.getUserById()
                         }
                         val email = getUser.email
                         val firstName = getUser.firstName
@@ -75,7 +78,7 @@ class EditMyAccountViewModel(
 
                     runBlocking {
                         withContext(Dispatchers.IO) {
-                            dao.insertUser(user)
+                            userDao.insertUser(user)
                         }
 
                         _state.value = _state.value.copy(
@@ -173,7 +176,7 @@ class EditMyAccountViewModel(
 
             is EditMyAccountUIEvent.User -> TODO()
 
-            EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked -> {
+            is EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked -> {
                 val email = _uiState.value.email
 //                val userType = state.value.userType
                 val firstName = _uiState.value.firstName
@@ -198,26 +201,29 @@ class EditMyAccountViewModel(
                     city = city,
                     id = 1
                 )
-                viewModelScope.launch {
-                    dao.upsertUser(user = updatedUser)
-//                    navController.navigate(RmcScreen.MyAccount.name)
+                runBlocking {
+                    withContext(Dispatchers.IO) {
+                        userDao.upsertUser(user = updatedUser)
+                    }
                 }
-
-
+                _navigateToScreen.value = RmcScreen.MyAccount
             }
 
-            EditMyAccountUIEvent.CancelEditMyAccountButtonClicked -> {
-//                navController.navigate(RmcScreen.MyAccount.name)
+            is EditMyAccountUIEvent.CancelEditMyAccountButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.MyAccount
             }
 
-            EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
+            is EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
                 viewModelScope.launch {
-//                    dao.deleteUser()
+//                  TODO  dao.deleteUser()
                 }
-//                navController.navigate(RmcScreen.Welcome.name)
             }
 
-            EditMyAccountUIEvent.UpsertUser -> TODO()
+            is EditMyAccountUIEvent.UpsertUser -> TODO()
+
+            is EditMyAccountUIEvent.NavigateUpButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.RentACar
+            }
         }
     }
 }

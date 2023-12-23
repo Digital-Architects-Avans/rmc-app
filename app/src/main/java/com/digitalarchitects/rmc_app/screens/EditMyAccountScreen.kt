@@ -41,8 +41,12 @@ import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
 @Composable
 fun EditMyAccountScreen(
     viewModel: EditMyAccountViewModel,
-    onNavigateUp: () -> Unit
+    navigateToScreen: (String) -> Unit
 ) {
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
+    }
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.onEvent(EditMyAccountUIEvent.InsertUser)
@@ -54,7 +58,10 @@ fun EditMyAccountScreen(
             RmcAppBar(
                 title = R.string.screen_title_edit_account,
                 navigationIcon = Icons.Rounded.ArrowBack,
-                navigateUp = { onNavigateUp() },
+                navigateUp = {
+                    viewModel.onEvent(EditMyAccountUIEvent.NavigateUpButtonClicked)
+
+                },
             )
         }
     ) { innerPadding ->
@@ -151,7 +158,6 @@ fun EditMyAccountScreen(
                     }
                 )
 
-
                 RmcSpacer(8)
 
                 RmcTextField(
@@ -221,14 +227,14 @@ fun EditMyAccountScreen(
                 RmcFilledButton(
                     value = stringResource(id = R.string.cancel),
                     onClick = {
-
+                        viewModel.onEvent(EditMyAccountUIEvent.CancelEditMyAccountButtonClicked)
                     }
                 )
+
                 RmcFilledButton(
                     value = stringResource(id = R.string.apply),
                     onClick = {
                         viewModel.onEvent(EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked)
-                        onNavigateUp()
                     }
                 )
 

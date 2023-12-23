@@ -27,6 +27,7 @@ import com.digitalarchitects.rmc_app.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 
@@ -34,12 +35,16 @@ import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 @Composable
 fun MyAccountScreen(
     viewModel: MyAccountViewModel,
-    onEditMyAccountButtonClicked: () -> Unit
+    navigateToScreen: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.onEvent(MyAccountUIEvent.InsertUser)
         viewModel.onEvent(MyAccountUIEvent.ShowUser)
+    }
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
     }
 
     Surface(
@@ -59,8 +64,7 @@ fun MyAccountScreen(
                 userIcon = uiState.imageResourceId,
                 size = dimensionResource(R.dimen.image_size_large),
                 onClick = {
-                    onEditMyAccountButtonClicked()
-//                    onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onEditMyAccountButtonClicked)
                 }
             )
             SmallHeadingTextComponent(
@@ -73,28 +77,28 @@ fun MyAccountScreen(
                 icon = Icons.Filled.DirectionsCar,
                 onClick = {
 
-//                    onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onMyVehiclesButtonClicked)
                 }
             )
             RmcFilledButton(
                 value = stringResource(R.string.rent_out_my_car),
                 icon = Icons.Filled.Key,
                 onClick = {
-//                    onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onRentOutMyCarButtonClicked)
                 }
             )
             RmcFilledButton(
                 value = stringResource(R.string.my_rentals),
                 icon = Icons.Filled.CarRental,
                 onClick = {
-//                    onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onMyRentalsButtonClicked)
                 }
             )
             RmcOutlinedButton(
                 value = stringResource(R.string.logout),
                 icon = Icons.Filled.Output,
                 onClick = {
-//                    onEvent(MyAccountUIEvent.onLogoutButtonClicked)
+                    viewModel.onEvent(MyAccountUIEvent.onLogoutButtonClicked)
                 }
             )
             RmcSpacer()

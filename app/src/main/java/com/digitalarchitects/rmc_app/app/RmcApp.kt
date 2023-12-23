@@ -2,17 +2,34 @@ package com.digitalarchitects.rmc_app.app
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.data.ViewModelFactory
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
+import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
+import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsViewModel
+import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
+import com.digitalarchitects.rmc_app.data.register.RegisterViewModel
+import com.digitalarchitects.rmc_app.data.registervehicle.RegisterVehicleViewModel
+import com.digitalarchitects.rmc_app.data.rentacar.RentACarViewModel
+import com.digitalarchitects.rmc_app.data.rentoutmycar.RentOutMyCarViewModel
+import com.digitalarchitects.rmc_app.data.search.SearchViewModel
+import com.digitalarchitects.rmc_app.data.termsandconditions.TermsAndConditionsViewModel
+import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyRentalDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
+import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.screens.EditMyAccountScreen
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.MyAccountScreen
@@ -24,103 +41,158 @@ import com.digitalarchitects.rmc_app.screens.SearchScreen
 import com.digitalarchitects.rmc_app.screens.TermsAndConditionsScreen
 import com.digitalarchitects.rmc_app.screens.WelcomeScreen
 import com.digitalarchitects.rmc_app.ui.theme.RmcAppTheme
+import kotlin.reflect.KClass
 
-enum class RmcScreen(@StringRes val title: Int) {
-    Welcome(title = R.string.screen_title_welcome),
-    Register(title = R.string.screen_title_register),
-    TermsAndConditions(title = R.string.screen_title_terms),
-    Login(title = R.string.screen_title_login),
-    RentACar(title = R.string.screen_title_rent_a_car),
-    Search(title = R.string.screen_title_search),
-    MyRentals(title = R.string.screen_title_my_rentals),
-    RentMyCar(title = R.string.screen_title_rent_my_car),
-    MyVehicles(title = R.string.screen_title_my_vehicles),
-    RegisterVehicle(title = R.string.screen_title_register_vehicle),
-    MyAccount(title = R.string.screen_title_my_account),
-    EditMyAccount(title = R.string.screen_title_edit_account)
+enum class RmcScreen(@StringRes val title: Int, val viewModel: KClass<out ViewModel>) {
+    Welcome(title = R.string.screen_title_welcome, viewModel = WelcomeViewModel::class),
+    Register(title = R.string.screen_title_register, viewModel = RegisterViewModel::class),
+    TermsAndConditions(title = R.string.screen_title_terms, viewModel = TermsAndConditionsViewModel::class),
+    Login(title = R.string.screen_title_login, viewModel = LoginViewModel::class),
+    RentACar(title = R.string.screen_title_rent_a_car, viewModel = RentACarViewModel::class),
+    Search(title = R.string.screen_title_search, viewModel = SearchViewModel::class),
+    MyRentals(title = R.string.screen_title_my_rentals, viewModel = MyRentalsViewModel::class),
+    RentOutMyCar(title = R.string.screen_title_rent_my_car, viewModel = RentOutMyCarViewModel::class),
+    MyVehicles(title = R.string.screen_title_my_vehicles, viewModel = MyVehiclesViewModel::class),
+    RegisterVehicle(title = R.string.screen_title_register_vehicle, viewModel = RegisterVehicleViewModel::class),
+    MyAccount(title = R.string.screen_title_my_account, viewModel = MyAccountViewModel::class),
+    EditMyAccount(title = R.string.screen_title_edit_account, viewModel = EditMyAccountViewModel::class)
 }
-
 
 @Preview(showBackground = true)
 @Composable
 fun RmcApp(
-    viewModel: MyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    viewModel2: EditMyAccountViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    db: RmcRoomDatabase = Room.databaseBuilder(
+        LocalContext.current.applicationContext,
+        RmcRoomDatabase::class.java,
+        "RmcRoomTest1.db"
+    ).build()
 ) {
+    val viewModelMap = rememberSaveable {
+        RmcScreen.values().associateBy({ it }, { it.viewModel.java })
+    }
+    val ViewModelFactory = ViewModelFactory(db)
+
     NavHost(
         navController = navController,
         startDestination = RmcScreen.Welcome.name,
     ) {
         composable(route = RmcScreen.Welcome.name) {
+            val viewModel = viewModelMap[RmcScreen.Welcome]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
             WelcomeScreen(
-                onRegisterButtonClicked = { navController.navigate(RmcScreen.Register.name) },
-                onLoginButtonClicked = { navController.navigate(RmcScreen.Login.name) }
+                viewModel = viewModel as WelcomeViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
             )
-
         }
         composable(route = RmcScreen.Register.name) {
+            val viewModel = viewModelMap[RmcScreen.Register]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
             RegisterScreen(
-                onNavigateUp = { navController.navigate(RmcScreen.Welcome.name) },
-                onTermsAndConditionsTextClicked = { navController.navigate(RmcScreen.TermsAndConditions.name) },
-                onLoginTextClicked = { navController.navigate(RmcScreen.Login.name) },
-                onRegisterButtonClicked = { navController.navigate(RmcScreen.RentACar.name) }
+                viewModel = viewModel as RegisterViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
             )
         }
         composable(route = RmcScreen.TermsAndConditions.name) {
-            TermsAndConditionsScreen(navController = navController)
+            val viewModel = viewModelMap[RmcScreen.TermsAndConditions]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
+            TermsAndConditionsScreen(
+                viewModel = viewModel as TermsAndConditionsViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
+            )
         }
         composable(route = RmcScreen.Login.name) {
+            val viewModel = viewModelMap[RmcScreen.Login]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
             LoginScreen(
                 // onForgotPasswordTextClicked = { navController.navigate(RmcScreen.ForgotPassword.name) },
-                onNavigateUp = { navController.navigate(RmcScreen.Welcome.name) },
-                onLoginButtonClicked = { navController.navigate(RmcScreen.RentACar.name) },
-                onRegisterTextClicked = { navController.navigate(RmcScreen.Register.name) }
+                viewModel = viewModel as LoginViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
             )
         }
         composable(route = RmcScreen.RentACar.name) {
+            val viewModel = viewModelMap[RmcScreen.RentACar]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
             RentACarScreen(
-                onSearchButtonClicked = { navController.navigate(RmcScreen.Search.name) },
-                onRentMyCarButtonClicked = { navController.navigate(RmcScreen.RentMyCar.name) },
-                onMyRentalsButtonClicked = { navController.navigate(RmcScreen.MyRentals.name) },
-                onMyAccountButtonClicked = { navController.navigate(RmcScreen.MyAccount.name) }
+                viewModel = viewModel as RentACarViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
             )
         }
         composable(route = RmcScreen.Search.name) {
+            val viewModel = viewModelMap[RmcScreen.Search]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
             SearchScreen(
-                onNavigateUp = { navController.navigate(RmcScreen.RentACar.name) },
+                viewModel = viewModel as SearchViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
             )
         }
         composable(route = RmcScreen.MyRentals.name) {
-            TODO("Implement MyRentals screen")
-            // MyRentalsScreen()
+            val viewModel = viewModelMap[RmcScreen.MyRentals]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
+//             TODO CREATE SCREEN
+        //             MyRentalsScreen(
+//                  viewModel = viewModel as MyRentalsViewModel,
+//                  navigateToScreen = { route -> navController.navigate(route) }
+//             )
         }
-        composable(route = RmcScreen.RentMyCar.name) {
-            val listOfRentals = DummyRentalDTO()
-            val listOfVehicles = DummyVehicleDTO()
-            val user = DummyUserDTO()
-            RentOutMyCarScreen(list = listOfRentals, vehicles = listOfVehicles, user = user)
+        composable(route = RmcScreen.RentOutMyCar.name) {
+            val viewModel = viewModelMap[RmcScreen.RentOutMyCar]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
+//            val listOfRentals = DummyRentalDTO()
+//            val listOfVehicles = DummyVehicleDTO()
+//            val user = DummyUserDTO()
+            RentOutMyCarScreen(
+//                list = listOfRentals, vehicles = listOfVehicles, user = user
+                viewModel = viewModel as RentOutMyCarViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
+            )
         }
         composable(route = RmcScreen.MyVehicles.name) {
-            val listOfVehicles = DummyVehicleDTO()
-            MyVehiclesScreen(list = listOfVehicles)
+            val viewModel = viewModelMap[RmcScreen.MyVehicles]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
+//            val listOfVehicles = DummyVehicleDTO()
+            MyVehiclesScreen(
+//                list = listOfVehicles
+                viewModel = viewModel as MyVehiclesViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
+            )
         }
         composable(route = RmcScreen.RegisterVehicle.name) {
-            TODO("Implement RegisterVehicle screen")
-            // RegisterVehicleScreen()
+            val viewModel = viewModelMap[RmcScreen.RegisterVehicle]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
+//            TODO("Implement RegisterVehicle screen")
+            // RegisterVehicleScreen(
+                // viewModel = viewModel as RegisterVehicleViewModel,
+                // navigateToScreen = { route -> navController.navigate(route) }
+            // )
         }
         composable(route = RmcScreen.MyAccount.name) {
+            val viewModel = viewModelMap[RmcScreen.MyAccount]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
             MyAccountScreen(
-                viewModel = viewModel,
-                onEditMyAccountButtonClicked = { navController.navigate(RmcScreen.EditMyAccount.name) }
+                viewModel = viewModel as MyAccountViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
             )
         }
         composable(route = RmcScreen.EditMyAccount.name) {
+            val viewModel = viewModelMap[RmcScreen.EditMyAccount]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
             EditMyAccountScreen(
-                onNavigateUp = { navController.navigate(RmcScreen.MyAccount.name) },
-                viewModel = viewModel2
+                viewModel = viewModel as EditMyAccountViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
             )
-
         }
     }
 }

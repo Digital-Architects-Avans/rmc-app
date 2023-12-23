@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.data.myaccount
 
 import androidx.lifecycle.ViewModel
+import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.model.UserType
 import com.digitalarchitects.rmc_app.room.UserDao
 import com.digitalarchitects.rmc_app.room.UserTable
@@ -12,9 +13,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class MyAccountViewModel(
-    private val dao: UserDao
+    private val userDao: UserDao
 //    private val navController: NavController
 ) : ViewModel() {
+    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
+    val navigateToScreen = _navigateToScreen.asStateFlow()
     private val _state = MutableStateFlow(MyAccountUIState())
     private val _uiState = _state
     val uiState: StateFlow<MyAccountUIState> = _uiState.asStateFlow()
@@ -24,7 +27,7 @@ class MyAccountViewModel(
                 try {
                     runBlocking {
                         val firstName = withContext(Dispatchers.IO) {
-                            dao.getFirstName()
+                            userDao.getFirstName()
                         }
                         _state.value = _state.value.copy(firstName = "$firstName")
                     }
@@ -50,7 +53,7 @@ class MyAccountViewModel(
                     )
                     runBlocking {
                         val firstName = withContext(Dispatchers.IO) {
-                            dao.insertUser(user)
+                            userDao.insertUser(user)
                         }
                         _state.value = _state.value.copy(firstName = "$firstName")
                     }
@@ -59,28 +62,29 @@ class MyAccountViewModel(
                 }
             }
 
-            MyAccountUIEvent.onEditMyAccountButtonClicked -> {
-                /*navController.navigate(RmcScreen.EditAccount.name)*/
+            is MyAccountUIEvent.onEditMyAccountButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.EditMyAccount
             }
 
-            MyAccountUIEvent.onLogoutButtonClicked -> {
+            is MyAccountUIEvent.onLogoutButtonClicked -> {
                 // TODO: LOG OUT FUNCTION
-//                navController.navigate(RmcScreen.Login.name)
+                _navigateToScreen.value = RmcScreen.Welcome
+
             }
 
-            MyAccountUIEvent.onMyRentalsButtonClicked -> {
-                /*navController.navigate(RmcScreen.MyRentals.name)*/
+            is MyAccountUIEvent.onMyRentalsButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.MyRentals
             }
 
-            MyAccountUIEvent.onMyVehiclesButtonClicked -> {
-//                navController.navigate(RmcScreen.MyVehicles.name)
+            is MyAccountUIEvent.onMyVehiclesButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.MyVehicles
             }
 
-            MyAccountUIEvent.onRentOutMyCarButtonClicked -> {
-//                navController.navigate(RmcScreen.RentMyCar.name)
+            is MyAccountUIEvent.onRentOutMyCarButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.RentOutMyCar
             }
 
-            MyAccountUIEvent.UpsertUser -> TODO()
+            is MyAccountUIEvent.UpsertUser -> TODO()
         }
     }
 }
