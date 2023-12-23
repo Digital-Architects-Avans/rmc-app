@@ -13,11 +13,11 @@ data class RegisterVehicleViewModel(
     val navigateToScreen = _navigateToScreen.asStateFlow()
     fun onEvent(event: RegisterVehicleUIEvent) {
         when (event) {
-            RegisterVehicleUIEvent.NavigateUpButtonClicked -> {
+            is RegisterVehicleUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyVehicles
             }
 
-            RegisterVehicleUIEvent.RegisterVehicleButtonClicked -> {
+            is RegisterVehicleUIEvent.RegisterVehicleButtonClicked -> {
                 //TODO ADD VEHICLE LOGIC
                 _navigateToScreen.value = RmcScreen.MyVehicles
             }

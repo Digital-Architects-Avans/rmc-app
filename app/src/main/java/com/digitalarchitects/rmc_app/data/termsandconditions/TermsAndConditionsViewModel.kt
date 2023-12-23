@@ -12,11 +12,11 @@ class TermsAndConditionsViewModel: ViewModel() {
     // Brian: I have no clue what this screen is
     fun onEvent(event: TermsAndConditionsUIEvent) {
         when (event) {
-            TermsAndConditionsUIEvent.ConfirmTermsAndConditionsButtonClicked -> {
+            is TermsAndConditionsUIEvent.ConfirmTermsAndConditionsButtonClicked -> {
 //                TODO Datastore accepted, boilerplate?
                 _navigateToScreen.value = RmcScreen.RentACar
             }
-            TermsAndConditionsUIEvent.DeclineTermsAndConditionsButtonClicked -> {
+            is TermsAndConditionsUIEvent.DeclineTermsAndConditionsButtonClicked -> {
 //                TODO Datastore declined, boilerplate?
                 _navigateToScreen.value = RmcScreen.Welcome
 //                TODO MESSAGE cant use features of app blah blah

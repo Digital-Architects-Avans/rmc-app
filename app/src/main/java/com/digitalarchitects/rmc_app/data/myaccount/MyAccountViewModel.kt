@@ -62,29 +62,29 @@ class MyAccountViewModel(
                 }
             }
 
-            MyAccountUIEvent.onEditMyAccountButtonClicked -> {
+            is MyAccountUIEvent.onEditMyAccountButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.EditMyAccount
             }
 
-            MyAccountUIEvent.onLogoutButtonClicked -> {
+            is MyAccountUIEvent.onLogoutButtonClicked -> {
                 // TODO: LOG OUT FUNCTION
                 _navigateToScreen.value = RmcScreen.Welcome
 
             }
 
-            MyAccountUIEvent.onMyRentalsButtonClicked -> {
+            is MyAccountUIEvent.onMyRentalsButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyRentals
             }
 
-            MyAccountUIEvent.onMyVehiclesButtonClicked -> {
+            is MyAccountUIEvent.onMyVehiclesButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyVehicles
             }
 
-            MyAccountUIEvent.onRentOutMyCarButtonClicked -> {
+            is MyAccountUIEvent.onRentOutMyCarButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RentOutMyCar
             }
 
-            MyAccountUIEvent.UpsertUser -> TODO()
+            is MyAccountUIEvent.UpsertUser -> TODO()
         }
     }
 }

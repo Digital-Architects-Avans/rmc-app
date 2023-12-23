@@ -20,10 +20,10 @@ data class MyVehiclesViewModel(
 
     fun onEvent(event: MyVehiclesUIEvent) {
         when (event) {
-            MyVehiclesUIEvent.NavigateUpButtonClicked -> {
+            is MyVehiclesUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyAccount
             }
-            MyVehiclesUIEvent.NewVehicleButtonClicked -> {
+            is MyVehiclesUIEvent.NewVehicleButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RegisterVehicle
             }
         }

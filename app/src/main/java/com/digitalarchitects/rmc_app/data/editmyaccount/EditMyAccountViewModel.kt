@@ -176,7 +176,7 @@ class EditMyAccountViewModel(
 
             is EditMyAccountUIEvent.User -> TODO()
 
-            EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked -> {
+            is EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked -> {
                 val email = _uiState.value.email
 //                val userType = state.value.userType
                 val firstName = _uiState.value.firstName
@@ -209,19 +209,19 @@ class EditMyAccountViewModel(
                 _navigateToScreen.value = RmcScreen.MyAccount
             }
 
-            EditMyAccountUIEvent.CancelEditMyAccountButtonClicked -> {
+            is EditMyAccountUIEvent.CancelEditMyAccountButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyAccount
             }
 
-            EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
+            is EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
                 viewModelScope.launch {
 //                  TODO  dao.deleteUser()
                 }
             }
 
-            EditMyAccountUIEvent.UpsertUser -> TODO()
+            is EditMyAccountUIEvent.UpsertUser -> TODO()
 
-            EditMyAccountUIEvent.NavigateUpButtonClicked -> {
+            is EditMyAccountUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RentACar
             }
         }

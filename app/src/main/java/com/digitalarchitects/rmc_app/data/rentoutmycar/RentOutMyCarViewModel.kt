@@ -22,7 +22,7 @@ data class RentOutMyCarViewModel(
 
     fun onEvent(event: RentOutMyCarUIEvent) {
         when (event) {
-            RentOutMyCarUIEvent.NavigateUpButtonClicked -> {
+            is RentOutMyCarUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RentACar
             }
         }

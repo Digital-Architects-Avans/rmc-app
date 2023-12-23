@@ -13,7 +13,7 @@ class MyRentalsViewModel(
     val navigateToScreen = _navigateToScreen.asStateFlow()
     fun onEvent(event: MyRentalsUIEvent) {
         when (event) {
-            MyRentalsUIEvent.NavigateUpButtonClicked -> {
+            is MyRentalsUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RentACar
             }
         }

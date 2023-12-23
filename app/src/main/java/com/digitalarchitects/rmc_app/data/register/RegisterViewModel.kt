@@ -85,7 +85,7 @@ class RegisterViewModel : ViewModel() {
                 _navigateToScreen.value = RmcScreen.Welcome
             }
 
-            RegisterUIEvent.LoginButtonClicked -> {
+            is RegisterUIEvent.LoginButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.Login
             }
         }

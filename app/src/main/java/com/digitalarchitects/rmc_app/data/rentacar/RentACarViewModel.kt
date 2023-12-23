@@ -23,16 +23,16 @@ data class RentACarViewModel(
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
-            RentACarUIEvent.MyAccountButtonClicked -> {
+            is RentACarUIEvent.MyAccountButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyAccount
             }
-            RentACarUIEvent.MyRentalsButtonClicked -> {
+            is RentACarUIEvent.MyRentalsButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyRentals
             }
-            RentACarUIEvent.RentOutMyVehicleButtonClicked -> {
+            is RentACarUIEvent.RentOutMyVehicleButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RentOutMyCar
             }
-            RentACarUIEvent.SearchButtonClicked -> {
+            is RentACarUIEvent.SearchButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.Search
             }
         }

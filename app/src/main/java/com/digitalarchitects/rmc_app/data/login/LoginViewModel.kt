@@ -40,7 +40,7 @@ class LoginViewModel : ViewModel() {
                 _navigateToScreen.value = RmcScreen.Register
             }
 
-            LoginUIEvent.NavigateUpButtonClicked -> {
+            is LoginUIEvent.NavigateUpButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.Welcome
             }
         }
