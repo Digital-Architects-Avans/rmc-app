@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
-    id("com.google.devtools.ksp") version "1.8.21-1.0.11" apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id("com.google.devtools.ksp")
 }
 
 val bundleId = "com.digitalarchitects.rmc_app"
@@ -34,17 +34,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
     packaging {
         resources {
@@ -57,7 +57,7 @@ dependencies {
     val composeVersion = "1.5.4"
     val lifecycleVersion = "2.6.2"
     val navVersion = "2.7.6"
-    val roomVersion = "2.6.1"
+    val roomVersion = "2.5.0"
 
     // Splash API
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -80,7 +80,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$navVersion")
 
     // Room
-    implementation("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
 
