@@ -27,11 +27,11 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -102,12 +102,23 @@ fun RentACarScreen(
     }
 
     val detailsBottomSheet = rememberBottomSheetScaffoldState(
-        bottomSheetState = SheetState(
+        bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Hidden,
-            skipPartiallyExpanded = false,
-            skipHiddenState = false
+            // skipPartiallyExpanded = false,
+            skipHiddenState = false,
         )
     )
+
+//    val detailsBottomSheet = rememberBottomSheetScaffoldState(
+//        initialValue = SheetValue.Hidden,
+//       skipHiddenState = false,
+//
+//        bottomSheetState = SheetState(
+//            initialValue = SheetValue.Hidden,
+//            skipPartiallyExpanded = false,
+//            skipHiddenState = false
+//        )
+//    )
 
     // Start Rent A Car screen
     BottomSheetScaffold(
@@ -156,8 +167,7 @@ fun RentACarScreen(
                         cameraPositionState = cameraPositionState,
                         onMapClick = { location ->
                             Log.d(TAG, "On map clicked: $location")
-                            // rentACarViewModel.onEvent(RentACarUIEvent.RmcMapClicked(location))
-                             scope.launch { detailsBottomSheet.bottomSheetState.hide() }
+                            scope.launch { detailsBottomSheet.bottomSheetState.hide() }
                         }
 
                     ) {
