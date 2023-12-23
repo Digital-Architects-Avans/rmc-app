@@ -23,7 +23,7 @@ import java.io.IOException
 sealed interface UserUiState {
     data class Success(val msg: String, val users: String) : UserUiState
     data class Error(val error: String) : UserUiState
-    data object Loading : UserUiState
+    object Loading : UserUiState
 }
 
 class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
