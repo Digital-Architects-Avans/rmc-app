@@ -28,4 +28,7 @@ interface VehicleDao {
 
     @Delete
     suspend fun deleteVehicle(vehicle: VehicleTable)
+    @Query("SELECT * FROM vehicletable LIMIT 1")
+    suspend fun getVehicleById(): VehicleTable
+
 }
