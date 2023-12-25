@@ -287,7 +287,7 @@ fun EditMyVehicleScreen(
                             value = uiState.latitude.toString(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next
+                                imeAction = ImeAction.Done
                             ),
                             onValueChange = {
                                 viewModel.onEvent(EditMyVehicleUIEvent.SetLatitude(it.toFloat()))
