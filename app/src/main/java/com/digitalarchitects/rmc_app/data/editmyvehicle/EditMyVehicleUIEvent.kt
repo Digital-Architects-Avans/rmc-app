@@ -4,6 +4,11 @@ import com.digitalarchitects.rmc_app.model.EngineType
 
 sealed interface EditMyVehicleUIEvent {
     object ShowVehicle: EditMyVehicleUIEvent
+    object EngineTypeICEButtonClicked: EditMyVehicleUIEvent
+    object EngineTypeBEVButtonClicked: EditMyVehicleUIEvent
+    object EngineTypeFCEVButtonClicked: EditMyVehicleUIEvent
+    object AvailabilityToggleButtonClicked: EditMyVehicleUIEvent
+
     object NavigateUpButtonClicked: EditMyVehicleUIEvent
     object ConfirmEditMyVehicleButtonClicked:EditMyVehicleUIEvent
     object CancelEditMyVehicleButtonClicked:EditMyVehicleUIEvent

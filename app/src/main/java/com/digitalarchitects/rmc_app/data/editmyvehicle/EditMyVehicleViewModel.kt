@@ -1,17 +1,23 @@
 package com.digitalarchitects.rmc_app.data.editmyvehicle
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.model.EngineType
 import com.digitalarchitects.rmc_app.room.VehicleDao
 import com.digitalarchitects.rmc_app.room.VehicleTable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 
 class EditMyVehicleViewModel(
     private val vehicleDao: VehicleDao
-) {
+) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
 
@@ -19,7 +25,7 @@ class EditMyVehicleViewModel(
     private val _uiState = _state
     val uiState: StateFlow<EditMyVehicleUIState> get() = _uiState.asStateFlow()
 
-    suspend fun onEvent(event: EditMyVehicleUIEvent) {
+    fun onEvent(event: EditMyVehicleUIEvent) {
         when (event) {
             is EditMyVehicleUIEvent.CancelEditMyVehicleButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.MyVehicles
@@ -27,37 +33,41 @@ class EditMyVehicleViewModel(
 
             is EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked -> {
                 try {
-                    val id = _uiState.value.id
-                    val userId = _uiState.value.userId
-                    val brand = _uiState.value.brand
-                    val model = _uiState.value.model
-                    val year = _uiState.value.year
-                    val vehicleClass = _uiState.value.vehicleClass
-                    val engineType = _uiState.value.engineType
-                    val licensePlate = _uiState.value.licensePlate
-                    val imgLink = _uiState.value.imgLink
-                    val latitude = _uiState.value.latitude
-                    val longitude = _uiState.value.longitude
-                    val price = _uiState.value.price
-                    val availability = _uiState.value.availability
+                    val scope = CoroutineScope(Dispatchers.IO)
+                    scope.launch {
+                        val id = _uiState.value.id
+                        val userId = _uiState.value.userId
+                        val brand = _uiState.value.brand
+                        val model = _uiState.value.model
+                        val year = _uiState.value.year
+                        val vehicleClass = _uiState.value.vehicleClass
+                        val engineType = _uiState.value.engineType
+                        val licensePlate = _uiState.value.licensePlate
+                        val imgLink = _uiState.value.imgLink
+                        val latitude = _uiState.value.latitude
+                        val longitude = _uiState.value.longitude
+                        val price = _uiState.value.price
+                        val availability = _uiState.value.availability
 
-                    val updatedVehicle = VehicleTable(
-                        id = id,
-                        userId = userId,
-                        brand = brand,
-                        model = model,
-                        year = year,
-                        vehicleClass = vehicleClass,
-                        engineType = engineType,
-                        licensePlate = licensePlate,
-                        imgLink = imgLink,
-                        latitude = latitude,
-                        longitude = longitude,
-                        price = price,
-                        availability = availability
-                    )
-                    vehicleDao.upsertVehicle(vehicle = updatedVehicle)
+                        val updatedVehicle = VehicleTable(
+                            id = id,
+                            userId = userId,
+                            brand = brand,
+                            model = model,
+                            year = year,
+                            vehicleClass = vehicleClass,
+                            engineType = engineType,
+                            licensePlate = licensePlate,
+                            imgLink = imgLink,
+                            latitude = latitude,
+                            longitude = longitude,
+                            price = price,
+                            availability = availability
+                        )
+                        vehicleDao.upsertVehicle(vehicle = updatedVehicle)
+                    }
                     _navigateToScreen.value = RmcScreen.MyVehicles
+
                 } catch (e: Exception) {
                     // Handle the exception or log an error
                     // TODO ERROR MESSAGE
@@ -178,40 +188,76 @@ class EditMyVehicleViewModel(
 
             is EditMyVehicleUIEvent.ShowVehicle -> {
                 try {
-                    val getVehicle = vehicleDao.getVehicleById()
+                    val scope = CoroutineScope(Dispatchers.IO)
+                    scope.launch {
+                        val getVehicle = vehicleDao.getVehicleById()
+                        val id = getVehicle.id
+                        val userId = getVehicle.userId
+                        val brand = getVehicle.brand
+                        val model = getVehicle.model
+                        val year = getVehicle.year
+                        val vehicleClass = getVehicle.vehicleClass
+                        val engineType = getVehicle.engineType
+                        val licensePlate = getVehicle.licensePlate
+                        val imgLink = getVehicle.imgLink
+                        val latitude = getVehicle.latitude
+                        val longitude = getVehicle.longitude
+                        val price = getVehicle.price
+                        val availability = getVehicle.availability
 
-                    val id = getVehicle.id
-                    val userId = getVehicle.userId
-                    val brand = getVehicle.brand
-                    val model = getVehicle.model
-                    val year = getVehicle.year
-                    val vehicleClass = getVehicle.vehicleClass
-                    val engineType = getVehicle.engineType
-                    val licensePlate = getVehicle.licensePlate
-                    val imgLink = getVehicle.imgLink
-                    val latitude = getVehicle.latitude
-                    val longitude = getVehicle.longitude
-                    val price = getVehicle.price
-                    val availability = getVehicle.availability
+                        _state.value = _state.value.copy(
+                            id = id,
+                            userId = userId,
+                            brand = brand,
+                            model = model,
+                            year = year,
+                            vehicleClass = vehicleClass,
+                            engineType = engineType,
+                            licensePlate = licensePlate,
+                            imgLink = imgLink,
+                            latitude = latitude,
+                            longitude = longitude,
+                            price = price,
+                            availability = availability
+                        )
+                    }
 
-                    _state.value = _state.value.copy(
-                        id = id,
-                        userId = userId,
-                        brand = brand,
-                        model = model,
-                        year = year,
-                        vehicleClass = vehicleClass,
-                        engineType = engineType,
-                        licensePlate = licensePlate,
-                        imgLink = imgLink,
-                        latitude = latitude,
-                        longitude = longitude,
-                        price = price,
-                        availability = availability
-                    )
+
                 } catch (e: Exception) {
                     // Handle the exception or log an error
                     // TODO ERROR MESSAGE
+                }
+            }
+
+            is EditMyVehicleUIEvent.EngineTypeBEVButtonClicked -> {
+                _state.update {
+                    it.copy(
+                        engineType = EngineType.BEV
+                    )
+                }
+            }
+
+            is EditMyVehicleUIEvent.EngineTypeFCEVButtonClicked -> {
+                _state.update {
+                    it.copy(
+                        engineType = EngineType.FCEV
+                    )
+                }
+            }
+
+            is EditMyVehicleUIEvent.EngineTypeICEButtonClicked -> {
+                _state.update {
+                    it.copy(
+                        engineType = EngineType.ICE
+                    )
+                }
+            }
+
+            is EditMyVehicleUIEvent.AvailabilityToggleButtonClicked -> {
+                _state.update {
+                    it.copy(
+                        availability = !it.availability
+                    )
                 }
             }
         }

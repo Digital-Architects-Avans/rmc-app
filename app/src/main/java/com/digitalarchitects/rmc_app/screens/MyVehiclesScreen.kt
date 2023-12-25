@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -44,7 +43,6 @@ import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesUIEvent
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
-import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.room.VehicleTable
 
 // BottomSheets and scaffolds, used resources below:
@@ -93,39 +91,39 @@ fun MyVehiclesScreen(
                         .padding(24.dp)
 
                 ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(24.dp)
-                    ) {
+//                    LazyColumn(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(24.dp)
+//                    ) {
 //                        items(vehicleList ?: emptyList()) {vehicle ->
 //                            VehicleListItem(vehicle)
 //                        }
-                    }
-                }
-                Column(
-                    verticalArrangement = Arrangement.Bottom,
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .fillMaxSize()
-                ) {
-                    Button(
-                        modifier = Modifier.align(Alignment.End),
-                        onClick = { /*TODO*/ },
-                        shape = RoundedCornerShape(8.dp)
+//                    }
+//                }
+                    Column(
+                        verticalArrangement = Arrangement.Bottom,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxSize()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.add_vehicle)
-                        )
-                        Text(stringResource(R.string.add_vehicle))
+                        Button(
+                            modifier = Modifier.align(Alignment.End),
+                            onClick = { /*TODO*/ },
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = stringResource(R.string.add_vehicle)
+                            )
+                            Text(stringResource(R.string.add_vehicle))
+                        }
                     }
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun VehicleListItem(vehicle: VehicleTable) {
@@ -207,4 +205,5 @@ fun VehicleListItem(vehicle: VehicleTable) {
         }
     }
 }
+
 

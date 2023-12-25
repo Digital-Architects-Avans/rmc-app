@@ -15,6 +15,7 @@ import androidx.room.Room
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.data.ViewModelFactory
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
+import com.digitalarchitects.rmc_app.data.editmyvehicle.EditMyVehicleViewModel
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsViewModel
@@ -31,6 +32,7 @@ import com.digitalarchitects.rmc_app.dummyDTO.DummyUserDTO
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.screens.EditMyAccountScreen
+import com.digitalarchitects.rmc_app.screens.EditMyVehicleScreen
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.MyAccountScreen
 import com.digitalarchitects.rmc_app.screens.MyVehiclesScreen
@@ -54,6 +56,7 @@ enum class RmcScreen(@StringRes val title: Int, val viewModel: KClass<out ViewMo
     RentOutMyCar(title = R.string.screen_title_rent_my_car, viewModel = RentOutMyCarViewModel::class),
     MyVehicles(title = R.string.screen_title_my_vehicles, viewModel = MyVehiclesViewModel::class),
     RegisterVehicle(title = R.string.screen_title_register_vehicle, viewModel = RegisterVehicleViewModel::class),
+    EditMyVehicle(title = R.string.screen_title_edit_vehicle, viewModel = EditMyVehicleViewModel::class),
     MyAccount(title = R.string.screen_title_my_account, viewModel = MyAccountViewModel::class),
     EditMyAccount(title = R.string.screen_title_edit_account, viewModel = EditMyAccountViewModel::class)
 }
@@ -75,7 +78,7 @@ fun RmcApp(
 
     NavHost(
         navController = navController,
-        startDestination = RmcScreen.Welcome.name,
+        startDestination = RmcScreen.EditMyVehicle.name,
     ) {
         composable(route = RmcScreen.Welcome.name) {
             val viewModel = viewModelMap[RmcScreen.Welcome]?.let {
@@ -176,6 +179,15 @@ fun RmcApp(
                 // navigateToScreen = { route -> navController.navigate(route) }
             // )
         }
+        composable(route = RmcScreen.EditMyVehicle.name) {
+            val viewModel = viewModelMap[RmcScreen.EditMyVehicle]?.let {
+                viewModel(it, factory = ViewModelFactory)
+            }
+             EditMyVehicleScreen(
+             viewModel = viewModel as EditMyVehicleViewModel,
+             navigateToScreen = { route -> navController.navigate(route) }
+             )
+        }
         composable(route = RmcScreen.MyAccount.name) {
             val viewModel = viewModelMap[RmcScreen.MyAccount]?.let {
                 viewModel(it, factory = ViewModelFactory)
@@ -194,6 +206,7 @@ fun RmcApp(
                 navigateToScreen = { route -> navController.navigate(route) }
             )
         }
+
     }
 }
 
