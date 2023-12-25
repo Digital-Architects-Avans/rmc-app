@@ -8,7 +8,7 @@ import java.time.LocalDate
 
 @Entity
 @TypeConverters(LocalDateConverter::class)
-class RentalTable (
+class RentalTable(
     val vehicleId: Int,
     val userId: Int,
     @TypeConverters(LocalDateConverter::class)

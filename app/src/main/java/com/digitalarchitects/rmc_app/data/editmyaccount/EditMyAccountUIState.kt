@@ -12,6 +12,7 @@ data class EditMyAccountUIState (
     val buildingNumber: String = "",
     val zipCode: String = "",
     val city: String = "",
+    val password: String = "" ,
     val imageResourceId: Int = 0,
     val id: Int = 0,
 )

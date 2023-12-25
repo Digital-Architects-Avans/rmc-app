@@ -8,4 +8,5 @@ data class RentACarUIState(
     var showVehicleList: Boolean = false,
     // var showVehicleDetails: Boolean = false,
     var detailsVehicleId: Int = 0,
+    var placeholder: String =  ""
 )

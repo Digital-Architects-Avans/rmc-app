@@ -3,18 +3,25 @@ package com.digitalarchitects.rmc_app.data.rentacar
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
+import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
+import com.digitalarchitects.rmc_app.room.VehicleDao
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class RentACarViewModel : ViewModel() {
+class RentACarViewModel(
+    private val vehicleDao: VehicleDao,
+) : ViewModel() {
+    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
+    val navigateToScreen = _navigateToScreen.asStateFlow()
 
     // Rent A Car UI state
-    private val _uiState = MutableStateFlow(RentACarUIState())
-    val uiState: StateFlow<RentACarUIState> = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(RentACarUIState())
+    private val _uiState = _state
+    val uiState: StateFlow<RentACarUIState> get() = _uiState.asStateFlow()
 
     // Get search settings
     // Get all vehicles
@@ -24,12 +31,23 @@ class RentACarViewModel : ViewModel() {
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
+            is RentACarUIEvent.MyAccountButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.MyAccount
+            }
+            is RentACarUIEvent.MyRentalsButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.MyRentals
+            }
+            is RentACarUIEvent.RentOutMyVehicleButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.RentOutMyCar
+            }
+            is RentACarUIEvent.SearchButtonClicked -> {
+                _navigateToScreen.value = RmcScreen.Search
+            }
             is RentACarUIEvent.ShowListView -> {
                 _uiState.value = _uiState.value.copy(
                     showVehicleList = event.show
                 )
             }
-
             is RentACarUIEvent.RmcMapVehicleItemClicked -> {
                 _uiState.value = _uiState.value.copy(
                     detailsVehicleId = event.id - 1,

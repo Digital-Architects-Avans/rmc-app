@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,24 +32,32 @@ import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
 import com.digitalarchitects.rmc_app.components.UnderLinedTextComponent
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
+import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
 import com.digitalarchitects.rmc_app.data.login.LoginUIEvent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel = viewModel(),
-    onNavigateUp: () -> Unit,
-    onLoginButtonClicked: () -> Unit,
-    onRegisterTextClicked: (String) -> Unit,
+    viewModel: LoginViewModel,
+    navigateToScreen: (String) -> Unit
 ) {
-    val loginUiState by loginViewModel.uiState.collectAsState()
+    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
+    if (navigateToScreenEvent != null) {
+        navigateToScreen(navigateToScreenEvent!!.name)
+    }
+    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+// TODO Default state
+    }
 
     Scaffold(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_login,
                 navigationIcon = Icons.Rounded.ArrowBack,
-                navigateUp = { onNavigateUp() })
+                navigateUp = { viewModel.onEvent(LoginUIEvent.NavigateUpButtonClicked) }
+            )
         }
     ) { innerPadding ->
         Surface(
@@ -66,13 +75,13 @@ fun LoginScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.email),
                     icon = Icons.Filled.Email,
-                    value = loginUiState.email,
+                    value = "loginUiState.email",
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = {
-                        loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
+                        // TODO loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
                     }
                 )
 
@@ -81,14 +90,14 @@ fun LoginScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.password),
                     icon = Icons.Filled.Lock,
-                    value = loginUiState.password,
+                    value = "loginUiState.password",
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
                     isPassword = true,
                     onValueChange = {
-                        loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
+//                        TODO loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
                     }
                 )
 
@@ -98,17 +107,14 @@ fun LoginScreen(
 
                 RmcFilledButton(
                     value = stringResource(id = R.string.login),
-                    onClick = {
-                        loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
-                        onLoginButtonClicked()
-                    }
+                    onClick = { viewModel.onEvent(LoginUIEvent.LoginButtonClicked) }
                 )
 
                 DividerTextComponent()
 
                 ClickableLoginTextComponent(
                     tryingToLogin = false,
-                    onTextSelected = onRegisterTextClicked
+                    onTextSelected = { viewModel.onEvent(LoginUIEvent.RegisterButtonClicked) }
                 )
             }
         }
@@ -119,9 +125,8 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     LoginScreen(
-        onNavigateUp = {},
-        onLoginButtonClicked = {},
-        onRegisterTextClicked = {}
+        viewModel = viewModel(),
+        navigateToScreen = { }
     )
 }
 
