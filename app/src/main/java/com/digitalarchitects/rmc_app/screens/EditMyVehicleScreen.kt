@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +38,6 @@ import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
-import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.editmyvehicle.EditMyVehicleUIEvent
 import com.digitalarchitects.rmc_app.data.editmyvehicle.EditMyVehicleViewModel
 import com.digitalarchitects.rmc_app.model.EngineType
