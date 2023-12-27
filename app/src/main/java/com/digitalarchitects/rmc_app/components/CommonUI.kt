@@ -835,7 +835,7 @@ fun RmcTopButton() {
 }
 
 @Composable
-fun BooleanToggle(
+fun RmcSwitch(
     value: Boolean,
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -849,7 +849,7 @@ fun BooleanToggle(
             .clickable { onToggle(!value) }
     ) {
         val icon = if (value) Icons.Default.ToggleOn else Icons.Default.ToggleOff
-        val tint = if (value) MaterialTheme.colorScheme.primary else Color.Gray
+        val tint = if (value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
