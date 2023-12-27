@@ -33,12 +33,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.components.BooleanToggle
 import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
+import com.digitalarchitects.rmc_app.components.RmcSwitch
 import com.digitalarchitects.rmc_app.components.RmcTextField
-
 import com.digitalarchitects.rmc_app.data.registervehicle.RegisterVehicleUIEvent
 import com.digitalarchitects.rmc_app.data.registervehicle.RegisterVehicleViewModel
 import com.digitalarchitects.rmc_app.model.EngineType
@@ -118,7 +117,7 @@ fun RegisterVehicleScreen(
                         RmcTextField(
                             label = stringResource(id = R.string.year),
 //                            icon = Icons.Filled.Person,
-                            value = uiState.year.toString(),
+                            value = uiState.year,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
@@ -177,7 +176,7 @@ fun RegisterVehicleScreen(
                         RmcTextField(
                             label = stringResource(id = R.string.price),
 //                            icon = Icons.Filled.Person,
-                            value = uiState.price.toString(),
+                            value = uiState.price,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Next
@@ -265,7 +264,7 @@ fun RegisterVehicleScreen(
                             text = stringResource(id = R.string.vehicle_availability),
                             fontWeight = FontWeight.Bold
                         )
-                        BooleanToggle(value = uiState.availability, onToggle = {
+                        RmcSwitch(value = uiState.availability, onToggle = {
                             viewModel.onEvent(RegisterVehicleUIEvent.AvailabilityToggleButtonClicked)
                         })
                     }
@@ -281,7 +280,7 @@ fun RegisterVehicleScreen(
                         RmcTextField(
                             label = stringResource(id = R.string.location),
 //                            icon = Icons.Filled.Person,
-                            value = uiState.latitude.toString(),
+                            value = uiState.latitude,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done

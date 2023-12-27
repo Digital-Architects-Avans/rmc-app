@@ -33,10 +33,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.components.BooleanToggle
 import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
+import com.digitalarchitects.rmc_app.components.RmcSwitch
 import com.digitalarchitects.rmc_app.components.RmcTextField
 import com.digitalarchitects.rmc_app.data.editmyvehicle.EditMyVehicleUIEvent
 import com.digitalarchitects.rmc_app.data.editmyvehicle.EditMyVehicleViewModel
@@ -266,7 +266,7 @@ fun EditMyVehicleScreen(
                             text = stringResource(id = R.string.vehicle_availability),
                             fontWeight = FontWeight.Bold
                         )
-                        BooleanToggle(value = uiState.availability, onToggle = {
+                        RmcSwitch(value = uiState.availability, onToggle = {
                             viewModel.onEvent(EditMyVehicleUIEvent.AvailabilityToggleButtonClicked)
                         })
                     }

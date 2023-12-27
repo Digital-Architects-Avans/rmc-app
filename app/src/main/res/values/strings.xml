@@ -11,6 +11,7 @@
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="email">E-mail</string>
+    <string name="reserve">Reserve</string>
     <string name="telephone">Telephone</string>
     <string name="password">Password</string>
     <string name="address">Address</string>
@@ -26,6 +27,8 @@
     <string name="vehicle">Vehicle</string>
     <string name="available">Available</string>
     <string name="vehicle_availability">Vehicle availability</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="rent_car">Rent car</string>
     <string name="location">Location</string>
     <string name="price">Price</string>
     <string name="license_plate">License plate</string>
@@ -40,6 +43,7 @@
     <string name="km">km</string>
     <string name="points">point(s)</string>
     <string name="date">Date</string>
+    <string name="my_location">My location</string>
     <string name="engine_type">Engine type</string>
     <string name="label_distance_km">%1$s km</string>
     <string name="label_distance_miles">%1$s miles</string>

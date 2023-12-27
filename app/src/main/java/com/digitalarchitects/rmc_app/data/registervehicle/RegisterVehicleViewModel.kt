@@ -64,9 +64,9 @@ data class RegisterVehicleViewModel(
                             vehicleClass = vehicleClass,
                             engineType = engineType,
                             licensePlate = licensePlate,
-                            imgLink = imgLink.toInt(),
-                            latitude = latitude.toFloat(),
-                            longitude = longitude.toFloat(),
+                            imgLink = 1,
+                            latitude = 51.4416f,
+                            longitude = 5.4697f,
                             price = price.toDouble(),
                             availability = availability
                         )
