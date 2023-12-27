@@ -35,6 +35,7 @@ import com.digitalarchitects.rmc_app.screens.EditMyAccountScreen
 import com.digitalarchitects.rmc_app.screens.EditMyVehicleScreen
 import com.digitalarchitects.rmc_app.screens.LoginScreen
 import com.digitalarchitects.rmc_app.screens.MyAccountScreen
+import com.digitalarchitects.rmc_app.screens.MyRentalsScreen
 import com.digitalarchitects.rmc_app.screens.MyVehiclesScreen
 import com.digitalarchitects.rmc_app.screens.RegisterScreen
 import com.digitalarchitects.rmc_app.screens.RegisterVehicleScreen
@@ -94,7 +95,9 @@ fun RmcApp(
 
     NavHost(
         navController = navController,
+
         startDestination = RmcScreen.Welcome.name,
+
     ) {
         composable(route = RmcScreen.Welcome.name) {
             val viewModel = viewModelMap[RmcScreen.Welcome]?.let {
@@ -155,11 +158,10 @@ fun RmcApp(
             val viewModel = viewModelMap[RmcScreen.MyRentals]?.let {
                 viewModel(it, factory = ViewModelFactory)
             }
-//             TODO CREATE SCREEN
-            //             MyRentalsScreen(
-//                  viewModel = viewModel as MyRentalsViewModel,
-//                  navigateToScreen = { route -> navController.navigate(route) }
-//             )
+            MyRentalsScreen(
+                viewModel = viewModel as MyRentalsViewModel,
+                navigateToScreen = { route -> navController.navigate(route) }
+            )
         }
         composable(route = RmcScreen.RentOutMyCar.name) {
             val viewModel = viewModelMap[RmcScreen.RentOutMyCar]?.let {
