@@ -5,3 +5,14 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.8.10" apply false
     id("com.google.devtools.ksp") version "1.9.10-1.0.13" apply false
 }
+
+buildscript {
+    dependencies {
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+    }
+
+    extra.apply {
+        set("nav_version", "2.5.3")
+        set("room_version", "2.5.2")
+    }
+}
