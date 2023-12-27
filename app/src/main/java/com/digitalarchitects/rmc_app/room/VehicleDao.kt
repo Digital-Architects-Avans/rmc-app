@@ -24,10 +24,11 @@ interface VehicleDao {
     suspend fun upsertVehicle(vehicle: VehicleTable)
 
     @Insert
-    suspend fun insertUser(vehicle: VehicleTable)
+    suspend fun insertVehicle(vehicle: VehicleTable)
 
     @Delete
     suspend fun deleteVehicle(vehicle: VehicleTable)
+
     @Query("SELECT * FROM vehicletable LIMIT 1")
     suspend fun getVehicleById(): VehicleTable
 

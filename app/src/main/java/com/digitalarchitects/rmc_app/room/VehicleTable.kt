@@ -14,7 +14,7 @@ class VehicleTable(
     val vehicleClass: String,
     val engineType: EngineType = EngineType.ICE,
     val licensePlate: String,
-    val imgLink: Int,
+    val imgLink: Int = 1,
     @ColumnInfo(name = "latitude")
     val latitude: Float,
     @ColumnInfo(name = "longitude")

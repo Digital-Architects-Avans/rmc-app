@@ -2,15 +2,17 @@ package com.digitalarchitects.rmc_app.data.register
 
 import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.data.registervehicle.RegisterVehicleUIState
+import com.digitalarchitects.rmc_app.room.VehicleDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
 
-    // Login UI state
     private val _uiState = MutableStateFlow(RegisterUIState())
     val uiState: StateFlow<RegisterUIState> = _uiState.asStateFlow()
 
