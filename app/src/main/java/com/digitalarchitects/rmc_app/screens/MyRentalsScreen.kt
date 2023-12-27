@@ -12,10 +12,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddLocation
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.LocalOffer
+import androidx.compose.material.icons.filled.Toys
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -182,10 +187,32 @@ fun MyRentalItem(rental :RentalTable) {
                     fontWeight = FontWeight.Bold
                 )
                 Row {
-                    RmcUserIcon(userIcon = R.drawable.usericon,
-                        size = dimensionResource(R.dimen.image_size_medium),
-                        onClick = {})
-                    SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.AddLocation,"location"
+                        )
+                        Text(text = "Stad")
+                    }
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.LocalOffer,"price"
+                        )
+                        Text(text = "99,5")
+                    }
+                }
+                Row {
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.Flag,"afstand"
+                        )
+                        Text(text = "0 km")
+                    }
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.Toys,"score"
+                        )
+                        Text(text = "+ 3")
+                    }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
