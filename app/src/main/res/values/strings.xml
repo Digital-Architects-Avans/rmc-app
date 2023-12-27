@@ -33,9 +33,12 @@
     <string name="year">Year</string>
     <string name="model">Model</string>
     <string name="vehicle_class">Vehicle class</string>
-
+    <string name="route_to_car">Route to car</string>
+    <string name="cancel_rental">Cancel rental</string>
     <string name="search">Search</string>
     <string name="distance">Distance</string>
+    <string name="km">km</string>
+    <string name="points">point(s)</string>
     <string name="date">Date</string>
     <string name="engine_type">Engine type</string>
     <string name="label_distance_km">%1$s km</string>

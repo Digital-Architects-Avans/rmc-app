@@ -43,7 +43,7 @@ class ViewModelFactory(
             return SearchViewModel() as T
         }
         if (modelClass.isAssignableFrom(MyRentalsViewModel::class.java)) {
-            return MyRentalsViewModel(vehicleDao = db.vehicleDao) as T
+            return MyRentalsViewModel(rentalDao = db.rentalDao) as T
         }
         if (modelClass.isAssignableFrom(RentOutMyCarViewModel::class.java)) {
             return RentOutMyCarViewModel(vehicleDao = db.vehicleDao, rentalDao = db.rentalDao) as T
