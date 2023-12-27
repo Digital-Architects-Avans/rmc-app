@@ -35,7 +35,7 @@ val Typography = Typography(
         fontFamily = NotoSans,
         fontWeight = FontWeight.Black,
         fontStyle = FontStyle.Italic,
-        fontSize = 18.sp,
+        fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
@@ -44,7 +44,7 @@ val Typography = Typography(
         fontFamily = NotoSans,
         fontWeight = FontWeight.Black,
         fontStyle = FontStyle.Italic,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.sp
     ),
