@@ -31,6 +31,8 @@ import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ToggleOff
+import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.DirectionsCar
@@ -859,6 +861,30 @@ fun RmcTopButton() {
 }
 
 @Composable
+fun RmcSwitch(
+    value: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    size: Dp = 80.dp,
+    iconSize: Dp = 80.dp
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clickable { onToggle(!value) }
+    ) {
+        val icon = if (value) Icons.Default.ToggleOn else Icons.Default.ToggleOff
+        val tint = if (value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = tint,
+            modifier = Modifier.size(iconSize) // Set the size of the icon here
+        )
+    }
+}
+
 fun RmcMapVehicleCluster(
     number: Int,
 ) {

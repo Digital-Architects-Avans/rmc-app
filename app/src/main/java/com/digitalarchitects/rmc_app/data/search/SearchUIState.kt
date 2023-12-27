@@ -8,6 +8,6 @@ data class SearchUIState(
     val price: Double? = 55.0,
     val distance: Int? = 53,
     val engineTypeIce: Boolean = true,
-    val engineTypeCev: Boolean = true,
-    val engineTypeFbev: Boolean = true
+    val engineTypeBev: Boolean = true,
+    val engineTypeFcev: Boolean = true
 )

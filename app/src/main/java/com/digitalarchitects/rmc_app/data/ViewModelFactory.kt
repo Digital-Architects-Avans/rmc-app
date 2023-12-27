@@ -6,6 +6,7 @@ import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsViewModel
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
 import com.digitalarchitects.rmc_app.data.rentoutmycar.RentOutMyCarViewModel
 import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
+import com.digitalarchitects.rmc_app.data.editmyvehicle.EditMyVehicleViewModel
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
 import com.digitalarchitects.rmc_app.data.myaccount.MyAccountViewModel
 import com.digitalarchitects.rmc_app.data.register.RegisterViewModel
@@ -25,6 +26,9 @@ class ViewModelFactory(
         }
         if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) {
             return RegisterViewModel() as T
+        }
+        if (modelClass.isAssignableFrom(EditMyVehicleViewModel::class.java)) {
+            return EditMyVehicleViewModel(vehicleDao = db.vehicleDao) as T
         }
         if (modelClass.isAssignableFrom(TermsAndConditionsViewModel::class.java)) {
             return TermsAndConditionsViewModel() as T
