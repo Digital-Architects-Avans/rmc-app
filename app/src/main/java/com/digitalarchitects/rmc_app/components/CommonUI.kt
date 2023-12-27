@@ -885,6 +885,7 @@ fun RmcSwitch(
     }
 }
 
+@Composable
 fun RmcMapVehicleCluster(
     number: Int,
 ) {
