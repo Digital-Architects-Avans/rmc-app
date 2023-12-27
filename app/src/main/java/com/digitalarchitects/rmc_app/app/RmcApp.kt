@@ -95,7 +95,7 @@ fun RmcApp(
 
     NavHost(
         navController = navController,
-        startDestination = RmcScreen.RegisterVehicle.name,
+        startDestination = RmcScreen.MyRentals.name,
     ) {
         composable(route = RmcScreen.Welcome.name) {
             val viewModel = viewModelMap[RmcScreen.Welcome]?.let {

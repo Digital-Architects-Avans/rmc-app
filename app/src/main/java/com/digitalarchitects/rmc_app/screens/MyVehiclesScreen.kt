@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcAppBar
+import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsUIEvent
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesUIEvent
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
 import com.digitalarchitects.rmc_app.room.VehicleTable
@@ -109,7 +110,10 @@ fun MyVehiclesScreen(
                     ) {
                         Button(
                             modifier = Modifier.align(Alignment.End),
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                viewModel.onEvent(MyVehiclesUIEvent.NewVehicleButtonClicked)
+
+                            },
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Icon(

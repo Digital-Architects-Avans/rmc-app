@@ -50,6 +50,7 @@ import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.data.myrentals.MyRentalTab
 import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsUIEvent
 import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsViewModel
 import com.digitalarchitects.rmc_app.data.rentoutmycar.RentalTab
@@ -97,7 +98,7 @@ fun MyRentalsScreen(
                     backgroundColor = colorResource(R.color.white),
                     contentColor = colorResource(R.color.purple_500)
                 ) {
-                    RentalTab.values().forEachIndexed { index, tab ->
+                    MyRentalTab.values().forEachIndexed { index, tab ->
                         Tab(
                             text = { Text(stringResource(id = tab.tabNameResourceId)) },
                             selected = uiState.selectedTab == tab,
