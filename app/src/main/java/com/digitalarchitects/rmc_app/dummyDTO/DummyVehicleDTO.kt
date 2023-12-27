@@ -20,8 +20,8 @@ fun DummyVehicleDTO(): List<Vehicle> {
             engineType = EngineType.ICE,
             licensePlate = "YW - 790 - 2",
             imgLink = R.drawable.yaris,
-            latitude = BigDecimal("51.4416"),
-            longitude = BigDecimal("5.4697"),
+            latitude = BigDecimal("51.583698"),
+            longitude = BigDecimal("4.797110"),
             price = 95.0,
             availability = true
         ),
@@ -35,8 +35,8 @@ fun DummyVehicleDTO(): List<Vehicle> {
             engineType = EngineType.ICE,
             licensePlate = "ABC - 123",
             imgLink = R.drawable.civic,
-            latitude = BigDecimal("52.3676"),
-            longitude = BigDecimal("4.9041"),
+            latitude = BigDecimal("51.585720"),
+            longitude = BigDecimal("4.793230"),
             price = 120.0,
             availability = false
         ),
@@ -50,8 +50,8 @@ fun DummyVehicleDTO(): List<Vehicle> {
             engineType = EngineType.ICE,
             licensePlate = "XYZ - 456",
             imgLink = R.drawable.focus,
-            latitude = BigDecimal("51.9225"),
-            longitude = BigDecimal("4.4794"),
+            latitude = BigDecimal("51.58656"),
+            longitude = BigDecimal("4.77596"),
             price = 80.0,
             availability = true
         ),
@@ -65,8 +65,8 @@ fun DummyVehicleDTO(): List<Vehicle> {
             engineType = EngineType.ICE,
             licensePlate = "DEF - 789",
             imgLink = R.drawable.malibu,
-            latitude = BigDecimal("52.0907"),
-            longitude = BigDecimal("5.1214"),
+            latitude = BigDecimal("51.5794365"),
+            longitude = BigDecimal("4.810962"),
             price = 110.0,
             availability = true
         )
