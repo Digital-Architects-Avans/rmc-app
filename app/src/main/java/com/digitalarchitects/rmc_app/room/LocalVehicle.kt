@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.digitalarchitects.rmc_app.model.EngineType
 
 @Entity
-class VehicleTable(
+class LocalVehicle(
     val userId: Int,
     val brand: String,
     val model: String,
@@ -14,7 +14,7 @@ class VehicleTable(
     val vehicleClass: String,
     val engineType: EngineType = EngineType.ICE,
     val licensePlate: String,
-    val imgLink: Int,
+    val imgLink: String,
     @ColumnInfo(name = "latitude")
     val latitude: Float,
     @ColumnInfo(name = "longitude")
