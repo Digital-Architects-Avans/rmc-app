@@ -2,32 +2,35 @@ package com.digitalarchitects.rmc_app.room
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM usertable ORDER BY firstName ASC")
-    fun getUsersOrderedByFirstName(): Flow<List<UserTable>>
+    @Query("SELECT * FROM LocalUser ORDER BY id ASC")
+    suspend fun getAllUsers(): List<LocalUser>
 
-    // TODO GET CURRENT USER
-//    @Query("SELECT * FROM usertable LIMIT 1")
-//    fun getUser(): UserTable?
+    @Query("SELECT * FROM LocalUser WHERE id = :userId")
+    suspend fun getUserById(userId: Int): LocalUser
 
-    @Query("SELECT * FROM usertable WHERE id = 1")
-    fun getUserById(): UserTable
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAllUsers(users: List<LocalUser>)
 
-    @Query("SELECT firstName FROM usertable LIMIT 1")
-    fun getFirstName(): String?
+    @Query("SELECT firstName FROM LocalUser WHERE id = :userId")
+    suspend fun getFirstName(userId: Int): String?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addUser(user: LocalUser): Long
 
     @Upsert
-    suspend fun upsertUser(user: UserTable)
-
-    @Insert
-    suspend fun insertUser(user:UserTable)
+    fun upsertUser(user: LocalUser)
 
     @Delete
-    suspend fun deleteUser(user:UserTable)
+    fun deleteUser(user: LocalUser)
+
+//    TODO("GET CURRENT USER")
+//    @Query("SELECT * FROM userentity LIMIT 1")
+//    fun getUser(): UserTable?
 }
