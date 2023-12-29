@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 val bundleId = "com.digitalarchitects.rmc_app"
@@ -53,11 +54,16 @@ android {
     }
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 dependencies {
-    val composeVersion = "1.5.4"
-    val lifecycleVersion = "2.6.2"
-    val navVersion = "2.7.6"
-    val roomVersion = "2.5.0"
+    val composeVersion: String by rootProject.extra
+    val lifecycleVersion: String by rootProject.extra
+    val navVersion: String by rootProject.extra
+    val roomVersion: String by rootProject.extra
+    val hiltVersion: String by rootProject.extra
 
     // Splash API
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -89,17 +95,27 @@ dependencies {
 
     // Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.44.0")
 
     // Retrofit
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
+    // Dagger Hilt
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    ksp("com.google.dagger:hilt-compiler:$hiltVersion")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
     // Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
 
     // JUnit test
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
 
     // Coroutines test
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
