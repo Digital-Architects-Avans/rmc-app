@@ -2,16 +2,18 @@ package com.digitalarchitects.rmc_app.data.rentoutmycar
 
 import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
-import com.digitalarchitects.rmc_app.room.RentalDao
-import com.digitalarchitects.rmc_app.room.VehicleDao
+import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
+import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-data class RentOutMyCarViewModel(
-    private val vehicleDao: VehicleDao,
-    private val rentalDao: RentalDao
-
+@HiltViewModel
+class RentOutMyCarViewModel @Inject constructor(
+    private val vehicleRepository: VehicleRepository,
+    private val rentalRepository: RentalRepository
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
