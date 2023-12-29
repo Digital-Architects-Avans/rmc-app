@@ -4,14 +4,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.digitalarchitects.rmc_app.model.RentalStatus
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
 
 @Entity
-@TypeConverters(LocalDateConverter::class)
-class RentalTable(
+@TypeConverters(Converters::class)
+class LocalRental(
     val vehicleId: Int,
     val userId: Int,
-    @TypeConverters(LocalDateConverter::class)
     val date: LocalDate,
     val price: Double,
     val latitude: Float = 50.50f,
