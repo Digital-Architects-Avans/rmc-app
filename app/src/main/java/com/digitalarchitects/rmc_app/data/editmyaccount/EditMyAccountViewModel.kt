@@ -3,9 +3,11 @@ package com.digitalarchitects.rmc_app.data.editmyaccount
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.data.mapper.toUser
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.model.UserType
-import com.digitalarchitects.rmc_app.room.UserDao
-import com.digitalarchitects.rmc_app.room.UserTable
+import com.digitalarchitects.rmc_app.room.LocalUser
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,10 +16,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
-class EditMyAccountViewModel(
-    private val userDao: UserDao,
+@HiltViewModel
+class EditMyAccountViewModel @Inject constructor(
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
@@ -32,7 +36,7 @@ class EditMyAccountViewModel(
                 try {
                     runBlocking {
                         val getUser = withContext(Dispatchers.IO) {
-                            userDao.getUserById()
+                            userRepository.getUserById(1)
                         }
                         val email = getUser.email
                         val firstName = getUser.firstName
@@ -62,7 +66,7 @@ class EditMyAccountViewModel(
 
             is EditMyAccountUIEvent.InsertUser -> {
                 try {
-                    val user = UserTable(
+                    val user = LocalUser(
                         email = "john.doe@example.com",
                         userType = UserType.CLIENT,
                         firstName = "John",
@@ -78,7 +82,7 @@ class EditMyAccountViewModel(
 
                     runBlocking {
                         withContext(Dispatchers.IO) {
-                            userDao.insertUser(user)
+                            userRepository.addUser(user.toUser())
                         }
 
                         _state.value = _state.value.copy(
@@ -190,7 +194,7 @@ class EditMyAccountViewModel(
 //                val id = state.value.id
                 // TODO ADD MORE PROPERTIES TO IF
 
-                val updatedUser = UserTable(
+                val updatedUser = LocalUser(
                     email = email,
                     firstName = firstName,
                     lastName = lastName,
@@ -203,7 +207,7 @@ class EditMyAccountViewModel(
                 )
                 runBlocking {
                     withContext(Dispatchers.IO) {
-                        userDao.upsertUser(user = updatedUser)
+                        userRepository.updateUser(updatedUser.toUser())
                     }
                 }
                 _navigateToScreen.value = RmcScreen.MyAccount
