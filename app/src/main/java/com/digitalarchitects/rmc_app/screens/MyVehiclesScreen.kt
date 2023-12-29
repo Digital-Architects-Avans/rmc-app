@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,10 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcAppBar
-import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesUIEvent
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
-import com.digitalarchitects.rmc_app.model.Vehicle
+import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicle
 
 // BottomSheets and scaffolds, used resources below:
 // https://developer.android.com/reference/kotlin/androidx/compose/material/package-summary#BottomSheetScaffold(kotlin.Function1,androidx.compose.ui.Modifier,androidx.compose.material.BottomSheetScaffoldState,kotlin.Function0,kotlin.Function1,kotlin.Function0,androidx.compose.material.FabPosition,kotlin.Boolean,androidx.compose.ui.graphics.Shape,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,kotlin.Function1)
@@ -120,7 +118,7 @@ fun MyVehiclesScreen(
         }
 
         @Composable
-        fun VehicleListItem(vehicle: Vehicle) {
+        fun VehicleListItem(vehicle: DummyVehicle) {
 
             Row(modifier = Modifier.height(92.dp)) {
 
