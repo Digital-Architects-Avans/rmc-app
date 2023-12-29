@@ -3,29 +3,35 @@ package com.digitalarchitects.rmc_app.room
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VehicleDao {
 
-    @Query("SELECT * FROM vehicletable ORDER BY id ASC")
-    fun getVehiclesOrderedById(): Flow<List<VehicleTable>>
+    @Query("SELECT * FROM LocalVehicle ORDER BY id ASC")
+    suspend fun getAllVehicles(): List<LocalVehicle>
 
-//     TODO GET CURRENT Vehicle
-//    @Query("SELECT * FROM vehicletable LIMIT 1")
-//    fun getVehicle(): VehicleTable
+    @Query("SELECT * FROM LocalVehicle WHERE id = :vehicleId")
+    suspend fun getVehicleById(vehicleId: Int): LocalVehicle
 
-    @Query("SELECT model FROM vehicletable LIMIT 1")
-    fun getVehicleModel(): String?
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAllVehicles(vehicles: List<LocalVehicle>)
 
-    @Upsert
-    suspend fun upsertVehicle(vehicle: VehicleTable)
+    @Query("SELECT model FROM LocalVehicle WHERE id = :vehicleId")
+    suspend fun getVehicleModel(vehicleId: Int): String?
 
     @Insert
-    suspend fun insertUser(vehicle: VehicleTable)
+    suspend fun insertVehicle(vehicle: LocalVehicle): Long
+
+    @Upsert
+    suspend fun upsertVehicle(vehicle: LocalVehicle)
 
     @Delete
-    suspend fun deleteVehicle(vehicle: VehicleTable)
+    suspend fun deleteVehicle(vehicle: LocalVehicle)
+
+//     TODO GET CURRENT Vehicle
+//    @Query("SELECT * FROM VehicleEntity LIMIT 1")
+//    fun getVehicle(): VehicleTable
 }
