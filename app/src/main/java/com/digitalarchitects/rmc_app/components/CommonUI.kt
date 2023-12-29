@@ -452,11 +452,16 @@ fun HyperlinkTextComponent(
  * Stateless Button Composables
  */
 @Composable
-fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boolean = true) {
+fun ButtonComponent(
+    value: String, onButtonClicked: () -> Unit,
+    isEnabled: Boolean = true,
+    modifier: Modifier = Modifier
+) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(48.dp),
+            .heightIn(48.dp)
+            .padding(4.dp),
         onClick = {
             onButtonClicked.invoke()
         },
@@ -483,7 +488,7 @@ fun ButtonComponent(value: String, onButtonClicked: () -> Unit, isEnabled: Boole
                 text = value,
                 fontSize = 18.sp,
                 color = Color.White,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Normal
             )
 
         }
