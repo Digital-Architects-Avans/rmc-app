@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.digitalarchitects.rmc_app.model.UserType
 
 @Entity
-data class UserTable(
+data class LocalUser(
     val email: String,
     val userType: UserType = UserType.CLIENT,
     val firstName: String,
@@ -15,7 +15,7 @@ data class UserTable(
     val buildingNumber: String,
     val zipCode: String,
     val city: String,
-    val imageResourceId: Int = 0,
+    val imageResourceId: Int? = 0,
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int
 )
