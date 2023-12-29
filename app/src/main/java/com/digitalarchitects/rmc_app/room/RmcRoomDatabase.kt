@@ -3,12 +3,12 @@ package com.digitalarchitects.rmc_app.room
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import kotlinx.datetime.LocalDate
 
 @Database(
     version = 1,
-    entities = [UserTable::class, VehicleTable::class, RentalTable::class]
+    entities = [LocalUser::class, LocalVehicle::class, LocalRental::class],
+    exportSchema = false
 )
 abstract class RmcRoomDatabase : RoomDatabase() {
     abstract val userDao: UserDao
@@ -16,17 +16,14 @@ abstract class RmcRoomDatabase : RoomDatabase() {
     abstract val rentalDao: RentalDao
 }
 
-class LocalDateConverter {
-
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-
+class Converters {
     @TypeConverter
-    fun fromLocalDate(value: LocalDate?): String? {
-        return value?.format(formatter)
+    fun fromLocalDate(value: String?): LocalDate? {
+        return value?.let { LocalDate.parse(it) }
     }
 
     @TypeConverter
-    fun toLocalDate(value: String?): LocalDate? {
-        return value?.let { LocalDate.parse(it, formatter) }
+    fun toLocalDate(date: LocalDate?): String? {
+        return date?.toString()
     }
 }
