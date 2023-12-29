@@ -16,6 +16,7 @@ import org.junit.runner.Description
  * getUsers() function from the view model.
  */
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TestDispatcherRule @OptIn(ExperimentalCoroutinesApi::class) constructor(
     val testDispatcher: TestDispatcher = UnconfinedTestDispatcher(),
 ) : TestWatcher() {
