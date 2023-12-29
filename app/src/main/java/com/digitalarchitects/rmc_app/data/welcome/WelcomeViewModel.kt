@@ -2,10 +2,13 @@ package com.digitalarchitects.rmc_app.data.welcome
 
 import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class WelcomeViewModel : ViewModel() {
+@HiltViewModel
+class WelcomeViewModel @Inject constructor() : ViewModel() {
 
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
