@@ -1,7 +1,7 @@
 package com.digitalarchitects.rmc_app.model
 
-import java.math.BigDecimal
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
+import kotlinx.serialization.Serializable
 
 enum class RentalStatus(val status: String) {
     PENDING("PENDING"),
@@ -9,14 +9,16 @@ enum class RentalStatus(val status: String) {
     DENIED("DENIED"),
     CANCELLED("CANCELLED")
 }
+
+@Serializable
 data class Rental(
     val id: Int,
     val vehicleId: Int,
     val userId: Int,
     val date: LocalDate,
     val price: Double,
-    val latitude: BigDecimal,
-    val longitude: BigDecimal,
+    val latitude: Float,
+    val longitude: Float,
     val status: RentalStatus,
     val distanceTravelled: Double,
     val score: Int
