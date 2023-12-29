@@ -4,4 +4,11 @@ plugins {
     id("com.android.library") version "8.1.1" apply false
     id("org.jetbrains.kotlin.android") version "1.8.10" apply false
     id("com.google.devtools.ksp") version "1.9.10-1.0.13" apply false
+    id("com.google.dagger.hilt.android") version "2.48" apply false
 }
+
+val composeVersion by extra { "1.5.4" }
+val lifecycleVersion by extra { "2.6.2" }
+val navVersion by extra { "2.7.6" }
+val roomVersion by extra { "2.5.0" }
+val hiltVersion by extra { "2.48" }
