@@ -44,7 +44,8 @@ object HiltModule {
     fun providesRetrofit(json: Json): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(
-                json.asConverterFactory("application/json".toMediaType()))
+                json.asConverterFactory("application/json".toMediaType())
+            )
             .baseUrl("http://10.0.2.2:8080/")
             .build()
     }
@@ -62,25 +63,43 @@ object HiltModule {
     }
 
     @Provides
-    fun providesRoomDatabaseRepo(database: RmcRoomDatabase): RmcRoomDatabaseRepo {
-        return RmcRoomDatabaseRepoImpl(database.userDao, database.vehicleDao, database.rentalDao)
+    fun providesRoomDatabaseRepo(
+        database: RmcRoomDatabase
+    ): RmcRoomDatabaseRepo {
+        return RmcRoomDatabaseRepoImpl(
+            database.userDao,
+            database.vehicleDao,
+            database.rentalDao
+        )
     }
 
     @Provides
     @Singleton
-    fun providesUserRepo(db: RmcRoomDatabaseRepo, api: RmcApiService, @IoDispatcher dispatcher: CoroutineDispatcher): UserRepository {
+    fun providesUserRepo(
+        db: RmcRoomDatabaseRepo,
+        api: RmcApiService,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): UserRepository {
         return UserRepositoryImpl(db, api, dispatcher)
     }
 
     @Provides
     @Singleton
-    fun providesVehicleRepo(db: RmcRoomDatabaseRepo, api: RmcApiService, @IoDispatcher dispatcher: CoroutineDispatcher): VehicleRepository {
+    fun providesVehicleRepo(
+        db: RmcRoomDatabaseRepo,
+        api: RmcApiService,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): VehicleRepository {
         return VehicleRepositoryImpl(db, api, dispatcher)
     }
 
     @Provides
     @Singleton
-    fun providesRentalRepo(db: RmcRoomDatabaseRepo, api: RmcApiService, @IoDispatcher dispatcher: CoroutineDispatcher): RentalRepository {
+    fun providesRentalRepo(
+        db: RmcRoomDatabaseRepo,
+        api: RmcApiService,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): RentalRepository {
         return RentalRepositoryImpl(db, api, dispatcher)
     }
 
