@@ -1,7 +1,5 @@
 package com.digitalarchitects.rmc_app.room
 
-import kotlinx.datetime.LocalDate
-
 class RmcRoomDatabaseRepoImpl(
     private val userDao: UserDao,
     private val vehicleDao: VehicleDao,
