@@ -11,6 +11,8 @@ import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.remote.RmcApiService
+import com.digitalarchitects.rmc_app.remote.dto.user.SigninDTO
+import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -85,11 +87,16 @@ class UserRepositoryImpl(
     }
 
     /** Adds new [User] to both remote and local data source */
-    override suspend fun addUser(user: User) {
-        val newId = rmcRoomDatabase.addUserToLocalDb(user.toLocalUser())
-        val id = newId.toInt()
-        rmcApiService.updateUser(
-            "Bearer $token", id, user.toRemoteUser().copy(id = id)
+    override suspend fun addUser(user: User, signupDTO: SignupDTO) {
+        rmcRoomDatabase.addUserToLocalDb(user.toLocalUser())
+        rmcApiService.addUser(
+            signupDTO
+        )
+    }
+
+    override suspend fun authenticateUser(signinDTO: SigninDTO) {
+        rmcApiService.authenticateUser(
+            signinDTO
         )
     }
 

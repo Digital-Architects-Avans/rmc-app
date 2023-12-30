@@ -12,6 +12,7 @@ import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 import com.digitalarchitects.rmc_app.model.Rental
 import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.remote.RmcApiService
+import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -82,11 +83,10 @@ class RentalRepositoryImpl(
         return rmcRoomDatabase.getRentalByIdFromLocalDb(rentalId).toRental()
     }
 
-    override suspend fun addRental(rental: Rental) {
-        val newId = rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
-        val id = newId.toInt()
-        rmcApiService.updateRental(
-            "Bearer $token", id, rental.toRemoteRental().copy(id = id)
+    override suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental) {
+        rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
+        rmcApiService.addRental(
+            "Bearer $token", createRentalDTO
         )
     }
 

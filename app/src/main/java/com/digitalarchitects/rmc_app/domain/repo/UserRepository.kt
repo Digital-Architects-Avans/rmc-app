@@ -1,6 +1,8 @@
 package com.digitalarchitects.rmc_app.domain.repo
 
 import com.digitalarchitects.rmc_app.model.User
+import com.digitalarchitects.rmc_app.remote.dto.user.SigninDTO
+import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
 
 /**
  * Repository retrieves User data from underlying data source (remote and local).
@@ -20,7 +22,10 @@ interface UserRepository {
     suspend fun getUserById(userId: Int): User
 
     /** Adds [User] to the underlying data source */
-    suspend fun addUser(user: User)
+    suspend fun addUser(user: User, signupDTO: SignupDTO)
+
+    /** Authenticates a [User] to the underlying data source */
+    suspend fun authenticateUser(signinDTO: SigninDTO)
 
     /** Updates the [User] to the underlying data source */
     suspend fun updateUser(user: User)

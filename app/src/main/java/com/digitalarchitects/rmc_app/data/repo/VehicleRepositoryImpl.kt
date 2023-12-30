@@ -9,9 +9,9 @@ import com.digitalarchitects.rmc_app.data.mapper.toRemoteVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
-import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.remote.RmcApiService
+import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -32,7 +32,7 @@ class VehicleRepositoryImpl(
     // Currently use this global variable to store the token declared in [RmcApplication.GlobalVariables
     private val token = RmcApplication.GlobalVariables.token
 
-    /** Fetches data from remote, updates local data source, returns users from local data source */
+    /** Fetches data from remote, updates local data source, returns list of [Vehicle] from local data source */
     override suspend fun getAllVehicles(): List<Vehicle> {
         getAllVehiclesFromRemote()
         return rmcRoomDatabase.getAllVehiclesFromLocalDb().toVehicleListFromLocal()
@@ -83,11 +83,10 @@ class VehicleRepositoryImpl(
         return rmcRoomDatabase.getVehicleByIdFromLocalDb(vehicleId).toVehicle()
     }
 
-    override suspend fun addVehicle(vehicle: Vehicle) {
-        val newId = rmcRoomDatabase.addVehicleToLocalDb(vehicle.toLocalVehicle())
-        val id = newId.toInt()
-        rmcApiService.updateVehicle(
-            "Bearer $token", id, vehicle.toRemoteVehicle().copy(id = id)
+    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO, vehicle: Vehicle) {
+        rmcRoomDatabase.addVehicleToLocalDb(vehicle.toLocalVehicle())
+        rmcApiService.addVehicle(
+            "Bearer $token", createVehicleDTO
         )
     }
 
@@ -98,7 +97,7 @@ class VehicleRepositoryImpl(
         )
     }
 
-    override suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit>  {
+    override suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit> {
         return try {
             val response = rmcApiService.deleteVehicle(
                 "Bearer $token", vehicle.id
@@ -108,7 +107,8 @@ class VehicleRepositoryImpl(
                 Log.i("API_DELETE", "Vehicle deleted successfully: ${vehicle.id}")
                 Result.success(Unit)
             } else {
-                val errorMessage = "Error deleting vehicle: ${response.code()}\n${response.message()}"
+                val errorMessage =
+                    "Error deleting vehicle: ${response.code()}\n${response.message()}"
                 Log.e("API_DELETE", errorMessage)
                 Result.failure(Exception(errorMessage))
             }
@@ -118,6 +118,7 @@ class VehicleRepositoryImpl(
                     Log.e("HTTP", "Error: Could not delete vehicle", e)
                     Result.failure(e)
                 }
+
                 else -> {
                     Log.e("HTTP", "Unexpected error during vehicle deletion", e)
                     Result.failure(e)
@@ -126,7 +127,7 @@ class VehicleRepositoryImpl(
         }
     }
 
-    /** Returns the first name of [User] */
+    /** Returns the model name of [Vehicle] */
     override suspend fun getVehicleModel(vehicleId: Int): String? {
         return rmcRoomDatabase.getVehicleModel(vehicleId)
     }

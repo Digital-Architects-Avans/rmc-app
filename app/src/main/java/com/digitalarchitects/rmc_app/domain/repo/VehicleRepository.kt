@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.domain.repo
 
 import com.digitalarchitects.rmc_app.model.Vehicle
+import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
 
 /**
  * Repository retrieves Vehicle data from underlying data source (remote and local).
@@ -20,7 +21,7 @@ interface VehicleRepository {
     suspend fun getVehicleById(vehicleId: Int): Vehicle?
 
     /** Adds [Vehicle] to the underlying data source */
-    suspend fun addVehicle(vehicle: Vehicle)
+    suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO, vehicle: Vehicle)
 
     /** Updates the [Vehicle] to the underlying data source */
     suspend fun updateVehicle(vehicle: Vehicle)
