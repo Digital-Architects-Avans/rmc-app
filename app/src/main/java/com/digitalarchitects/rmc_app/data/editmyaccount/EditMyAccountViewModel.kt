@@ -82,7 +82,8 @@ class EditMyAccountViewModel @Inject constructor(
 
                     runBlocking {
                         withContext(Dispatchers.IO) {
-                            userRepository.addUser(user.toUser())
+                        // TODO("Implement UI logic to add user database")
+                        //userRepository.addUser(user.toUser())
                         }
 
                         _state.value = _state.value.copy(

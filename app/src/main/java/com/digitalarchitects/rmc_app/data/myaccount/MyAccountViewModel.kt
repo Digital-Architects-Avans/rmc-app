@@ -2,7 +2,6 @@ package com.digitalarchitects.rmc_app.data.myaccount
 
 import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
-import com.digitalarchitects.rmc_app.data.mapper.toUser
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.model.UserType
 import com.digitalarchitects.rmc_app.room.LocalUser
@@ -56,7 +55,8 @@ class MyAccountViewModel @Inject constructor(
                     )
                     runBlocking {
                         val firstName = withContext(Dispatchers.IO) {
-                            userRepository.addUser(localUser.toUser())
+                            // TODO("Implement UI logic to add user database")
+                            // userRepository.addUser(localUser.toUser())
                         }
                         _state.value = _state.value.copy(firstName = "$firstName")
                     }
