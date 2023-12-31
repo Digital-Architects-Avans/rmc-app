@@ -1,11 +1,11 @@
 package com.digitalarchitects.rmc_app.data.editmyvehicle
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.model.EngineType
-import com.digitalarchitects.rmc_app.room.VehicleDao
-import com.digitalarchitects.rmc_app.room.VehicleTable
+import com.digitalarchitects.rmc_app.model.Vehicle
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,10 +13,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class EditMyVehicleViewModel(
-    private val vehicleDao: VehicleDao
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val vehicleRepository: VehicleRepository,
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
@@ -49,7 +50,7 @@ class EditMyVehicleViewModel(
                         val price = _uiState.value.price
                         val availability = _uiState.value.availability
 
-                        val updatedVehicle = VehicleTable(
+                        val updatedVehicle = Vehicle(
                             id = id,
                             userId = userId,
                             brand = brand,
@@ -58,13 +59,13 @@ class EditMyVehicleViewModel(
                             vehicleClass = vehicleClass,
                             engineType = engineType,
                             licensePlate = licensePlate,
-                            imgLink = imgLink,
+                            imgLink = imgLink.toString(),
                             latitude = latitude,
                             longitude = longitude,
                             price = price,
                             availability = availability
                         )
-                        vehicleDao.upsertVehicle(vehicle = updatedVehicle)
+                        vehicleRepository.updateVehicle(vehicle = updatedVehicle)
                     }
                     _navigateToScreen.value = RmcScreen.MyVehicles
 
@@ -190,36 +191,37 @@ class EditMyVehicleViewModel(
                 try {
                     val scope = CoroutineScope(Dispatchers.IO)
                     scope.launch {
-                        val getVehicle = vehicleDao.getVehicleById()
-                        val id = getVehicle.id
-                        val userId = getVehicle.userId
-                        val brand = getVehicle.brand
-                        val model = getVehicle.model
-                        val year = getVehicle.year
-                        val vehicleClass = getVehicle.vehicleClass
-                        val engineType = getVehicle.engineType
-                        val licensePlate = getVehicle.licensePlate
-                        val imgLink = getVehicle.imgLink
-                        val latitude = getVehicle.latitude
-                        val longitude = getVehicle.longitude
-                        val price = getVehicle.price
-                        val availability = getVehicle.availability
+                        val getVehicle = vehicleRepository.getVehicleById(1)
+                        val id = getVehicle?.id
+                        val userId = getVehicle?.userId
+                        val brand = getVehicle?.brand
+                        val model = getVehicle?.model
+                        val year = getVehicle?.year
+                        val vehicleClass = getVehicle?.vehicleClass
+                        val engineType = getVehicle?.engineType
+                        val licensePlate = getVehicle?.licensePlate
+                        val imgLink = getVehicle?.imgLink
+                        val latitude = getVehicle?.latitude
+                        val longitude = getVehicle?.longitude
+                        val price = getVehicle?.price
+                        val availability = getVehicle?.availability
 
-                        _state.value = _state.value.copy(
-                            id = id,
-                            userId = userId,
-                            brand = brand,
-                            model = model,
-                            year = year,
-                            vehicleClass = vehicleClass,
-                            engineType = engineType,
-                            licensePlate = licensePlate,
-                            imgLink = imgLink,
-                            latitude = latitude,
-                            longitude = longitude,
-                            price = price,
-                            availability = availability
-                        )
+                       // TODO ("Fix after merge")
+//                        _state.value = _state.value.copy(
+//                            id = id,
+//                            userId = userId,
+//                            brand = brand,
+//                            model = model,
+//                            year = year,
+//                            vehicleClass = vehicleClass,
+//                            engineType = engineType,
+//                            licensePlate = licensePlate,
+//                            imgLink = imgLink,
+//                            latitude = latitude,
+//                            longitude = longitude,
+//                            price = price,
+//                            availability = availability
+//                        )
                     }
 
 

@@ -1,7 +1,5 @@
 package com.digitalarchitects.rmc_app.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +42,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -348,27 +345,26 @@ fun RentACarScreen(
                         ) {
                             vehicleDetails.forEach { vehicle ->
                                 RmcVehicleListItem(
-                                    vehicle,
-                                    onClick = { vehicleId ->
-                                        scope.launch { listBottomSheet.hide() }.invokeOnCompletion {
-                                            viewModel.onEvent(
-                                                RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId)
-                                            )
-                                        }
-                                        cameraPositionState.move(
-                                            CameraUpdateFactory.newLatLng(
-                                                LatLng(
-                                                    vehicle.latitude.toDouble(),
-                                                    vehicle.longitude.toDouble()
-                                                )
+                                    vehicle
+                                ) { vehicleId ->
+                                    scope.launch { listBottomSheet.hide() }.invokeOnCompletion {
+                                        viewModel.onEvent(
+                                            RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId)
+                                        )
+                                    }
+                                    cameraPositionState.move(
+                                        CameraUpdateFactory.newLatLng(
+                                            LatLng(
+                                                vehicle.latitude.toDouble(),
+                                                vehicle.longitude.toDouble()
                                             )
                                         )
-                                        scope.launch {
-                                            delay(400L)
-                                            detailsBottomSheet.bottomSheetState.partialExpand()
-                                        }
+                                    )
+                                    scope.launch {
+                                        delay(400L)
+                                        detailsBottomSheet.bottomSheetState.partialExpand()
                                     }
-                                )
+                                }
                                 RmcDivider()
                             }
                         }

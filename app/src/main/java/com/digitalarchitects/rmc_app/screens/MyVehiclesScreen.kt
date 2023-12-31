@@ -41,11 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcAppBar
-import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsUIEvent
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesUIEvent
 import com.digitalarchitects.rmc_app.data.myvehicles.MyVehiclesViewModel
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicle
-import com.digitalarchitects.rmc_app.room.VehicleTable
+import com.digitalarchitects.rmc_app.room.LocalVehicle
 
 // BottomSheets and scaffolds, used resources below:
 // https://developer.android.com/reference/kotlin/androidx/compose/material/package-summary#BottomSheetScaffold(kotlin.Function1,androidx.compose.ui.Modifier,androidx.compose.material.BottomSheetScaffoldState,kotlin.Function0,kotlin.Function1,kotlin.Function0,androidx.compose.material.FabPosition,kotlin.Boolean,androidx.compose.ui.graphics.Shape,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,kotlin.Function1)
@@ -130,85 +129,84 @@ fun MyVehiclesScreen(
     }
 }
 
-        @Composable
-        fun VehicleListItem(vehicle: DummyVehicle) {
 @Composable
-fun VehicleListItem(vehicle: VehicleTable) {
+fun VehicleListItem(vehicle: DummyVehicle) {
+    @Composable
+    fun VehicleListItem(vehicle: LocalVehicle) {
 
-    Row(modifier = Modifier.height(92.dp)) {
+        Row(modifier = Modifier.height(92.dp)) {
 
-        Image(
-            painter = painterResource(id = vehicle.imgLink),
-            contentDescription = stringResource(R.string.vehicle),
-            modifier = Modifier
-                .padding(end = 6.dp)
-                .height(92.dp)
-                .width(92.dp)
-                .clip(shape = RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop
-        )
-        Column(
-            modifier = Modifier
-                .padding(start = 6.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceAround
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            Image(
+                painter = painterResource(id = R.drawable.civic),
+                contentDescription = stringResource(R.string.vehicle),
+                modifier = Modifier
+                    .padding(end = 6.dp)
+                    .height(92.dp)
+                    .width(92.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 6.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceAround
             ) {
-                Text(
-                    text = vehicle.licensePlate,
-                    color = Color.Red,
-                    fontSize = 16.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold
-                )
-                Box(
-                    modifier = Modifier
-                        .height(24.dp)
-                        .background(
-                            color = Color.DarkGray,
-                            shape = RoundedCornerShape(12.dp)
-                        )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        text = stringResource(R.string.available),
-                        color = Color.White,
+                        text = vehicle.licensePlate,
+                        color = Color.Red,
+                        fontSize = 16.sp,
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Bold
                     )
-                }
-            }
-            Text(
-                text = vehicle.model, fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.Place,
-                        contentDescription = stringResource(R.string.location)
-                    )
-                    Text(text = vehicle.latitude.toString())
-                }
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = stringResource(R.string.price)
-                    )
-                    Text(
-                        text = vehicle.price.toString(),
+                    Box(
                         modifier = Modifier
-                            .padding(end = 24.dp)
-                            .width(54.dp)
-                    )
-                }
-
+                            .height(24.dp)
+                            .background(
+                                color = Color.DarkGray,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            text = stringResource(R.string.available),
+                            color = Color.White,
+                        )
                     }
+                }
+                Text(
+                    text = vehicle.model, fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = stringResource(R.string.location)
+                        )
+                        Text(text = vehicle.latitude.toString())
+                    }
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = stringResource(R.string.price)
+                        )
+                        Text(
+                            text = vehicle.price.toString(),
+                            modifier = Modifier
+                                .padding(end = 24.dp)
+                                .width(54.dp)
+                        )
+                    }
+
                 }
             }
         }

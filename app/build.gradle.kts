@@ -4,7 +4,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("com.google.dagger.hilt.android")
 }
 

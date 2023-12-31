@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -48,13 +47,10 @@ import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.components.RmcSpacer
-import com.digitalarchitects.rmc_app.components.RmcUserIcon
-import com.digitalarchitects.rmc_app.components.SmallHeadingTextComponent
 import com.digitalarchitects.rmc_app.data.myrentals.MyRentalTab
 import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsUIEvent
 import com.digitalarchitects.rmc_app.data.myrentals.MyRentalsViewModel
-import com.digitalarchitects.rmc_app.data.rentoutmycar.RentalTab
-import com.digitalarchitects.rmc_app.room.RentalTable
+import com.digitalarchitects.rmc_app.room.LocalRental
 
 @Composable
 fun MyRentalsScreen(
@@ -122,7 +118,7 @@ fun MyRentalsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyRentalItem(rental :RentalTable) {
+fun MyRentalItem(rental :LocalRental) {
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)

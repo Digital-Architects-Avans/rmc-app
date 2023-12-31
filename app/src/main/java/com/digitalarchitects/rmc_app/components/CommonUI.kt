@@ -92,7 +92,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.model.Vehicle
+import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicle
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
 
 /*
@@ -938,7 +938,7 @@ fun RmcMapVehicleItem() {
 
 @Composable
 fun RmcVehicleListItem(
-    vehicle: Vehicle,
+    vehicle: DummyVehicle,
     onClick: (Int) -> Unit
 ) {
     Row(
@@ -956,7 +956,7 @@ fun RmcVehicleListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = vehicle.imgLink),
+            painter = painterResource(id = R.drawable.civic),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -1046,7 +1046,7 @@ fun RmcIconLabel(
 
 @Composable
 fun RmcVehicleDetails(
-    vehicle: Vehicle,
+    vehicle: DummyVehicle,
     showAvailability: Boolean
 ) {
     Column(
@@ -1107,7 +1107,7 @@ fun RmcVehicleDetails(
             .fillMaxWidth()
             .size(height = 160.dp, width = 20.dp),
         contentScale = ContentScale.Crop,
-        painter = painterResource(vehicle.imgLink),
+        painter = painterResource(R.drawable.civic),
         contentDescription = null
     )
     Column(
