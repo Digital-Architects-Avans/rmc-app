@@ -3,11 +3,15 @@ package com.digitalarchitects.rmc_app.components
 import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +28,19 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ToggleOff
+import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.rounded.DirectionsCar
+import androidx.compose.material.icons.rounded.LocalGasStation
+import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.PriceChange
+import androidx.compose.material.icons.rounded.Straighten
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -79,6 +92,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
 
 /*
@@ -140,6 +154,20 @@ fun RmcAppBar(
 @Composable
 fun RmcSpacer(height: Int = 24) {
     Spacer(modifier = Modifier.height(height.dp))
+}
+
+/**
+ * Default divider
+ */
+@Composable
+fun RmcDivider() {
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = dimensionResource(R.dimen.padding_medium)),
+        color = MaterialTheme.colorScheme.outlineVariant,
+        thickness = 1.dp
+    )
 }
 
 /**
@@ -837,3 +865,278 @@ fun RmcTopButton() {
     }
 }
 
+@Composable
+fun RmcSwitch(
+    value: Boolean,
+    onToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    size: Dp = 80.dp,
+    iconSize: Dp = 80.dp
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clickable { onToggle(!value) }
+    ) {
+        val icon = if (value) Icons.Default.ToggleOn else Icons.Default.ToggleOff
+        val tint = if (value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = tint,
+            modifier = Modifier.size(iconSize) // Set the size of the icon here
+        )
+    }
+}
+
+@Composable
+fun RmcMapVehicleCluster(
+    number: Int,
+) {
+    Surface(
+        modifier = Modifier
+            .size(dimensionResource(R.dimen.icon_size_large)),
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        border = BorderStroke(1.dp, Color.White)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            androidx.compose.material.Text(
+                text = number.toString(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+        }
+    }
+}
+
+@Composable
+fun RmcMapVehicleItem() {
+    Surface(
+        modifier = Modifier
+            .size(dimensionResource(R.dimen.icon_size_normal)),
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        border = BorderStroke(1.dp, Color.White)
+    ) {
+        Box {
+            Icon(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 2.dp, bottom = 4.dp),
+                imageVector = Icons.Rounded.DirectionsCar,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+fun RmcVehicleListItem(
+    vehicle: Vehicle,
+    onClick: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    color = Color.Black
+                ),
+                onClick = {
+                    onClick(vehicle.id)
+                }
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = vehicle.imgLink),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(dimensionResource(R.dimen.image_size_medium))
+                .clip(RoundedCornerShape(8.dp))
+        )
+        Column(
+            modifier = Modifier
+                .padding(start = dimensionResource(R.dimen.padding_large))
+        ) {
+            Text(
+                text = vehicle.licensePlate,
+                style = MaterialTheme.typography.displaySmall,
+                color = Color(0xFFC00000)
+            )
+            Text(
+                modifier = Modifier
+                    .padding(bottom = dimensionResource(R.dimen.padding_small)),
+                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RmcIconLabel(
+                    label = "Eindhoven",
+                    icon = Icons.Rounded.LocationOn
+                )
+                RmcIconLabel(
+                    label = vehicle.price.toString(),
+                    icon = Icons.Rounded.PriceChange
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RmcTextBadge(
+    label: String,
+    labelTextColor: Color,
+    labelBackgroundColor: Color
+) {
+    Surface(
+        color = labelBackgroundColor,
+        shape = RoundedCornerShape(50)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = labelTextColor,
+            modifier = Modifier
+                .padding(
+                    vertical = dimensionResource(R.dimen.padding_extra_small),
+                    horizontal = dimensionResource(R.dimen.padding_medium)
+                )
+        )
+    }
+}
+
+@Composable
+fun RmcIconLabel(
+    label: String,
+    icon: ImageVector,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier
+                .size(dimensionResource(R.dimen.icon_size_normal))
+                .padding(end = dimensionResource(R.dimen.padding_small)),
+            tint = MaterialTheme.colorScheme.secondary
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
+
+
+@Composable
+fun RmcVehicleDetails(
+    vehicle: Vehicle,
+    showAvailability: Boolean
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = vehicle.licensePlate,
+                style = MaterialTheme.typography.displayMedium,
+                color = Color(0xFFC00000)
+            )
+            if (showAvailability) {
+                if (!vehicle.availability) {
+                    RmcTextBadge(
+                        label = stringResource(R.string.available),
+                        labelTextColor = MaterialTheme.colorScheme.primary,
+                        labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                } else {
+                    RmcTextBadge(
+                        label = stringResource(R.string.unavailable),
+                        labelTextColor = MaterialTheme.colorScheme.error,
+                        labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                }
+            }
+        }
+        Text(
+            modifier = Modifier
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_large)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = "Eindhoven",
+                icon = Icons.Rounded.LocationOn
+            )
+            RmcIconLabel(
+                label = vehicle.price.toInt().toString(),
+                icon = Icons.Rounded.PriceChange
+            )
+        }
+    }
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(height = 160.dp, width = 20.dp),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(vehicle.imgLink),
+        contentDescription = null
+    )
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(
+                    top = dimensionResource(R.dimen.padding_large),
+                    bottom = dimensionResource(R.dimen.padding_small)
+                ),
+            text = "A cheap car to go away for a day.",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = vehicle.vehicleClass,
+                icon = Icons.Rounded.Straighten
+            )
+            RmcIconLabel(
+                label = vehicle.engineType.toString(),
+                icon = Icons.Rounded.LocalGasStation
+            )
+        }
+    }
+}

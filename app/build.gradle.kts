@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("com.google.devtools.ksp")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("com.google.dagger.hilt.android")
 }
 
@@ -54,10 +56,6 @@ android {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
 dependencies {
     val composeVersion: String by rootProject.extra
     val lifecycleVersion: String by rootProject.extra
@@ -84,6 +82,10 @@ dependencies {
     // Compose navigation
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // Maps
+    implementation("com.google.maps.android:maps-compose:4.3.0")
+    implementation("com.google.maps.android:maps-compose-utils:4.3.0")
 
     // Room
     ksp("androidx.room:room-compiler:$roomVersion")

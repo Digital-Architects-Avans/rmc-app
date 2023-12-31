@@ -25,8 +25,8 @@ class SearchViewModel @Inject constructor(
             price = 0.0,
             distance = 0,
             engineTypeIce = true,
-            engineTypeCev = true,
-            engineTypeFbev = true
+            engineTypeBev = false,
+            engineTypeFcev = true
         )
     }
 
@@ -64,13 +64,13 @@ class SearchViewModel @Inject constructor(
 
             is SearchUIEvent.EngineTypeCevChanged -> {
                 _uiState.value = _uiState.value.copy(
-                    engineTypeCev = !event.selected
+                    engineTypeBev = !event.selected
                 )
             }
 
             is SearchUIEvent.EngineTypeFbevChanged -> {
                 _uiState.value = _uiState.value.copy(
-                    engineTypeFbev = !event.selected
+                    engineTypeFcev = !event.selected
                 )
             }
 
@@ -96,8 +96,8 @@ class SearchViewModel @Inject constructor(
             price = 0.0,
             distance = 0,
             engineTypeIce = true,
-            engineTypeCev = true,
-            engineTypeFbev = true
+            engineTypeBev = true,
+            engineTypeFcev = true
         )
     }
 }
