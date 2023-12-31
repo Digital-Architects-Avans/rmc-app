@@ -17,5 +17,5 @@ data class LocalUser(
     val city: String,
     val imageResourceId: Int? = 0,
     @PrimaryKey(autoGenerate = true)
-    val id: Int
+    val id: Int?
 )

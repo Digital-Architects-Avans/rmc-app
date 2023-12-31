@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RemoteUser (
-    val id: Int,
+    val id: Int?,
     val email: String,
     val userType: UserType,
     val firstName: String,
