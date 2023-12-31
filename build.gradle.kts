@@ -7,6 +7,12 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.48" apply false
 }
 
+buildscript {
+    dependencies {
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+    }
+}
+
 val composeVersion by extra { "1.5.4" }
 val lifecycleVersion by extra { "2.6.2" }
 val navVersion by extra { "2.7.6" }

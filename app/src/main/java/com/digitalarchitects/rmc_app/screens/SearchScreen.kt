@@ -162,8 +162,8 @@ fun SearchScreen(
                         }
                         Column(Modifier.weight(1f)) {
                             RmcFilterChip(
-                                label = stringResource(id = R.string.engine_type_cev),
-                                selected = uiState.engineTypeCev,
+                                label = stringResource(id = R.string.engine_type_bev),
+                                selected = uiState.engineTypeBev,
                                 onClick = {
                                  //   TODO
                                 }
@@ -171,8 +171,8 @@ fun SearchScreen(
                         }
                         Column(Modifier.weight(1f)) {
                             RmcFilterChip(
-                                label = stringResource(id = R.string.engine_type_fbev),
-                                selected = uiState.engineTypeFbev,
+                                label = stringResource(id = R.string.engine_type_fcev),
+                                selected = uiState.engineTypeFcev,
                                 onClick = {
                                   // TODO
                                 }

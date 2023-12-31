@@ -5,6 +5,8 @@ import com.digitalarchitects.rmc_app.data.mapper.toUser
 import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.model.User
+import com.digitalarchitects.rmc_app.remote.dto.user.SigninDTO
+import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
 
 // Class inherits from userRepository interface overrides the getUsers() fun to return fake data.
 class FakeUserRepository : UserRepository {
@@ -24,7 +26,11 @@ class FakeUserRepository : UserRepository {
         return FakeLocalDataSource.userList.first { it.id == userId }.toUser()
     }
 
-    override suspend fun addUser(user: User) {
+    override suspend fun addUser(user: User, signupDTO: SignupDTO) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun authenticateUser(signinDTO: SigninDTO) {
         TODO("Not yet implemented")
     }
 
