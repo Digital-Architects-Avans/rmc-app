@@ -1,6 +1,8 @@
 package com.digitalarchitects.rmc_app.data.di
 
+import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.digitalarchitects.rmc_app.data.repo.RentalRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.UserRepositoryImpl
@@ -12,7 +14,6 @@ import com.digitalarchitects.rmc_app.remote.RmcApiService
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepoImpl
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +21,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -43,9 +44,7 @@ object HiltModule {
     @Provides
     fun providesRetrofit(json: Json): Retrofit {
         return Retrofit.Builder()
-            .addConverterFactory(
-                json.asConverterFactory("application/json".toMediaType())
-            )
+            .addConverterFactory(MoshiConverterFactory.create())
             .baseUrl("http://10.0.2.2:8080/")
             .build()
     }
@@ -78,9 +77,10 @@ object HiltModule {
     fun providesUserRepo(
         db: RmcRoomDatabaseRepo,
         api: RmcApiService,
+        prefs: SharedPreferences,
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): UserRepository {
-        return UserRepositoryImpl(db, api, dispatcher)
+        return UserRepositoryImpl(db, api, prefs, dispatcher)
     }
 
     @Provides
@@ -101,6 +101,12 @@ object HiltModule {
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): RentalRepository {
         return RentalRepositoryImpl(db, api, dispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPref(app: Application): SharedPreferences {
+        return app.getSharedPreferences("prefs", Context.MODE_PRIVATE)
     }
 
 }
