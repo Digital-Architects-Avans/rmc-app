@@ -1,21 +1,33 @@
 package com.digitalarchitects.rmc_app.data.register
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.data.auth.AuthResult
+import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
+import com.digitalarchitects.rmc_app.model.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor()  : ViewModel() {
+class RegisterViewModel @Inject constructor(
+    private val userRepository: UserRepository
+)  : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
 
-    // Login UI state
     private val _uiState = MutableStateFlow(RegisterUIState())
     val uiState: StateFlow<RegisterUIState> = _uiState.asStateFlow()
+
+    private val resultChannel = Channel<AuthResult<Unit>>()
+    val authResult = resultChannel.receiveAsFlow()
 
     fun onEvent(event: RegisterUIEvent) {
         when (event) {
@@ -74,8 +86,7 @@ class RegisterViewModel @Inject constructor()  : ViewModel() {
             }
 
             is RegisterUIEvent.RegisterButtonClicked -> {
-                register()
-                _navigateToScreen.value = RmcScreen.RentACar
+                signUp()
             }
 
             is RegisterUIEvent.PrivacyPolicyCheckBoxClicked -> {
@@ -91,10 +102,44 @@ class RegisterViewModel @Inject constructor()  : ViewModel() {
             is RegisterUIEvent.LoginButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.Login
             }
+
+            is RegisterUIEvent.Authorized -> {
+                _navigateToScreen.value = RmcScreen.RmcTestScreen
+            }
+
+            is RegisterUIEvent.Unauthorized -> {
+                _navigateToScreen.value = RmcScreen.Welcome
+            }
+
+            is RegisterUIEvent.NoConnectionError -> {
+                _navigateToScreen.value = RmcScreen.Welcome
+            }
+
+            is RegisterUIEvent.UnknownError -> {
+                _navigateToScreen.value = RmcScreen.Welcome
+            }
         }
     }
 
-    private fun register() {
-        //TODO Implement register function (API) with validation
+    private fun signUp() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            val result = userRepository.signUp(
+                SignUpRequest(
+                    email = uiState.value.email,
+                    password = uiState.value.password,
+                    userType = UserType.CLIENT,
+                    firstName = uiState.value.firstName,
+                    lastName = uiState.value.lastName,
+                    phone = uiState.value.telephone,
+                    street = uiState.value.address,
+                    buildingNumber = uiState.value.buildingNumber,
+                    zipCode = uiState.value.postalCode,
+                    city = uiState.value.city
+                )
+            )
+            resultChannel.send(result)
+            _uiState.value = _uiState.value.copy(isLoading = false)
+        }
     }
 }
