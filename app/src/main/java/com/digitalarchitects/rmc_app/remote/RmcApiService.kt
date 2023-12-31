@@ -1,10 +1,11 @@
 package com.digitalarchitects.rmc_app.remote
 
+import com.digitalarchitects.rmc_app.data.auth.AuthRequest
+import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
+import com.digitalarchitects.rmc_app.data.auth.TokenResponse
 import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.remote.dto.rental.RemoteRental
 import com.digitalarchitects.rmc_app.remote.dto.user.RemoteUser
-import com.digitalarchitects.rmc_app.remote.dto.user.SigninDTO
-import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
 import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.remote.dto.vehicle.RemoteVehicle
 import retrofit2.Response
@@ -23,11 +24,18 @@ import retrofit2.http.Path
  */
 interface RmcApiService {
 
-    @POST("user/signup")
-    suspend fun addUser(@Body signupDTO: SignupDTO): Response<Unit>
+    @POST("signup")
+    suspend fun signup(
+        @Body request: SignUpRequest)
 
-    @POST("user/signin")
-    suspend fun authenticateUser(@Body signinDTO: SigninDTO): Response<Unit>
+    @POST("signin")
+    suspend fun signin(
+        @Body request: AuthRequest): TokenResponse
+
+    @GET("authenticate")
+    suspend fun authenticate(
+        @Header("Authorization") token: String
+    )
 
     @GET("user/users")
     suspend fun getAllUsers(@Header("Authorization") token: String): List<RemoteUser>
