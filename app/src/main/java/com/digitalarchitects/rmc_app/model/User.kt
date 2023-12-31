@@ -9,7 +9,7 @@ enum class UserType {
 
 @Serializable
 data class User(
-    val id: Int,
+    val id: Int?,
     val email: String,
     val userType: UserType,
     val firstName: String,
