@@ -69,7 +69,7 @@ fun RmcApp(
 
     NavHost(
         navController = navController,
-        startDestination = RmcScreen.RmcTestScreen.name,
+        startDestination = RmcScreen.Welcome.name,
     ) {
         composable(route = RmcScreen.Welcome.name) {
             WelcomeScreen(
