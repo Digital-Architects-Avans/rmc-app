@@ -1,7 +1,11 @@
 package com.digitalarchitects.rmc_app.data.repo
 
+import android.content.SharedPreferences
 import android.util.Log
 import com.digitalarchitects.rmc_app.RmcApplication
+import com.digitalarchitects.rmc_app.data.auth.AuthRequest
+import com.digitalarchitects.rmc_app.data.auth.AuthResult
+import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.mapper.toLocalUser
 import com.digitalarchitects.rmc_app.data.mapper.toLocalUserListFromRemote
@@ -26,10 +30,97 @@ import java.net.UnknownHostException
 class UserRepositoryImpl(
     private val rmcRoomDatabase: RmcRoomDatabaseRepo,
     private val rmcApiService: RmcApiService,
+    private val prefs: SharedPreferences,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : UserRepository {
 
-    // TODO(): Add token dynamically to header after a user logs in
+    override suspend fun signUp(request: SignUpRequest): AuthResult<Unit> {
+        return try {
+            rmcApiService.signup(
+                 request = SignUpRequest(
+                    email = request.email,
+                    password = request.password,
+                    userType = request.userType,
+                    firstName = request.firstName,
+                    lastName = request.lastName,
+                    phone = request.phone,
+                    street = request.street,
+                    buildingNumber = request.buildingNumber,
+                    zipCode = request.zipCode,
+                    city = request.city,
+                )
+            )
+            signIn(request.email, request.password)
+        } catch (e: HttpException) {
+            if (e.code() == 401 || e.code() == 404) {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.Unauthorized()
+            } else {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.UnknownError()
+            }
+        } catch (e: ConnectException) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.NoConnectionError()
+        } catch (e: Exception) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.UnknownError()
+        }
+    }
+
+    override suspend fun signIn(username: String, password: String): AuthResult<Unit> {
+        return try {
+            val response = rmcApiService.signin(
+                request = AuthRequest(
+                    email = username,
+                    password = password
+                )
+            )
+            // Save the JWT token to shared preferences
+            prefs.edit().putString("jwtToken", response.token).apply()
+            Log.d("HTTP", "Signin successful")
+            AuthResult.Authorized()
+        } catch (e: HttpException) {
+            if (e.code() == 401 || e.code() == 404) {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.Unauthorized()
+            } else {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.UnknownError()
+            }
+        } catch (e: ConnectException) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.NoConnectionError()
+        } catch (e: Exception) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.UnknownError()
+        }
+    }
+
+    // Authenticate user using the JWT token stored in shared preferences
+    override suspend fun authenticate(): AuthResult<Unit> {
+        return try {
+            val token = prefs.getString("jwtToken", null) ?: return AuthResult.Authorized()
+            rmcApiService.authenticate("Bearer $token")
+            AuthResult.Authorized()
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.Unauthorized()
+            } else {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.UnknownError()
+            }
+        } catch (e: ConnectException) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.NoConnectionError()
+        } catch (e: Exception) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.UnknownError()
+        }
+    }
+
+    // TODO(): Add token dynamically to header after a user logs in using Interceptor
     // Currently use this global variable to store the token declared in [RmcApplication.GlobalVariables
     private val token = RmcApplication.GlobalVariables.token
 
@@ -89,15 +180,15 @@ class UserRepositoryImpl(
     /** Adds new [User] to both remote and local data source */
     override suspend fun addUser(user: User, signupDTO: SignupDTO) {
         rmcRoomDatabase.addUserToLocalDb(user.toLocalUser())
-        rmcApiService.addUser(
-            signupDTO
-        )
+//        rmcApiService.addUser(
+//            signupDTO
+//        )
     }
 
     override suspend fun authenticateUser(signinDTO: SigninDTO) {
-        rmcApiService.authenticateUser(
-            signinDTO
-        )
+//        rmcApiService.authenticateUser(
+//            signinDTO
+//        )
     }
 
     /** Updates [User] to both remote and local data source */
