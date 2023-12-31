@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.data.register
 
 data class RegisterUIState(
+    val isLoading: Boolean = false,
     var firstName: String = "",
     var lastName: String = "",
     var email: String = "",
@@ -11,4 +12,5 @@ data class RegisterUIState(
     var buildingNumber: String = "",
     var city: String = "",
     var privacyPolicyAccepted :Boolean = false
+
 )
