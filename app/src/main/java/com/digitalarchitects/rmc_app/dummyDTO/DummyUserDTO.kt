@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.dummyDTO
 
-import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.model.UserType
 
@@ -9,8 +8,10 @@ import com.digitalarchitects.rmc_app.model.UserType
  */
 fun DummyUserDTO(): User {
     return User(
-        id = 1, // Replace with an actual user ID
+        userId = "1", // Replace with an actual user ID
         email = "john.doe@example.com",
+        password = "password",
+        salt = "salt",
         userType = UserType.CLIENT, // Replace with the appropriate user type
         firstName = "John",
         lastName = "Doe",
@@ -18,8 +19,7 @@ fun DummyUserDTO(): User {
         street = "123 Main Street",
         buildingNumber = "A1",
         zipCode = "12345",
-        city = "Example City",
-        imageResourceId = R.drawable.usericon
+        city = "Example City"
     )
 }
 
