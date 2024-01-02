@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.data.repo
 
 import android.content.SharedPreferences
+import android.util.Base64
 import android.util.Log
 import com.digitalarchitects.rmc_app.data.auth.AuthRequest
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
@@ -17,6 +18,7 @@ import com.digitalarchitects.rmc_app.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -75,7 +77,17 @@ class UserRepositoryImpl(
             )
             // Save the JWT token to shared preferences
             prefs.edit().putString("jwtToken", response.token).apply()
-            Log.d("HTTP", "Signin successful")
+
+            // Get userId from JWT
+            val payload = response.token.split(".")[1]
+            val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
+            val decodedString = String(decodedBytes)
+            val jsonObject = JSONObject(decodedString)
+            val userId = jsonObject.optString("userId", null)
+
+            // Store userId in shared preferences
+            prefs.edit().putString("userId", userId).apply()
+
             AuthResult.Authorized()
         } catch (e: HttpException) {
             if (e.code() == 401 || e.code() == 404) {
