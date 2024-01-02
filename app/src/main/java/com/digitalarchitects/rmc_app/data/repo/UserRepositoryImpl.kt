@@ -8,15 +8,13 @@ import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.mapper.toLocalUser
-import com.digitalarchitects.rmc_app.data.mapper.toLocalUserListFromRemote
-import com.digitalarchitects.rmc_app.data.mapper.toRemoteUser
 import com.digitalarchitects.rmc_app.data.mapper.toUser
 import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.model.User
 import com.digitalarchitects.rmc_app.remote.RmcApiService
-import com.digitalarchitects.rmc_app.remote.dto.user.SigninDTO
 import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
+import com.digitalarchitects.rmc_app.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -159,10 +157,11 @@ class UserRepositoryImpl(
 
     // Update local Room cache with data from remote Retrofit API
     private suspend fun refreshRoomCache() {
-        val remoteUsers = rmcApiService.getAllUsers(
+        val users = rmcApiService.getAllUsers(
             "Bearer $token"
         )
-        rmcRoomDatabase.addAllUsersToLocalDb(remoteUsers.toLocalUserListFromRemote())
+        rmcRoomDatabase.clearUserCache()
+        rmcRoomDatabase.addAllUsersToLocalDb(users.toLocalUser())
     }
 
     /** Returns true if local data source does not contain any [User] data */
@@ -185,17 +184,13 @@ class UserRepositoryImpl(
 //        )
     }
 
-    override suspend fun authenticateUser(signinDTO: SigninDTO) {
-//        rmcApiService.authenticateUser(
-//            signinDTO
-//        )
-    }
-
     /** Updates [User] to both remote and local data source */
-    override suspend fun updateUser(user: User) {
-        rmcRoomDatabase.addUserToLocalDb(user.toLocalUser())
+    override suspend fun updateUser(userId: String, updatedUser: UpdateUserDTO) {
+        // Update remote data source
+        // Remove user from local data source
+        // Add updated user to local data source
         rmcApiService.updateUser(
-            "Bearer $token", user.id, user.toRemoteUser()
+            "Bearer $token", userId, updatedUser
         )
     }
 
@@ -203,11 +198,11 @@ class UserRepositoryImpl(
     override suspend fun deleteUser(user: User): Result<Unit> {
         return try {
             val response = rmcApiService.deleteUser(
-                "Bearer $token", user.id
+                "Bearer $token", user.userId
             )
 
             if (response.isSuccessful) {
-                Log.i("API_DELETE", "User deleted successfully: ${user.id}")
+                Log.i("API_DELETE", "User deleted successfully: ${user.userId}")
                 Result.success(Unit)
             } else {
                 val errorMessage = "Error deleting user: ${response.code()}\n${response.message()}"
