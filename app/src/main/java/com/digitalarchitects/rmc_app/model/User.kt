@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.model
 
-import androidx.annotation.DrawableRes
 import kotlinx.serialization.Serializable
 
 enum class UserType {
@@ -8,9 +7,11 @@ enum class UserType {
 }
 
 @Serializable
-data class User(
-    val id: Int?,
+data class User (
+    val userId: String,
     val email: String,
+    val password: String,
+    val salt: String,
     val userType: UserType,
     val firstName: String,
     val lastName: String,
@@ -18,6 +19,5 @@ data class User(
     val street: String,
     val buildingNumber: String,
     val zipCode: String,
-    val city: String,
-    @DrawableRes val imageResourceId: Int? = 0
+    val city: String
 )
