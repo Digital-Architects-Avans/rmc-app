@@ -4,8 +4,7 @@ import android.util.Log
 import com.digitalarchitects.rmc_app.RmcApplication
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.mapper.toLocalRental
-import com.digitalarchitects.rmc_app.data.mapper.toLocalRentalListFromRemote
-import com.digitalarchitects.rmc_app.data.mapper.toRemoteRental
+import com.digitalarchitects.rmc_app.data.mapper.toLocalRentalList
 import com.digitalarchitects.rmc_app.data.mapper.toRental
 import com.digitalarchitects.rmc_app.data.mapper.toRentalListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
@@ -13,6 +12,7 @@ import com.digitalarchitects.rmc_app.model.Rental
 import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.remote.RmcApiService
 import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.remote.dto.rental.UpdateRentalDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -69,7 +69,8 @@ class RentalRepositoryImpl(
         val remoteRentals = rmcApiService.getAllRentals(
             "Bearer $token"
         )
-        rmcRoomDatabase.addAllRentalsToLocalDb(remoteRentals.toLocalRentalListFromRemote())
+        rmcRoomDatabase.clearRentalCache()
+        rmcRoomDatabase.addAllRentalsToLocalDb(remoteRentals.toLocalRentalList())
     }
 
     /** Returns true if local data source does not contain any [Vehicle] data */
@@ -90,21 +91,23 @@ class RentalRepositoryImpl(
         )
     }
 
-    override suspend fun updateRental(rental: Rental) {
-        rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
+    override suspend fun updateRental(rentalId: String, updatedRental: UpdateRentalDTO) {
+        // Update remote data source
+        // Remove user from local data source
+        // Add updated user to local data source
         rmcApiService.updateRental(
-            "Bearer $token", rental.id, rental.toRemoteRental()
+            "Bearer $token", rentalId, updatedRental
         )
     }
 
     override suspend fun deleteRental(rental: Rental): Result<Unit> {
         return try {
             val response = rmcApiService.deleteRental(
-                "Bearer $token", rental.id
+                "Bearer $token", rental.rentalId
             )
 
             if (response.isSuccessful) {
-                Log.i("API_DELETE", "Rental deleted successfully: ${rental.id}")
+                Log.i("API_DELETE", "Rental deleted successfully: ${rental.rentalId}")
                 Result.success(Unit)
             } else {
                 val errorMessage = "Error deleting rental: ${response.code()}\n${response.message()}"
