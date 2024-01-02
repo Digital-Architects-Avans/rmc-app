@@ -16,6 +16,12 @@ interface RentalDao {
     @Query("SELECT * FROM LocalRental WHERE rentalId = :rentalId")
     suspend fun getRentalById(rentalId: Int): LocalRental
 
+    @Query("SELECT * FROM LocalRental WHERE userId = :userId")
+    suspend fun getRentalsForUser(userId: Int): List<LocalRental>?
+
+    @Query("SELECT * FROM LocalRental WHERE vehicleId = :vehicleId")
+    suspend fun getRentalsForVehicle(vehicleId: Int): List<LocalRental>?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllRentals(rentals: List<LocalRental>)
 

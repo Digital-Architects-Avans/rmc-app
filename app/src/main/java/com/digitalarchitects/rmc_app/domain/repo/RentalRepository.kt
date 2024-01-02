@@ -21,6 +21,12 @@ interface RentalRepository {
     /** Retrieves [Rental] by id from underlying data source */
     suspend fun getRentalById(rentalId: Int): Rental?
 
+    /** Retrieves [Rental] for a specific user from underlying data source */
+    suspend fun getRentalsForUser(userId: Int): List<Rental>?
+
+    /** Retrieves [Rental] for a specific vehicle from underlying data source */
+    suspend fun getRentalsForVehicle(vehicleId: Int): List<Rental>?
+
     /** Adds [Rental] to the underlying data source */
     suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental)
 

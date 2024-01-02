@@ -26,6 +26,8 @@ interface RmcRoomDatabaseRepo {
     // Rental queries on the local Room database
     suspend fun getAllRentalsFromLocalDb(): List<LocalRental>
     suspend fun getRentalByIdFromLocalDb(rentalId: Int): LocalRental
+    suspend fun getRentalsForUserFromLocalDb(userId: Int): List<LocalRental>?
+    suspend fun getRentalsForVehicleFromLocalDb(vehicleId: Int): List<LocalRental>?
     suspend fun addAllRentalsToLocalDb(rentals: List<LocalRental>)
     suspend fun addRentalToLocalDb(rental: LocalRental): Long
     suspend fun updateRentalInLocalDb(rental: LocalRental)

@@ -77,6 +77,14 @@ class RentalRepositoryImpl(
         return rmcRoomDatabase.getRentalByIdFromLocalDb(rentalId).toRental()
     }
 
+    override suspend fun getRentalsForUser(userId: Int): List<Rental>? {
+        return rmcRoomDatabase.getRentalsForUserFromLocalDb(userId)?.toRentalListFromLocal()
+    }
+
+    override suspend fun getRentalsForVehicle(vehicleId: Int): List<Rental>? {
+        return rmcRoomDatabase.getRentalsForVehicleFromLocalDb(vehicleId)?.toRentalListFromLocal()
+    }
+
     override suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental) {
         rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
         rmcApiService.addRental(createRentalDTO)
