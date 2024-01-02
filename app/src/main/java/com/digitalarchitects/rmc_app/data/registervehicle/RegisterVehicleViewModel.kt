@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.model.EngineType
-import com.digitalarchitects.rmc_app.room.LocalVehicle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,21 +57,22 @@ class RegisterVehicleViewModel @Inject constructor(
                         val price = _uiState.value.price
                         val availability = _uiState.value.availability
 
-                        val newVehicle = LocalVehicle(
-                            id = id,
-                            userId = userId,
-                            brand = brand,
-                            model = model,
-                            year = year.toInt(),
-                            vehicleClass = vehicleClass,
-                            engineType = engineType,
-                            licensePlate = licensePlate,
-                            imgLink = "",
-                            latitude = 51.4416f,
-                            longitude = 5.4697f,
-                            price = price.toDouble(),
-                            availability = availability
-                        )
+                        // TODO("Fix Code to add vehicle to remote data source instead of local")
+//                        val newVehicle = LocalVehicle(
+//                            vehicleId = id,
+//                            userId = userId,
+//                            brand = brand,
+//                            model = model,
+//                            year = year.toInt(),
+//                            vehicleClass = vehicleClass,
+//                            engineType = engineType,
+//                            licensePlate = licensePlate,
+//                            imgLink = "",
+//                            latitude = 51.4416f,
+//                            longitude = 5.4697f,
+//                            price = price.toDouble(),
+//                            availability = availability
+//                        )
                         //vehicleRepository.addVehicle(vehicle = newVehicle)
                     }
                     _navigateToScreen.value = RmcScreen.MyVehicles

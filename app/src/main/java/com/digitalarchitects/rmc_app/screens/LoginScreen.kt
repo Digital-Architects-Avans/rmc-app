@@ -1,5 +1,8 @@
 package com.digitalarchitects.rmc_app.screens
 
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -17,7 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -32,10 +39,10 @@ import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
 import com.digitalarchitects.rmc_app.components.UnderLinedTextComponent
-import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
-import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountViewModel
+import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.login.LoginUIEvent
 import com.digitalarchitects.rmc_app.data.login.LoginViewModel
+import com.digitalarchitects.rmc_app.data.welcome.WelcomeUIEvent
 
 @Composable
 fun LoginScreen(
@@ -47,8 +54,42 @@ fun LoginScreen(
         navigateToScreen(navigateToScreenEvent!!.name)
     }
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-// TODO Default state
+    val context = LocalContext.current
+    LaunchedEffect(viewModel, context) {
+        viewModel.authResult.collect { result ->
+            when (result) {
+                is AuthResult.Authorized -> {
+                    viewModel.onEvent(LoginUIEvent.Authorized)
+                }
+
+                is AuthResult.Unauthorized -> {
+                    Toast.makeText(
+                        context,
+                        "Wrong email or password. Please try again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    //viewModel.onEvent(LoginUIEvent.Unauthorized)
+                }
+
+                is AuthResult.NoConnectionError -> {
+                    Toast.makeText(
+                        context,
+                        "No connection. Please try again later.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.onEvent(LoginUIEvent.NoConnectionError)
+                }
+
+                is AuthResult.UnknownError -> {
+                    Toast.makeText(
+                        context,
+                        "Unknown error occurred. Please try again later.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    //viewModel.onEvent(LoginUIEvent.UnknownError)
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -75,13 +116,13 @@ fun LoginScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.email),
                     icon = Icons.Filled.Email,
-                    value = "loginUiState.email",
+                    value = uiState.email,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = {
-                        // TODO loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
+                        viewModel.onEvent(LoginUIEvent.EmailChanged(it))
                     }
                 )
 
@@ -90,14 +131,14 @@ fun LoginScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.password),
                     icon = Icons.Filled.Lock,
-                    value = "loginUiState.password",
+                    value = uiState.password,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
                     isPassword = true,
                     onValueChange = {
-//                        TODO loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
+                        viewModel.onEvent(LoginUIEvent.PasswordChanged(it))
                     }
                 )
 
@@ -116,6 +157,17 @@ fun LoginScreen(
                     tryingToLogin = false,
                     onTextSelected = { viewModel.onEvent(LoginUIEvent.RegisterButtonClicked) }
                 )
+
+                if (uiState.isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }

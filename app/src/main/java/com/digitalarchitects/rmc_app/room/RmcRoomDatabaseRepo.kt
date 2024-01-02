@@ -10,6 +10,7 @@ interface RmcRoomDatabaseRepo {
     suspend fun updateUserInLocalDb(user: LocalUser)
     suspend fun deleteUserFromLocalDb(user: LocalUser)
     suspend fun getFirstName(userId: Int): String?
+    suspend fun clearUserCache()
 
     // Vehicle queries on the local Room database
     suspend fun getAllVehiclesFromLocalDb(): List<LocalVehicle>
@@ -19,6 +20,7 @@ interface RmcRoomDatabaseRepo {
     suspend fun updateVehicleInLocalDb(vehicle: LocalVehicle)
     suspend fun deleteVehicleFromLocalDb(vehicle: LocalVehicle)
     suspend fun getVehicleModel(vehicleId: Int): String?
+    suspend fun clearVehicleCache()
 
 
     // Rental queries on the local Room database
@@ -29,4 +31,5 @@ interface RmcRoomDatabaseRepo {
     suspend fun updateRentalInLocalDb(rental: LocalRental)
     suspend fun deleteRentalFromLocalDb(rental: LocalRental)
     suspend fun getRentalDate(rentalId: Int): String?
+    suspend fun clearRentalCache()
 }

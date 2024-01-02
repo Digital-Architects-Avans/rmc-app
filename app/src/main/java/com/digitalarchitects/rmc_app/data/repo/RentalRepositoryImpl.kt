@@ -1,11 +1,9 @@
 package com.digitalarchitects.rmc_app.data.repo
 
 import android.util.Log
-import com.digitalarchitects.rmc_app.RmcApplication
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.mapper.toLocalRental
-import com.digitalarchitects.rmc_app.data.mapper.toLocalRentalListFromRemote
-import com.digitalarchitects.rmc_app.data.mapper.toRemoteRental
+import com.digitalarchitects.rmc_app.data.mapper.toLocalRentalList
 import com.digitalarchitects.rmc_app.data.mapper.toRental
 import com.digitalarchitects.rmc_app.data.mapper.toRentalListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
@@ -13,6 +11,7 @@ import com.digitalarchitects.rmc_app.model.Rental
 import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.remote.RmcApiService
 import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.remote.dto.rental.UpdateRentalDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -28,10 +27,6 @@ class RentalRepositoryImpl(
     private val rmcApiService: RmcApiService,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : RentalRepository {
-
-    // TODO(): Add token dynamically to header after a user logs in
-    // Currently use this global variable to store the token declared in [RmcApplication.GlobalVariables
-    private val token = RmcApplication.GlobalVariables.token
 
     override suspend fun getAllRentals(): List<Rental> {
         getAllRentalsFromRemote()
@@ -66,10 +61,9 @@ class RentalRepositoryImpl(
 
     // Update local Room cache with data from remote Retrofit API
     private suspend fun refreshRoomCache() {
-        val remoteRentals = rmcApiService.getAllRentals(
-            "Bearer $token"
-        )
-        rmcRoomDatabase.addAllRentalsToLocalDb(remoteRentals.toLocalRentalListFromRemote())
+        val remoteRentals = rmcApiService.getAllRentals()
+        rmcRoomDatabase.clearRentalCache()
+        rmcRoomDatabase.addAllRentalsToLocalDb(remoteRentals.toLocalRentalList())
     }
 
     /** Returns true if local data source does not contain any [Vehicle] data */
@@ -85,26 +79,22 @@ class RentalRepositoryImpl(
 
     override suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental) {
         rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
-        rmcApiService.addRental(
-            "Bearer $token", createRentalDTO
-        )
+        rmcApiService.addRental(createRentalDTO)
     }
 
-    override suspend fun updateRental(rental: Rental) {
-        rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
-        rmcApiService.updateRental(
-            "Bearer $token", rental.id, rental.toRemoteRental()
-        )
+    override suspend fun updateRental(rentalId: String, updatedRental: UpdateRentalDTO) {
+        // Update remote data source
+        // Remove user from local data source
+        // Add updated user to local data source
+        rmcApiService.updateRental(rentalId, updatedRental)
     }
 
     override suspend fun deleteRental(rental: Rental): Result<Unit> {
         return try {
-            val response = rmcApiService.deleteRental(
-                "Bearer $token", rental.id
-            )
+            val response = rmcApiService.deleteRental(rental.rentalId)
 
             if (response.isSuccessful) {
-                Log.i("API_DELETE", "Rental deleted successfully: ${rental.id}")
+                Log.i("API_DELETE", "Rental deleted successfully: ${rental.rentalId}")
                 Result.success(Unit)
             } else {
                 val errorMessage = "Error deleting rental: ${response.code()}\n${response.message()}"

@@ -2,13 +2,13 @@ package com.digitalarchitects.rmc_app.model
 
 import kotlinx.serialization.Serializable
 
+enum class EngineType{
+    ICE, BEV, FCEV
+}
 
-/**
- * Note, imgLink is set to Int datatype, in the API it is String data type!
- */
 @Serializable
 data class Vehicle(
-    val id: Int,
+    val vehicleId: String,
     val userId: Int,
     val brand: String,
     val model: String,
@@ -22,7 +22,3 @@ data class Vehicle(
     val price: Double,
     val availability: Boolean
 )
-
-enum class EngineType{
-    ICE, BEV, FCEV
-}

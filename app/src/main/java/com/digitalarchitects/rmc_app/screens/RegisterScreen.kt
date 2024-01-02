@@ -1,6 +1,9 @@
 package com.digitalarchitects.rmc_app.screens
 
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +20,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -24,7 +28,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -39,10 +46,10 @@ import com.digitalarchitects.rmc_app.components.RmcAppBar
 import com.digitalarchitects.rmc_app.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.components.RmcSpacer
 import com.digitalarchitects.rmc_app.components.RmcTextField
-import com.digitalarchitects.rmc_app.data.editmyaccount.EditMyAccountUIEvent
+import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.register.RegisterUIEvent
 import com.digitalarchitects.rmc_app.data.register.RegisterViewModel
-import com.digitalarchitects.rmc_app.data.welcome.WelcomeViewModel
+import com.digitalarchitects.rmc_app.data.welcome.WelcomeUIEvent
 
 @Composable
 fun RegisterScreen(
@@ -54,9 +61,43 @@ fun RegisterScreen(
         navigateToScreen(navigateToScreenEvent!!.name)
     }
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-//  TODO implement default state
+    val context = LocalContext.current
+    LaunchedEffect(viewModel, context) {
+        viewModel.authResult.collect { result ->
+            when (result) {
+                is AuthResult.Authorized -> {
+                    viewModel.onEvent(RegisterUIEvent.Authorized)
+                }
+
+                is AuthResult.Unauthorized -> {
+                    Toast.makeText(
+                        context,
+                        "You're not authorized",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is AuthResult.NoConnectionError -> {
+                    Toast.makeText(
+                        context,
+                        "No connection. Please try again later.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.onEvent(RegisterUIEvent.NoConnectionError)
+                }
+
+                is AuthResult.UnknownError -> {
+                    Toast.makeText(
+                        context,
+                        "Unknown error occurred. Please try again later.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.onEvent(RegisterUIEvent.UnknownError)
+                }
+            }
+        }
     }
+
 
     Scaffold(
         topBar = {
@@ -91,26 +132,26 @@ fun RegisterScreen(
                     RmcTextField(
                         label = stringResource(id = R.string.first_name),
                         icon = Icons.Filled.Person,
-                        value = "registerUIState.firstName",
+                        value = uiState.firstName,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
                         ),
                         onValueChange = {
-//                          TODO  registerViewModel.onEvent(RegisterUIEvent.FirstNameChanged(it))
+                            viewModel.onEvent(RegisterUIEvent.FirstNameChanged(it))
                         },
                         modifier = Modifier.weight(1f)
                     )
                     RmcTextField(
                         label = stringResource(id = R.string.last_name),
                         icon = Icons.Filled.Person,
-                        value = "registerUIState.lastName,",
+                        value = uiState.lastName,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
                         ),
                         onValueChange = {
-//                        TODO    registerViewModel.onEvent(RegisterUIEvent.LastNameChanged(it))
+                            viewModel.onEvent(RegisterUIEvent.LastNameChanged(it))
                         },
                         modifier = Modifier.weight(1f)
                     )
@@ -121,13 +162,13 @@ fun RegisterScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.email),
                     icon = Icons.Filled.Email,
-                    value = "registerUIState.email",
+                    value = uiState.email,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = {
-                        //TODO registerViewModel.onEvent(RegisterUIEvent.EmailChanged(it))
+                        viewModel.onEvent(RegisterUIEvent.EmailChanged(it))
                     }
                 )
 
@@ -136,29 +177,13 @@ fun RegisterScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.telephone),
                     icon = Icons.Filled.Call,
-                    value = "registerUIState.telephone",
+                    value = uiState.telephone,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = {
-//                       TODO registerViewModel.onEvent(RegisterUIEvent.TelephoneChanged(it))
-                    }
-                )
-
-                RmcSpacer(8)
-
-                RmcTextField(
-                    label = stringResource(id = R.string.password),
-                    icon = Icons.Filled.Lock,
-                    value = "registerUIState.password",
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
-                    ),
-                    isPassword = true,
-                    onValueChange = {
-//                       TODO registerViewModel.onEvent(RegisterUIEvent.PasswordChanged(it))
+                        viewModel.onEvent(RegisterUIEvent.TelephoneChanged(it))
                     }
                 )
 
@@ -167,13 +192,13 @@ fun RegisterScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.address),
                     icon = Icons.Filled.Home,
-                    value = "registerUIState.address",
+                    value = uiState.address,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = {
-//                    TODO    registerViewModel.onEvent(RegisterUIEvent.AddressChanged(it))
+                        viewModel.onEvent(RegisterUIEvent.AddressChanged(it))
                     }
                 )
 
@@ -186,26 +211,26 @@ fun RegisterScreen(
                     RmcTextField(
                         label = stringResource(id = R.string.postal_code),
                         icon = Icons.Filled.Numbers,
-                        value = "registerUIState.postalCode",
+                        value = uiState.postalCode,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
                         ),
                         onValueChange = {
-//                         TODO   registerViewModel.onEvent(RegisterUIEvent.PostalCodeChanged(it))
+                            viewModel.onEvent(RegisterUIEvent.PostalCodeChanged(it))
                         },
                         modifier = Modifier.weight(1f)
                     )
                     RmcTextField(
                         label = stringResource(id = R.string.building_number),
                         icon = Icons.Filled.Numbers,
-                        value = "registerUIState.buildingNumber",
+                        value = uiState.buildingNumber,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next
                         ),
                         onValueChange = {
-                        // TODO    registerViewModel.onEvent(RegisterUIEvent.BuildingNumberChanged(it))
+                            viewModel.onEvent(RegisterUIEvent.BuildingNumberChanged(it))
                         },
                         modifier = Modifier.weight(1f)
                     )
@@ -216,13 +241,29 @@ fun RegisterScreen(
                 RmcTextField(
                     label = stringResource(id = R.string.city),
                     icon = Icons.Filled.LocationCity,
-                    value = "registerUIState.city",
+                    value = uiState.city,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
                     onValueChange = {
-//                    TODO    registerViewModel.onEvent(RegisterUIEvent.CityChanged(it))
+                        viewModel.onEvent(RegisterUIEvent.CityChanged(it))
+                    }
+                )
+
+                RmcSpacer(8)
+
+                RmcTextField(
+                    label = stringResource(id = R.string.password),
+                    icon = Icons.Filled.Lock,
+                    value = uiState.password,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    isPassword = true,
+                    onValueChange = {
+                        viewModel.onEvent(RegisterUIEvent.PasswordChanged(it))
                     }
                 )
 
@@ -244,9 +285,20 @@ fun RegisterScreen(
 
                 ClickableLoginTextComponent(
                     tryingToLogin = true,
-                    onTextSelected = {viewModel.onEvent(RegisterUIEvent.LoginButtonClicked)}
+                    onTextSelected = { viewModel.onEvent(RegisterUIEvent.LoginButtonClicked) }
 
                 )
+
+                if (uiState.isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }

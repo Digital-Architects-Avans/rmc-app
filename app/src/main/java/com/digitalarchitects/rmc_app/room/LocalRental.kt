@@ -9,15 +9,15 @@ import kotlinx.datetime.LocalDate
 @Entity
 @TypeConverters(Converters::class)
 class LocalRental(
+    @PrimaryKey(autoGenerate = false)
+    val rentalId: String,
     val vehicleId: Int,
     val userId: Int,
     val date: LocalDate,
     val price: Double,
-    val latitude: Float = 50.50f,
-    val longitude: Float = 50.50f,
-    val status: RentalStatus = RentalStatus.PENDING,
+    val latitude: Float,
+    val longitude: Float,
+    val status: RentalStatus,
     val distanceTravelled: Double,
-    val score: Int,
-    @PrimaryKey(autoGenerate = true)
-    val id: Int
+    val score: Int
 )

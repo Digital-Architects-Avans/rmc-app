@@ -12,7 +12,7 @@ enum class RentalStatus(val status: String) {
 
 @Serializable
 data class Rental(
-    val id: Int,
+    val rentalId: String,
     val vehicleId: Int,
     val userId: Int,
     val date: LocalDate,

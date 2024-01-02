@@ -96,12 +96,16 @@ dependencies {
 
     // Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
-    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.44.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.0")
 
     // Retrofit
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Moshi
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
     // Dagger Hilt
     implementation("com.google.dagger:hilt-android:$hiltVersion")

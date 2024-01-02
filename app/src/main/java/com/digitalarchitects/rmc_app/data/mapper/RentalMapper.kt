@@ -7,7 +7,7 @@ import com.digitalarchitects.rmc_app.room.LocalRental
 fun List<LocalRental>.toRentalListFromLocal(): List<Rental> {
     return this.map { rental ->
         Rental(
-            id = rental.id,
+            rentalId = rental.rentalId,
             vehicleId = rental.vehicleId,
             userId = rental.userId,
             date = rental.date,
@@ -24,7 +24,24 @@ fun List<LocalRental>.toRentalListFromLocal(): List<Rental> {
 fun List<RemoteRental>.toRentalListFromRemote(): List<Rental> {
     return this.map { rental ->
         Rental(
-            id = rental.id,
+            rentalId = rental.rentalId,
+            vehicleId = rental.vehicleId,
+            userId = rental.userId,
+            date = rental.date,
+            price = rental.price,
+            latitude = rental.latitude,
+            longitude = rental.longitude,
+            status = rental.status,
+            distanceTravelled = rental.distanceTravelled,
+            score = rental.score
+        )
+    }
+}
+
+fun List<Rental>.toLocalRentalList(): List<LocalRental> {
+    return this.map { rental ->
+        LocalRental(
+            rentalId = rental.rentalId,
             vehicleId = rental.vehicleId,
             userId = rental.userId,
             date = rental.date,
@@ -41,6 +58,7 @@ fun List<RemoteRental>.toRentalListFromRemote(): List<Rental> {
 
 fun Rental.toLocalRental(): LocalRental {
     return LocalRental(
+        rentalId = rentalId,
         vehicleId = vehicleId,
         userId = userId,
         date = date,
@@ -50,13 +68,13 @@ fun Rental.toLocalRental(): LocalRental {
         status = status,
         distanceTravelled = distanceTravelled,
         score = score,
-        id = id
     )
 }
 
 fun Rental.toRemoteRental(): RemoteRental {
     return RemoteRental(
-        id = id,
+        objectId = rentalId,
+        rentalId = rentalId,
         vehicleId = vehicleId,
         userId = userId,
         date = date,
@@ -71,7 +89,7 @@ fun Rental.toRemoteRental(): RemoteRental {
 
 fun LocalRental.toRental(): Rental {
     return Rental(
-        id = id,
+        rentalId = rentalId,
         vehicleId = vehicleId,
         userId = userId,
         date = date,
@@ -86,7 +104,7 @@ fun LocalRental.toRental(): Rental {
 
 fun RemoteRental.toRental(): Rental {
     return Rental(
-        id = id,
+        rentalId = rentalId,
         vehicleId = vehicleId,
         userId = userId,
         date = date,
@@ -102,7 +120,7 @@ fun RemoteRental.toRental(): Rental {
 fun List<RemoteRental>.toLocalRentalListFromRemote(): List<LocalRental> {
     return this.map { rental ->
         LocalRental(
-            id = rental.id,
+            rentalId = rental.rentalId,
             vehicleId = rental.vehicleId,
             userId = rental.userId,
             date = rental.date,

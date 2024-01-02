@@ -6,8 +6,12 @@ import com.digitalarchitects.rmc_app.model.UserType
 
 @Entity
 data class LocalUser(
+    @PrimaryKey(autoGenerate = false)
+    val userId: String,
     val email: String,
-    val userType: UserType = UserType.CLIENT,
+    val password: String,
+    val salt: String,
+    val userType: UserType,
     val firstName: String,
     val lastName: String,
     val phone: String,
@@ -15,7 +19,5 @@ data class LocalUser(
     val buildingNumber: String,
     val zipCode: String,
     val city: String,
-    val imageResourceId: Int? = 0,
-    @PrimaryKey(autoGenerate = true)
-    val id: Int
+    val imageResourceId: Int? = 0
 )

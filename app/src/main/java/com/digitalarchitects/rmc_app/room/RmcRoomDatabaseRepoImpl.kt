@@ -26,6 +26,9 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun getFirstName(userId: Int): String? =
         userDao.getFirstName(userId)
 
+    override suspend fun clearUserCache() =
+        userDao.clearCache()
+
     // --------------------------------------------------------------------------------------
 
     override suspend fun getAllVehiclesFromLocalDb(): List<LocalVehicle> =
@@ -49,6 +52,9 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun getVehicleModel(vehicleId: Int) =
         vehicleDao.getVehicleModel(vehicleId)
 
+    override suspend fun clearVehicleCache() =
+        vehicleDao.clearCache()
+
     // --------------------------------------------------------------------------------------
 
     override suspend fun getAllRentalsFromLocalDb(): List<LocalRental> =
@@ -71,4 +77,7 @@ class RmcRoomDatabaseRepoImpl(
 
     override suspend fun getRentalDate(rentalId: Int): String? =
         rentalDao.getRentalDate(rentalId)
+
+    override suspend fun clearRentalCache() =
+        rentalDao.clearCache()
 }

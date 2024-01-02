@@ -3,9 +3,9 @@ package com.digitalarchitects.rmc_app.data.register
 
 sealed class RegisterUIEvent{
 
-    data class FirstNameChanged(val firstName:String) : RegisterUIEvent()
-    data class LastNameChanged(val lastName:String) : RegisterUIEvent()
-    data class EmailChanged(val email:String): RegisterUIEvent()
+    data class FirstNameChanged(val firstName: String) : RegisterUIEvent()
+    data class LastNameChanged(val lastName: String) : RegisterUIEvent()
+    data class EmailChanged(val email: String): RegisterUIEvent()
     data class TelephoneChanged(val telephone: String) : RegisterUIEvent()
     data class PasswordChanged(val password: String) : RegisterUIEvent()
     data class AddressChanged(val address: String) : RegisterUIEvent()
@@ -17,6 +17,10 @@ sealed class RegisterUIEvent{
     object RegisterButtonClicked : RegisterUIEvent()
     object NavigateUpButtonClicked: RegisterUIEvent()
     object LoginButtonClicked : RegisterUIEvent()
+    object Authorized : RegisterUIEvent()
+    object Unauthorized : RegisterUIEvent()
+    object NoConnectionError : RegisterUIEvent()
+    object UnknownError : RegisterUIEvent()
 
 
 }

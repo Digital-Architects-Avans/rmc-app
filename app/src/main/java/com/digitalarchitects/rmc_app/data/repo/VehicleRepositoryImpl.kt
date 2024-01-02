@@ -1,17 +1,16 @@
 package com.digitalarchitects.rmc_app.data.repo
 
 import android.util.Log
-import com.digitalarchitects.rmc_app.RmcApplication
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicle
-import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicleListFromRemote
-import com.digitalarchitects.rmc_app.data.mapper.toRemoteVehicle
+import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicleList
 import com.digitalarchitects.rmc_app.data.mapper.toVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.remote.RmcApiService
 import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
+import com.digitalarchitects.rmc_app.remote.dto.vehicle.UpdateVehicleDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -27,10 +26,6 @@ class VehicleRepositoryImpl(
     private val rmcApiService: RmcApiService,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : VehicleRepository {
-
-    // TODO(): Add token dynamically to header after a user logs in
-    // Currently use this global variable to store the token declared in [RmcApplication.GlobalVariables
-    private val token = RmcApplication.GlobalVariables.token
 
     /** Fetches data from remote, updates local data source, returns list of [Vehicle] from local data source */
     override suspend fun getAllVehicles(): List<Vehicle> {
@@ -66,10 +61,9 @@ class VehicleRepositoryImpl(
 
     // Update local Room cache with data from remote Retrofit API
     private suspend fun refreshRoomCache() {
-        val remoteVehicles = rmcApiService.getAllVehicles(
-            "Bearer $token"
-        )
-        rmcRoomDatabase.addAllVehiclesToLocalDb(remoteVehicles.toLocalVehicleListFromRemote())
+        val remoteVehicles = rmcApiService.getAllVehicles()
+        rmcRoomDatabase.clearVehicleCache()
+        rmcRoomDatabase.addAllVehiclesToLocalDb(remoteVehicles.toLocalVehicleList())
     }
 
     /** Returns true if local data source does not contain any [Vehicle] data */
@@ -85,26 +79,22 @@ class VehicleRepositoryImpl(
 
     override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO, vehicle: Vehicle) {
         rmcRoomDatabase.addVehicleToLocalDb(vehicle.toLocalVehicle())
-        rmcApiService.addVehicle(
-            "Bearer $token", createVehicleDTO
-        )
+        rmcApiService.addVehicle(createVehicleDTO)
     }
 
-    override suspend fun updateVehicle(vehicle: Vehicle) {
-        rmcRoomDatabase.addVehicleToLocalDb(vehicle.toLocalVehicle())
-        rmcApiService.updateVehicle(
-            "Bearer $token", vehicle.id, vehicle.toRemoteVehicle()
-        )
+    override suspend fun updateVehicle(vehicleId: String, updatedVehicle: UpdateVehicleDTO) {
+        // Update remote data source
+        // Remove user from local data source
+        // Add updated user to local data source
+        rmcApiService.updateVehicle(vehicleId, updatedVehicle)
     }
 
     override suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit> {
         return try {
-            val response = rmcApiService.deleteVehicle(
-                "Bearer $token", vehicle.id
-            )
+            val response = rmcApiService.deleteVehicle(vehicle.vehicleId)
 
             if (response.isSuccessful) {
-                Log.i("API_DELETE", "Vehicle deleted successfully: ${vehicle.id}")
+                Log.i("API_DELETE", "Vehicle deleted successfully: ${vehicle.vehicleId}")
                 Result.success(Unit)
             } else {
                 val errorMessage =

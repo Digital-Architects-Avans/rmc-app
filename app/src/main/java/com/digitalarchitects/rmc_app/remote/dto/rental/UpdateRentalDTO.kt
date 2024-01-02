@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateRentalDTO(
+data class UpdateRentalDTO(
     val vehicleId: Int,
     val userId: Int,
     val date: LocalDate,

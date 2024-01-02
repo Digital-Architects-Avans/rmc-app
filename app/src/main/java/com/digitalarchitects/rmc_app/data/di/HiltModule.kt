@@ -1,27 +1,34 @@
 package com.digitalarchitects.rmc_app.data.di
 
+import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
+import com.digitalarchitects.rmc_app.data.auth.AuthInterceptor
 import com.digitalarchitects.rmc_app.data.repo.RentalRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.UserRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.VehicleRepositoryImpl
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
+import com.digitalarchitects.rmc_app.domain.util.LocalDateAdapter
 import com.digitalarchitects.rmc_app.remote.RmcApiService
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepoImpl
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
+import kotlinx.datetime.LocalDate
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -33,20 +40,40 @@ object HiltModule {
         return retrofit.create(RmcApiService::class.java)
     }
 
-    // Provide a singleton instance of Json
+    @Singleton
     @Provides
-    fun provideJson(): Json {
-        return Json { ignoreUnknownKeys = true }
+    fun providesMoshi(): Moshi {
+        return Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .add(LocalDate::class.java, LocalDateAdapter())
+            .build()
     }
 
     @Singleton
     @Provides
-    fun providesRetrofit(json: Json): Retrofit {
+    fun provideAuthInterceptor(
+        rmcApiService: Provider<RmcApiService>,
+        prefs: SharedPreferences
+    ): AuthInterceptor {
+        return AuthInterceptor(rmcApiService, prefs)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(interceptor: AuthInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit {
+
         return Retrofit.Builder()
-            .addConverterFactory(
-                json.asConverterFactory("application/json".toMediaType())
-            )
             .baseUrl("http://10.0.2.2:8080/")
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
             .build()
     }
 
@@ -78,9 +105,10 @@ object HiltModule {
     fun providesUserRepo(
         db: RmcRoomDatabaseRepo,
         api: RmcApiService,
+        prefs: SharedPreferences,
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): UserRepository {
-        return UserRepositoryImpl(db, api, dispatcher)
+        return UserRepositoryImpl(db, api, prefs, dispatcher)
     }
 
     @Provides
@@ -101,6 +129,12 @@ object HiltModule {
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): RentalRepository {
         return RentalRepositoryImpl(db, api, dispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPref(app: Application): SharedPreferences {
+        return app.getSharedPreferences("prefs", Context.MODE_PRIVATE)
     }
 
 }

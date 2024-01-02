@@ -10,16 +10,16 @@ import androidx.room.Upsert
 @Dao
 interface VehicleDao {
 
-    @Query("SELECT * FROM LocalVehicle ORDER BY id ASC")
+    @Query("SELECT * FROM LocalVehicle ORDER BY vehicleId ASC")
     suspend fun getAllVehicles(): List<LocalVehicle>
 
-    @Query("SELECT * FROM LocalVehicle WHERE id = :vehicleId")
+    @Query("SELECT * FROM LocalVehicle WHERE vehicleId = :vehicleId")
     suspend fun getVehicleById(vehicleId: Int): LocalVehicle
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllVehicles(vehicles: List<LocalVehicle>)
 
-    @Query("SELECT model FROM LocalVehicle WHERE id = :vehicleId")
+    @Query("SELECT model FROM LocalVehicle WHERE vehicleId = :vehicleId")
     suspend fun getVehicleModel(vehicleId: Int): String?
 
     @Insert
@@ -30,6 +30,9 @@ interface VehicleDao {
 
     @Delete
     suspend fun deleteVehicle(vehicle: LocalVehicle)
+
+    @Query("DELETE FROM LocalVehicle")
+    suspend fun clearCache()
 
 //     TODO GET CURRENT Vehicle
 //    @Query("SELECT * FROM VehicleEntity LIMIT 1")

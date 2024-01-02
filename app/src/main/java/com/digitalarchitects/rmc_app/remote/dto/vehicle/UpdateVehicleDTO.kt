@@ -4,7 +4,7 @@ import com.digitalarchitects.rmc_app.model.EngineType
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateVehicleDTO(
+data class UpdateVehicleDTO(
     val userId: Int,
     val brand: String,
     val model: String,

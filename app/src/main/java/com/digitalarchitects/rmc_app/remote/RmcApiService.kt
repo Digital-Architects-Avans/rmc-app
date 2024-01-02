@@ -1,17 +1,22 @@
 package com.digitalarchitects.rmc_app.remote
 
+import com.digitalarchitects.rmc_app.data.auth.AuthRequest
+import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
+import com.digitalarchitects.rmc_app.data.auth.TokenResponse
+import com.digitalarchitects.rmc_app.model.Rental
+import com.digitalarchitects.rmc_app.model.User
+import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.remote.dto.rental.RemoteRental
-import com.digitalarchitects.rmc_app.remote.dto.user.RemoteUser
-import com.digitalarchitects.rmc_app.remote.dto.user.SigninDTO
-import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
+import com.digitalarchitects.rmc_app.remote.dto.rental.UpdateRentalDTO
+import com.digitalarchitects.rmc_app.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.remote.dto.vehicle.RemoteVehicle
+import com.digitalarchitects.rmc_app.remote.dto.vehicle.UpdateVehicleDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -23,73 +28,106 @@ import retrofit2.http.Path
  */
 interface RmcApiService {
 
-    @POST("user/signup")
-    suspend fun addUser(@Body signupDTO: SignupDTO): Response<Unit>
+    @POST("signup")
+    suspend fun signup(
+        @Body request: SignUpRequest
+    )
 
-    @POST("user/signin")
-    suspend fun authenticateUser(@Body signinDTO: SigninDTO): Response<Unit>
+    @POST("signin")
+    suspend fun signin(
+        @Body request: AuthRequest
+    ): TokenResponse
 
-    @GET("user/users")
-    suspend fun getAllUsers(@Header("Authorization") token: String): List<RemoteUser>
+    @GET("authenticate")
+    suspend fun authenticate()
 
-    @PUT("user/{id}")
+    @GET("refreshToken")
+    suspend fun refreshToken(): TokenResponse
+
+    @GET("users")
+    suspend fun getAllUsers(): List<User>
+
+    @GET("users/{id}")
+    suspend fun getUserById(
+        @Path("id") id: String
+    ): User?
+
+    @PUT("users/{id}")
     suspend fun updateUser(
-        @Header("Authorization") token: String,
-        @Path("id") id: Int?,
-        @Body user: RemoteUser
+        @Path("id") id: String,
+        @Body updatedUser: UpdateUserDTO
     ): Response<Unit>
 
-    @DELETE("user/{id}")
+    @GET("users/{email}")
+    suspend fun getUserByEmail(
+        @Path("email") email: String,
+    ): User?
+
+    @DELETE("users/{id}")
     suspend fun deleteUser(
-        @Header("Authorization") token: String,
-        @Path("id") id: Int?
+        @Path("id") id: String
     ): Response<Unit>
 
     // -------------------------------------------------------------------------------------------
 
-    @POST("vehicle/createVehicle")
+    @GET("vehicles")
+    suspend fun getAllVehicles(): List<Vehicle>
+
+    @GET("vehicles/{id}")
+    suspend fun getVehiclesById(
+        @Path("id") id: String
+    ): RemoteVehicle?
+
+    @GET("vehicles/{licensePlate}")
+    suspend fun getVehiclesByLicensePlate(
+        @Path("licensePlate") licensePlate: String
+    ): RemoteVehicle?
+
+    @POST("vehicles")
     suspend fun addVehicle(
-        @Header("Authorization") token: String,
         @Body createVehicleDTO: CreateVehicleDTO
     ): Response<Unit>
 
-    @GET("vehicle/all")
-    suspend fun getAllVehicles(@Header("Authorization") token: String): List<RemoteVehicle>
-
-    @PUT("vehicle/{id}")
+    @PUT("vehicles/{id}")
     suspend fun updateVehicle(
-        @Header("Authorization") token: String,
-        @Path("id") id: Int?,
-        @Body user: RemoteVehicle
+        @Path("id") id: String,
+        @Body updatedVehicle: UpdateVehicleDTO
     ): Response<Unit>
 
-    @DELETE("vehicle/{id}")
+    @DELETE("vehicles/{id}")
     suspend fun deleteVehicle(
-        @Header("Authorization") token: String,
-        @Path("id") id: Int?
+        @Path("id") id: String
     ): Response<Unit>
 
     // -------------------------------------------------------------------------------------------
 
-    @GET("createRental/{vehicleId}")
+    @GET("rentals")
+    suspend fun getAllRentals(
+    ): List<Rental>
+
+    @GET("rentals/{id}")
+    suspend fun getRentalById(
+        @Path("id") id: String
+    ): RemoteRental?
+
+    @GET("rentals/user/{userId}")
+    suspend fun getRentalsByUserId(
+        @Path("userId") userId: String
+    ): List<RemoteRental>
+
+    @PUT("rentals/{rentalId}")
+    suspend fun updateRental(
+        @Path("rentalId") rentalId: String,
+        @Body updatedRental: UpdateRentalDTO
+    ): List<RemoteRental>
+
+    @POST("rentals")
     suspend fun addRental(
-        @Header("Authorization") token: String,
         @Body createRentalDTO: CreateRentalDTO
     ): Response<Unit>
 
-    @GET("rental/allRentals")
-    suspend fun getAllRentals(@Header("Authorization") token: String): List<RemoteRental>
-
-    @PUT("rental/{id}")
-    suspend fun updateRental(
-        @Header("Authorization") token: String,
-        @Path("id") id: Int?,
-        @Body user: RemoteRental
-    ): Response<Unit>
-
-    @DELETE("rental/{id}")
+    @DELETE("rentals/{id}")
     suspend fun deleteRental(
-        @Header("Authorization") token: String,
-        @Path("id") id: Int?
+        @Path("id") id: String
     ): Response<Unit>
 }
