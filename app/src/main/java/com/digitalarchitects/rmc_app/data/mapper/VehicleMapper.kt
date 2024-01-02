@@ -7,7 +7,7 @@ import com.digitalarchitects.rmc_app.room.LocalVehicle
 fun List<LocalVehicle>.toVehicleListFromLocal(): List<Vehicle>{
     return this.map { vehicle ->
         Vehicle(
-            id = vehicle.id,
+            vehicleId = vehicle.vehicleId,
             userId = vehicle.userId,
             brand = vehicle.brand,
             model = vehicle.model,
@@ -27,7 +27,7 @@ fun List<LocalVehicle>.toVehicleListFromLocal(): List<Vehicle>{
 fun List<RemoteVehicle>.toVehicleListFromRemote(): List<Vehicle>{
     return this.map { vehicle ->
         Vehicle(
-            id = vehicle.id,
+            vehicleId = vehicle.vehicleId,
             userId = vehicle.userId,
             brand = vehicle.brand,
             model = vehicle.model,
@@ -47,6 +47,7 @@ fun List<RemoteVehicle>.toVehicleListFromRemote(): List<Vehicle>{
 
 fun Vehicle.toLocalVehicle(): LocalVehicle {
     return LocalVehicle(
+        vehicleId = vehicleId,
         userId = userId,
         brand = brand,
         model = model,
@@ -58,14 +59,14 @@ fun Vehicle.toLocalVehicle(): LocalVehicle {
         latitude = latitude,
         longitude = longitude,
         price = price,
-        availability = availability,
-        id = id
+        availability = availability
     )
 }
 
 fun Vehicle.toRemoteVehicle(): RemoteVehicle {
     return RemoteVehicle(
-        id = id,
+        objectId = vehicleId,
+        vehicleId = vehicleId,
         userId = userId,
         brand = brand,
         model = model,
@@ -83,7 +84,7 @@ fun Vehicle.toRemoteVehicle(): RemoteVehicle {
 
 fun LocalVehicle.toVehicle(): Vehicle{
     return Vehicle(
-        id = id,
+        vehicleId = vehicleId,
         userId = userId,
         brand = brand,
         model = model,
@@ -101,7 +102,7 @@ fun LocalVehicle.toVehicle(): Vehicle{
 
 fun RemoteVehicle.toVehicle(): Vehicle{
     return Vehicle(
-        id = id,
+        vehicleId = vehicleId,
         userId = userId,
         brand = brand,
         model = model,
@@ -120,6 +121,7 @@ fun RemoteVehicle.toVehicle(): Vehicle{
 fun List<RemoteVehicle>.toLocalVehicleListFromRemote(): List<LocalVehicle>{
     return this.map { vehicle ->
         LocalVehicle(
+            vehicleId = vehicle.vehicleId,
             userId = vehicle.userId,
             brand = vehicle.brand,
             model = vehicle.model,
@@ -131,8 +133,27 @@ fun List<RemoteVehicle>.toLocalVehicleListFromRemote(): List<LocalVehicle>{
             latitude = vehicle.latitude,
             longitude = vehicle.longitude,
             price = vehicle.price,
-            availability = vehicle.availability,
-            id = vehicle.id
+            availability = vehicle.availability
+        )
+    }
+}
+
+fun List<Vehicle>.toLocalVehicleList(): List<LocalVehicle>{
+    return this.map { vehicle ->
+        LocalVehicle(
+            vehicleId = vehicle.vehicleId,
+            userId = vehicle.userId,
+            brand = vehicle.brand,
+            model = vehicle.model,
+            year = vehicle.year,
+            vehicleClass = vehicle.vehicleClass,
+            engineType = vehicle.engineType,
+            licensePlate = vehicle.licensePlate,
+            imgLink = vehicle.imgLink,
+            latitude = vehicle.latitude,
+            longitude = vehicle.longitude,
+            price = vehicle.price,
+            availability = vehicle.availability
         )
     }
 }
