@@ -10,16 +10,20 @@ import com.digitalarchitects.rmc_app.data.repo.VehicleRepositoryImpl
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
+import com.digitalarchitects.rmc_app.domain.util.LocalDateAdapter
 import com.digitalarchitects.rmc_app.remote.RmcApiService
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepoImpl
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -37,15 +41,24 @@ object HiltModule {
     // Provide a singleton instance of Json
     @Provides
     fun provideJson(): Json {
-        return Json { ignoreUnknownKeys = true }
+        return Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+            prettyPrint = true
+        }
     }
 
     @Singleton
     @Provides
     fun providesRetrofit(json: Json): Retrofit {
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .add(LocalDate::class.java, LocalDateAdapter())
+            .build()
+
         return Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create())
             .baseUrl("http://10.0.2.2:8080/")
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 
