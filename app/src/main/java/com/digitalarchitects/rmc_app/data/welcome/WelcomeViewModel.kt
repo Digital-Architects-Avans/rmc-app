@@ -31,9 +31,9 @@ class WelcomeViewModel @Inject constructor(
 
     // Authenticate user on init by checking validity of token in shared preferences
     // Disable if you would like to test the welcome / register / login screens
-//    init {
-//        authenticate()
-//    }
+    init {
+        authenticate()
+    }
 
     fun onEvent(event: WelcomeUIEvent) {
         when (event) {
@@ -47,7 +47,7 @@ class WelcomeViewModel @Inject constructor(
             }
 
             is WelcomeUIEvent.Authorized -> {
-                _navigateToScreen.value = RmcScreen.RmcTestScreen
+                _navigateToScreen.value = RmcScreen.RentACar
             }
 
             is WelcomeUIEvent.Unauthorized -> {

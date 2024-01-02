@@ -3,20 +3,26 @@ package com.digitalarchitects.rmc_app.data.rentacar
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.app.RmcScreen
+import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.dummyDTO.DummyVehicleDTO
+import com.digitalarchitects.rmc_app.model.Vehicle
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RentACarViewModel @Inject constructor(
-    private val vehicleRepository: VehicleRepository
+    private val vehicleRepository: VehicleRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
     val navigateToScreen = _navigateToScreen.asStateFlow()
@@ -31,6 +37,14 @@ class RentACarViewModel @Inject constructor(
     // Filter all vehicles on search settings
     // pass vehicleList to screen
     val listOfVehicles = DummyVehicleDTO()
+
+//    init {
+//        viewModelScope.launch(dispatcher) {
+//            val vehicleDetails: Result<List<Vehicle>> = runCatching {
+//                vehicleRepository.getAllVehicles()
+//            }
+//        }
+//    }
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
