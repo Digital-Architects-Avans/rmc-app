@@ -4,14 +4,14 @@ import android.util.Log
 import com.digitalarchitects.rmc_app.RmcApplication
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicle
-import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicleListFromRemote
-import com.digitalarchitects.rmc_app.data.mapper.toRemoteVehicle
+import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicleList
 import com.digitalarchitects.rmc_app.data.mapper.toVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.model.Vehicle
 import com.digitalarchitects.rmc_app.remote.RmcApiService
 import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
+import com.digitalarchitects.rmc_app.remote.dto.vehicle.UpdateVehicleDTO
 import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -69,7 +69,8 @@ class VehicleRepositoryImpl(
         val remoteVehicles = rmcApiService.getAllVehicles(
             "Bearer $token"
         )
-        rmcRoomDatabase.addAllVehiclesToLocalDb(remoteVehicles.toLocalVehicleListFromRemote())
+        rmcRoomDatabase.clearVehicleCache()
+        rmcRoomDatabase.addAllVehiclesToLocalDb(remoteVehicles.toLocalVehicleList())
     }
 
     /** Returns true if local data source does not contain any [Vehicle] data */
@@ -90,21 +91,23 @@ class VehicleRepositoryImpl(
         )
     }
 
-    override suspend fun updateVehicle(vehicle: Vehicle) {
-        rmcRoomDatabase.addVehicleToLocalDb(vehicle.toLocalVehicle())
+    override suspend fun updateVehicle(vehicleId: String, updatedVehicle: UpdateVehicleDTO) {
+        // Update remote data source
+        // Remove user from local data source
+        // Add updated user to local data source
         rmcApiService.updateVehicle(
-            "Bearer $token", vehicle.id, vehicle.toRemoteVehicle()
+            "Bearer $token", vehicleId, updatedVehicle
         )
     }
 
     override suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit> {
         return try {
             val response = rmcApiService.deleteVehicle(
-                "Bearer $token", vehicle.id
+                "Bearer $token", vehicle.vehicleId
             )
 
             if (response.isSuccessful) {
-                Log.i("API_DELETE", "Vehicle deleted successfully: ${vehicle.id}")
+                Log.i("API_DELETE", "Vehicle deleted successfully: ${vehicle.vehicleId}")
                 Result.success(Unit)
             } else {
                 val errorMessage =
