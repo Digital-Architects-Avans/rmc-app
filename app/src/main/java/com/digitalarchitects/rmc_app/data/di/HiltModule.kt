@@ -25,10 +25,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.datetime.LocalDate
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -40,35 +40,35 @@ object HiltModule {
         return retrofit.create(RmcApiService::class.java)
     }
 
-    // Provide a singleton instance of Json
-    @Provides
-    fun provideJson(): Json {
-        return Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            prettyPrint = true
-        }
-    }
-
     @Singleton
     @Provides
-    fun providesAuthInterceptor(
-        prefs: SharedPreferences
-    ): AuthInterceptor {
-        return AuthInterceptor(prefs)
-    }
-
-    @Singleton
-    @Provides
-    fun providesRetrofit(json: Json, interceptor: AuthInterceptor): Retrofit {
-        val moshi = Moshi.Builder()
+    fun providesMoshi(): Moshi {
+        return Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .add(LocalDate::class.java, LocalDateAdapter())
             .build()
+    }
 
-        val client = OkHttpClient.Builder()
+    @Singleton
+    @Provides
+    fun provideAuthInterceptor(
+        rmcApiService: Provider<RmcApiService>,
+        prefs: SharedPreferences
+    ): AuthInterceptor {
+        return AuthInterceptor(rmcApiService, prefs)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(interceptor: AuthInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
             .addInterceptor(interceptor)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit {
 
         return Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8080/")
