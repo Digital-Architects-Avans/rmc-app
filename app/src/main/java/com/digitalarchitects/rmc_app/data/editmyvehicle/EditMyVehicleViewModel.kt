@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.digitalarchitects.rmc_app.app.RmcScreen
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.model.EngineType
-import com.digitalarchitects.rmc_app.model.Vehicle
+import com.digitalarchitects.rmc_app.remote.dto.vehicle.UpdateVehicleDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,8 +50,7 @@ class EditMyVehicleViewModel @Inject constructor(
                         val price = _uiState.value.price
                         val availability = _uiState.value.availability
 
-                        val updatedVehicle = Vehicle(
-                            id = id,
+                        val updatedVehicle = UpdateVehicleDTO(
                             userId = userId,
                             brand = brand,
                             model = model,
@@ -65,7 +64,7 @@ class EditMyVehicleViewModel @Inject constructor(
                             price = price,
                             availability = availability
                         )
-                        vehicleRepository.updateVehicle(vehicle = updatedVehicle)
+                        //vehicleRepository.updateVehicle(vehicle = updatedVehicle)
                     }
                     _navigateToScreen.value = RmcScreen.MyVehicles
 
@@ -192,7 +191,7 @@ class EditMyVehicleViewModel @Inject constructor(
                     val scope = CoroutineScope(Dispatchers.IO)
                     scope.launch {
                         val getVehicle = vehicleRepository.getVehicleById(1)
-                        val id = getVehicle?.id
+                        val id = getVehicle?.vehicleId
                         val userId = getVehicle?.userId
                         val brand = getVehicle?.brand
                         val model = getVehicle?.model
