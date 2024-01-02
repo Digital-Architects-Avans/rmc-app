@@ -17,7 +17,6 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -40,75 +39,63 @@ interface RmcApiService {
     ): TokenResponse
 
     @GET("authenticate")
-    suspend fun authenticate(
-        @Header("Authorization") token: String
-    )
+    suspend fun authenticate()
+
+    @GET("refreshToken")
+    suspend fun refreshToken(): TokenResponse
 
     @GET("users")
-    suspend fun getAllUsers(
-        @Header("Authorization") token: String
-    ): List<User>
+    suspend fun getAllUsers(): List<User>
 
     @GET("users/{id}")
     suspend fun getUserById(
-        @Header("Authorization") token: String,
         @Path("id") id: String
     ): User?
 
     @PUT("users/{id}")
     suspend fun updateUser(
-        @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body updatedUser: UpdateUserDTO
     ): Response<Unit>
 
     @GET("users/{email}")
     suspend fun getUserByEmail(
-        @Header("Authorization") token: String,
         @Path("email") email: String,
     ): User?
 
     @DELETE("users/{id}")
     suspend fun deleteUser(
-        @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<Unit>
 
     // -------------------------------------------------------------------------------------------
 
     @GET("vehicles")
-    suspend fun getAllVehicles(
-        @Header("Authorization") token: String
-    ): List<Vehicle>
+    suspend fun getAllVehicles(): List<Vehicle>
 
     @GET("vehicles/{id}")
     suspend fun getVehiclesById(
-        @Header("Authorization") token: String,
         @Path("id") id: String
     ): RemoteVehicle?
 
     @GET("vehicles/{licensePlate}")
     suspend fun getVehiclesByLicensePlate(
-        @Header("Authorization") token: String,
         @Path("licensePlate") licensePlate: String
     ): RemoteVehicle?
 
     @POST("vehicles")
     suspend fun addVehicle(
-        @Header("Authorization") token: String,
         @Body createVehicleDTO: CreateVehicleDTO
     ): Response<Unit>
 
     @PUT("vehicles/{id}")
     suspend fun updateVehicle(
-        @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body updatedVehicle: UpdateVehicleDTO
     ): Response<Unit>
 
     @DELETE("vehicles/{id}")
     suspend fun deleteVehicle(
-        @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<Unit>
 
@@ -116,37 +103,31 @@ interface RmcApiService {
 
     @GET("rentals")
     suspend fun getAllRentals(
-        @Header("Authorization") token: String
     ): List<Rental>
 
     @GET("rentals/{id}")
     suspend fun getRentalById(
-        @Header("Authorization") token: String,
         @Path("id") id: String
     ): RemoteRental?
 
     @GET("rentals/user/{userId}")
     suspend fun getRentalsByUserId(
-        @Header("Authorization") token: String,
         @Path("userId") userId: String
     ): List<RemoteRental>
 
     @PUT("rentals/{rentalId}")
     suspend fun updateRental(
-        @Header("Authorization") token: String,
         @Path("rentalId") rentalId: String,
         @Body updatedRental: UpdateRentalDTO
     ): List<RemoteRental>
 
     @POST("rentals")
     suspend fun addRental(
-        @Header("Authorization") token: String,
         @Body createRentalDTO: CreateRentalDTO
     ): Response<Unit>
 
     @DELETE("rentals/{id}")
     suspend fun deleteRental(
-        @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<Unit>
 }

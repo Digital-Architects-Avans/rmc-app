@@ -2,7 +2,6 @@ package com.digitalarchitects.rmc_app.data.repo
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.digitalarchitects.rmc_app.RmcApplication
 import com.digitalarchitects.rmc_app.data.auth.AuthRequest
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
@@ -99,7 +98,7 @@ class UserRepositoryImpl(
     override suspend fun authenticate(): AuthResult<Unit> {
         return try {
             val token = prefs.getString("jwtToken", null) ?: return AuthResult.Authorized()
-            rmcApiService.authenticate("Bearer $token")
+            rmcApiService.authenticate()
             AuthResult.Authorized()
         } catch (e: HttpException) {
             if (e.code() == 401) {
@@ -118,9 +117,35 @@ class UserRepositoryImpl(
         }
     }
 
-    // TODO(): Add token dynamically to header after a user logs in using Interceptor
-    // Currently use this global variable to store the token declared in [RmcApplication.GlobalVariables
-    private val token = RmcApplication.GlobalVariables.token
+    override suspend fun refreshToken(): AuthResult<Unit> {
+        return try {
+            // Get the current saved JWT token from shared preferences
+            val token = prefs.getString("jwtToken", null) ?: return AuthResult.Authorized()
+
+            // Call the refresh token API to obtain a new access token
+            val newToken = rmcApiService.refreshToken().token
+
+            // Save the new JWT token to shared preferences
+            prefs.edit().putString("jwtToken", newToken).apply()
+            Log.d("HTTP", "Refresh token successful")
+
+            return AuthResult.Authorized()
+        } catch (e: HttpException) {
+            if (e.code() == 401) {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.Unauthorized()
+            } else {
+                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
+                AuthResult.UnknownError()
+            }
+        } catch (e: ConnectException) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.NoConnectionError()
+        } catch (e: Exception) {
+            Log.e("HTTP", "Error: $e")
+            AuthResult.UnknownError()
+        }
+    }
 
     /** Fetches data from remote, updates local data source, returns users from local data source */
     override suspend fun getAllUsers(): List<User> {
@@ -157,9 +182,7 @@ class UserRepositoryImpl(
 
     // Update local Room cache with data from remote Retrofit API
     private suspend fun refreshRoomCache() {
-        val users = rmcApiService.getAllUsers(
-            "Bearer $token"
-        )
+        val users = rmcApiService.getAllUsers()
         rmcRoomDatabase.clearUserCache()
         rmcRoomDatabase.addAllUsersToLocalDb(users.toLocalUser())
     }
@@ -189,17 +212,13 @@ class UserRepositoryImpl(
         // Update remote data source
         // Remove user from local data source
         // Add updated user to local data source
-        rmcApiService.updateUser(
-            "Bearer $token", userId, updatedUser
-        )
+        rmcApiService.updateUser(userId, updatedUser)
     }
 
     /** Removes [User] from remote data source, local data source will get updated automatically */
     override suspend fun deleteUser(user: User): Result<Unit> {
         return try {
-            val response = rmcApiService.deleteUser(
-                "Bearer $token", user.userId
-            )
+            val response = rmcApiService.deleteUser(user.userId)
 
             if (response.isSuccessful) {
                 Log.i("API_DELETE", "User deleted successfully: ${user.userId}")
