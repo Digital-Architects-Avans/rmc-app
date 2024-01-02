@@ -14,9 +14,9 @@ class AuthInterceptor @Inject constructor(
     private val prefs: SharedPreferences
 ) : Interceptor {
 
-
     private suspend fun refreshToken(chain: Interceptor.Chain): Response {
         try {
+            Log.d("refreshToken", "try")
             // Call the refresh token API to obtain a new access token
             val newToken = rmcApiService.get().refreshToken().token
 
@@ -45,12 +45,14 @@ class AuthInterceptor @Inject constructor(
                 .build()
             val response = chain.proceed(newRequest)
             if (response.code == 401) {
+                // If the response indicates unauthorized, try to refresh the token
                 runBlocking { refreshToken(chain) }
             } else {
                 response
             }
         } else {
-            runBlocking { refreshToken(chain) }
+            // No token in shared preferences, proceed with the original request
+            chain.proceed(chain.request())
         }
     }
 }
