@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.digitalarchitects.rmc_app.data.auth.authInterceptor.AuthInterceptor
 import com.digitalarchitects.rmc_app.data.repo.RentalRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.UserRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.VehicleRepositoryImpl
@@ -25,6 +26,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -50,15 +52,28 @@ object HiltModule {
 
     @Singleton
     @Provides
-    fun providesRetrofit(json: Json): Retrofit {
+    fun providesAuthInterceptor(
+        prefs: SharedPreferences
+    ): AuthInterceptor {
+        return AuthInterceptor(prefs)
+    }
+
+    @Singleton
+    @Provides
+    fun providesRetrofit(json: Json, interceptor: AuthInterceptor): Retrofit {
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .add(LocalDate::class.java, LocalDateAdapter())
             .build()
 
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
+
         return Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8080/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(client)
             .build()
     }
 
