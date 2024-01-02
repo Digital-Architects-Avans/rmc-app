@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.domain.repo
 
 import com.digitalarchitects.rmc_app.model.Rental
 import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.remote.dto.rental.UpdateRentalDTO
 
 /**
  * Repository retrieves Rental data from underlying data source (remote and local).
@@ -24,7 +25,7 @@ interface RentalRepository {
     suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental)
 
     /** Updates the [Rental] to the underlying data source */
-    suspend fun updateRental(rental: Rental)
+    suspend fun updateRental(rentalId: String, updatedRental: UpdateRentalDTO)
 
     /** Deletes the [Rental] from the underlying data source */
     suspend fun deleteRental(rental: Rental): Result<Unit>
