@@ -3,9 +3,9 @@ package com.digitalarchitects.rmc_app.data.editmyaccount
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.app.RmcScreen
-import com.digitalarchitects.rmc_app.data.mapper.toUser
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.model.UserType
+import com.digitalarchitects.rmc_app.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.room.LocalUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +67,10 @@ class EditMyAccountViewModel @Inject constructor(
             is EditMyAccountUIEvent.InsertUser -> {
                 try {
                     val user = LocalUser(
+                        userId = "1",
                         email = "john.doe@example.com",
+                        password = "password",
+                        salt = "salt",
                         userType = UserType.CLIENT,
                         firstName = "John",
                         lastName = "Doe",
@@ -76,7 +79,6 @@ class EditMyAccountViewModel @Inject constructor(
                         buildingNumber = "123",
                         zipCode = "12345",
                         city = "Cityville",
-                        id = 1,
                         imageResourceId = 123
                     )
 
@@ -195,8 +197,11 @@ class EditMyAccountViewModel @Inject constructor(
 //                val id = state.value.id
                 // TODO ADD MORE PROPERTIES TO IF
 
-                val updatedUser = LocalUser(
-                    email = email,
+                val updatedUser = UpdateUserDTO(
+                    userId = "1",
+                    password = "password",
+                    salt = "salt",
+                    userType = UserType.CLIENT,
                     firstName = firstName,
                     lastName = lastName,
                     phone = phone,
@@ -204,11 +209,10 @@ class EditMyAccountViewModel @Inject constructor(
                     buildingNumber = buildingNumber,
                     zipCode = zipCode,
                     city = city,
-                    id = 1
                 )
                 runBlocking {
                     withContext(Dispatchers.IO) {
-                        userRepository.updateUser(updatedUser.toUser())
+                        userRepository.updateUser(updatedUser.userId, updatedUser)
                     }
                 }
                 _navigateToScreen.value = RmcScreen.MyAccount
