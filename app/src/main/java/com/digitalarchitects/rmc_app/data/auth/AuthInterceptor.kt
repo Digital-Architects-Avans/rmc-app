@@ -1,4 +1,4 @@
-package com.digitalarchitects.rmc_app.data.auth.authInterceptor
+package com.digitalarchitects.rmc_app.data.auth
 
 import android.content.SharedPreferences
 import android.util.Log

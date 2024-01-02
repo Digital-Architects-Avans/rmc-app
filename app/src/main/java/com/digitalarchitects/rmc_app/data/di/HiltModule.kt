@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.digitalarchitects.rmc_app.data.auth.authInterceptor.AuthInterceptor
+import com.digitalarchitects.rmc_app.data.auth.AuthInterceptor
 import com.digitalarchitects.rmc_app.data.repo.RentalRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.UserRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.VehicleRepositoryImpl
