@@ -7,7 +7,7 @@ import kotlinx.datetime.LocalDate
 fun DummyRentalDTO(): List<Rental> {
     return listOf(
         Rental(
-            id = 1,
+            rentalId = "1",
             vehicleId = 1,
             userId = 1,
             date = LocalDate(23, 1,1),
@@ -19,7 +19,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 0
         ),
         Rental(
-            id = 2,
+            rentalId = "2",
             vehicleId = 2,
             userId = 2,
             date = LocalDate(23, 1,1),
@@ -31,7 +31,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 4
         ),
         Rental(
-            id = 2,
+            rentalId = "3",
             vehicleId = 2,
             userId = 2,
             date = LocalDate(23, 1,1),
@@ -43,7 +43,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 4
         ),
         Rental(
-            id = 3,
+            rentalId = "4",
             vehicleId = 3,
             userId = 1,
             date = LocalDate(23, 1,1),
@@ -55,7 +55,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 2
         ),
         Rental(
-            id = 4,
+            rentalId = "4",
             vehicleId = 4,
             userId = 2,
             date = LocalDate(23, 1,1),
@@ -67,7 +67,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 5
         ),
         Rental(
-            id = 5,
+            rentalId = "5",
             vehicleId = 1,
             userId = 1,
             date = LocalDate(23, 1,1),
@@ -79,7 +79,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 0
         ),
         Rental(
-            id = 6,
+            rentalId = "7",
             vehicleId = 2,
             userId = 2,
             date = LocalDate(23, 1,1),
@@ -91,7 +91,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 4
         ),
         Rental(
-            id = 7,
+            rentalId = "8",
             vehicleId = 3,
             userId = 1,
             date = LocalDate(23, 1,1),
@@ -103,7 +103,7 @@ fun DummyRentalDTO(): List<Rental> {
             score = 2
         ),
         Rental(
-            id = 8,
+            rentalId = "9",
             vehicleId = 4,
             userId = 2,
             date = LocalDate(23, 1,1),
