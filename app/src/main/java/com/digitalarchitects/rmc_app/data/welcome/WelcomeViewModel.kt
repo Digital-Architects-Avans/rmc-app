@@ -30,9 +30,10 @@ class WelcomeViewModel @Inject constructor(
     val authResult = resultChannel.receiveAsFlow()
 
     // Authenticate user on init by checking validity of token in shared preferences
-    init {
-        authenticate()
-    }
+    // Disable if you would like to test the welcome / register / login screens
+//    init {
+//        authenticate()
+//    }
 
     fun onEvent(event: WelcomeUIEvent) {
         when (event) {
