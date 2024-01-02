@@ -10,16 +10,16 @@ import androidx.room.Upsert
 @Dao
 interface RentalDao {
 
-    @Query("SELECT * FROM LocalRental ORDER BY id ASC")
+    @Query("SELECT * FROM LocalRental ORDER BY rentalId ASC")
     suspend fun getAllRentals(): List<LocalRental>
 
-    @Query("SELECT * FROM LocalRental WHERE id = :rentalId")
+    @Query("SELECT * FROM LocalRental WHERE rentalId = :rentalId")
     suspend fun getRentalById(rentalId: Int): LocalRental
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllRentals(rentals: List<LocalRental>)
 
-    @Query("SELECT date FROM LocalRental WHERE id = :rentalId")
+    @Query("SELECT date FROM LocalRental WHERE rentalId = :rentalId")
     suspend fun getRentalDate(rentalId: Int): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -33,6 +33,9 @@ interface RentalDao {
 
     @Delete
     suspend fun deleteRental(rental: LocalRental)
+
+    @Query("DELETE FROM LocalRental")
+    suspend fun clearCache()
 
 // TODO GET CURRENT Vehicle
 //    @Query("SELECT * FROM rentaltable LIMIT 1")
