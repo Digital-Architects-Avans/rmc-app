@@ -117,36 +117,6 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun refreshToken(): AuthResult<Unit> {
-        return try {
-            // Get the current saved JWT token from shared preferences
-            val token = prefs.getString("jwtToken", null) ?: return AuthResult.Authorized()
-
-            // Call the refresh token API to obtain a new access token
-            val newToken = rmcApiService.refreshToken().token
-
-            // Save the new JWT token to shared preferences
-            prefs.edit().putString("jwtToken", newToken).apply()
-            Log.d("HTTP", "Refresh token successful")
-
-            return AuthResult.Authorized()
-        } catch (e: HttpException) {
-            if (e.code() == 401) {
-                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
-                AuthResult.Unauthorized()
-            } else {
-                Log.e("HTTP", "Error: ${e.code()}\n${e.message()}")
-                AuthResult.UnknownError()
-            }
-        } catch (e: ConnectException) {
-            Log.e("HTTP", "Error: $e")
-            AuthResult.NoConnectionError()
-        } catch (e: Exception) {
-            Log.e("HTTP", "Error: $e")
-            AuthResult.UnknownError()
-        }
-    }
-
     /** Fetches data from remote, updates local data source, returns users from local data source */
     override suspend fun getAllUsers(): List<User> {
         getAllUsersFromRemote()

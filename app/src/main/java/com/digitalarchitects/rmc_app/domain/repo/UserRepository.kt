@@ -14,7 +14,6 @@ interface UserRepository {
     suspend fun signUp(request: SignUpRequest): AuthResult<Unit>
     suspend fun signIn(username: String, password: String): AuthResult<Unit>
     suspend fun authenticate(): AuthResult<Unit>
-    suspend fun refreshToken(): AuthResult<Unit>
 
     /** Retrieves list of [User] from underlying data source */
     suspend fun getAllUsers(): List<User>
