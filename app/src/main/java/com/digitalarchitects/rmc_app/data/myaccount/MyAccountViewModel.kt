@@ -41,7 +41,10 @@ class MyAccountViewModel @Inject constructor(
             is MyAccountUIEvent.InsertUser -> {
                 try {
                     val localUser = LocalUser(
+                        userId = "1",
                         email = "john.doe@example.com",
+                        password = "password",
+                        salt = "salt",
                         userType = UserType.CLIENT,
                         firstName = "John",
                         lastName = "Doe",
@@ -50,7 +53,6 @@ class MyAccountViewModel @Inject constructor(
                         buildingNumber = "123",
                         zipCode = "12345",
                         city = "Cityville",
-                        id = 1,
                         imageResourceId = null
                     )
                     runBlocking {
