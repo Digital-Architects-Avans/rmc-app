@@ -9,16 +9,16 @@ import androidx.room.Upsert
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM LocalUser ORDER BY id ASC")
+    @Query("SELECT * FROM LocalUser ORDER BY userId ASC")
     suspend fun getAllUsers(): List<LocalUser>
 
-    @Query("SELECT * FROM LocalUser WHERE id = :userId")
+    @Query("SELECT * FROM LocalUser WHERE userId = :userId")
     suspend fun getUserById(userId: Int): LocalUser
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllUsers(users: List<LocalUser>)
 
-    @Query("SELECT firstName FROM LocalUser WHERE id = :userId")
+    @Query("SELECT firstName FROM LocalUser WHERE userId = :userId")
     suspend fun getFirstName(userId: Int): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -29,6 +29,9 @@ interface UserDao {
 
     @Delete
     fun deleteUser(user: LocalUser)
+
+    @Query("DELETE FROM LocalUser")
+    suspend fun clearCache()
 
 //    TODO("GET CURRENT USER")
 //    @Query("SELECT * FROM userentity LIMIT 1")
