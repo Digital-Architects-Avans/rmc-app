@@ -21,13 +21,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcLogoText
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
-import com.digitalarchitects.rmc_app.data.auth.AuthResult
-import com.digitalarchitects.rmc_app.presentation.screens.welcome.WelcomeUIEvent
-import com.digitalarchitects.rmc_app.presentation.screens.welcome.WelcomeViewModel
 
 @Composable
 fun WelcomeScreen(
@@ -49,7 +47,11 @@ fun WelcomeScreen(
                 }
 
                 is AuthResult.Unauthorized -> {
-                    viewModel.onEvent(WelcomeUIEvent.Unauthorized)
+                    Toast.makeText(
+                        context,
+                        "Log in or create an account.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is AuthResult.NoConnectionError -> {

@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.presentation.screens.welcome
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
@@ -52,8 +51,7 @@ class WelcomeViewModel @Inject constructor(
             }
 
             is WelcomeUIEvent.Unauthorized -> {
-                Log.d("WelcomeViewModel", "WelcomeUIEvent.Unauthorized triggered.")
-                _navigateToScreen.value = RmcScreen.Login
+                return
             }
 
             is WelcomeUIEvent.NoConnectionError -> {
