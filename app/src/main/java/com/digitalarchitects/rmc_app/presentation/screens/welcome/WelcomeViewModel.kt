@@ -2,10 +2,10 @@ package com.digitalarchitects.rmc_app.presentation.screens.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
-import com.digitalarchitects.rmc_app.presentation.screens.register.RegisterUIState
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
+import com.digitalarchitects.rmc_app.presentation.screens.register.RegisterUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +47,7 @@ class WelcomeViewModel @Inject constructor(
             }
 
             is WelcomeUIEvent.Authorized -> {
-                _navigateToScreen.value = RmcScreen.RentACar
+                _navigateToScreen.value = RmcScreen.RmcTestScreen
             }
 
             is WelcomeUIEvent.Unauthorized -> {

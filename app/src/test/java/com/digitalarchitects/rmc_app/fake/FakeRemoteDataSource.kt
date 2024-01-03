@@ -43,7 +43,7 @@ object FakeRemoteDataSource {
         RemoteVehicle(
             objectId = "1",
             vehicleId = "1",
-            userId = 1,
+            userId = "1",
             brand = "brand",
             model = "model",
             year = 1,
@@ -59,7 +59,7 @@ object FakeRemoteDataSource {
         RemoteVehicle(
             objectId = "2",
             vehicleId = "2",
-            userId = 2,
+            userId = "2",
             brand = "brand2",
             model = "model2",
             year = 2,
@@ -77,8 +77,8 @@ object FakeRemoteDataSource {
         RemoteRental(
             objectId = "1",
             rentalId = "1",
-            vehicleId = 1,
-            userId = 1,
+            vehicleId = "1",
+            userId = "1",
             date = LocalDate(2021, 1, 1),
             price = 1.0,
             latitude = 1.0f,
@@ -90,8 +90,8 @@ object FakeRemoteDataSource {
         RemoteRental(
             objectId = "1",
             rentalId = "1",
-            vehicleId = 2,
-            userId = 2,
+            vehicleId = "2",
+            userId = "2",
             date = LocalDate(2021, 2, 2),
             price = 2.0,
             latitude = 2.0f,
