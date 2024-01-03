@@ -1,21 +1,20 @@
 package com.digitalarchitects.rmc_app.data.di
 
-import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
 import com.digitalarchitects.rmc_app.data.auth.AuthInterceptor
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabase
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepoImpl
+import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.repo.RentalRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.UserRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.VehicleRepositoryImpl
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
+import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.domain.util.LocalDateAdapter
-import com.digitalarchitects.rmc_app.data.remote.RmcApiService
-import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabase
-import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
-import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepoImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -53,9 +52,9 @@ object HiltModule {
     @Provides
     fun provideAuthInterceptor(
         rmcApiService: Provider<RmcApiService>,
-        prefs: SharedPreferences
+        userPreferencesRepository: UserPreferencesRepository
     ): AuthInterceptor {
-        return AuthInterceptor(rmcApiService, prefs)
+        return AuthInterceptor(rmcApiService, userPreferencesRepository)
     }
 
     @Singleton
@@ -105,10 +104,10 @@ object HiltModule {
     fun providesUserRepo(
         db: RmcRoomDatabaseRepo,
         api: RmcApiService,
-        prefs: SharedPreferences,
+        userPreferencesRepository: UserPreferencesRepository,
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): UserRepository {
-        return UserRepositoryImpl(db, api, prefs, dispatcher)
+        return UserRepositoryImpl(db, api, userPreferencesRepository, dispatcher)
     }
 
     @Provides
@@ -129,12 +128,6 @@ object HiltModule {
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): RentalRepository {
         return RentalRepositoryImpl(db, api, dispatcher)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSharedPref(app: Application): SharedPreferences {
-        return app.getSharedPreferences("prefs", Context.MODE_PRIVATE)
     }
 
 }
