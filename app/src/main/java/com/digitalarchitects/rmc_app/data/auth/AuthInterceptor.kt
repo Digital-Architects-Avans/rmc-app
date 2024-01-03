@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.data.auth
 
-import android.content.SharedPreferences
 import android.util.Log
 import com.digitalarchitects.rmc_app.data.remote.RmcApiService
+import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -11,8 +11,9 @@ import javax.inject.Provider
 
 class AuthInterceptor @Inject constructor(
     private val rmcApiService: Provider<RmcApiService>,
-    private val prefs: SharedPreferences
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : Interceptor {
+
 
     private suspend fun refreshToken(chain: Interceptor.Chain): Response {
         try {
@@ -21,13 +22,13 @@ class AuthInterceptor @Inject constructor(
             val newToken = rmcApiService.get().refreshToken().token
 
             // Save the new JWT token to shared preferences
-            prefs.edit().putString("jwtToken", newToken).apply()
+            userPreferencesRepository.saveJwt(newToken)
             Log.d("AuthInterceptor", "Refresh token successful")
         } catch (e: Exception) {
             Log.e("AuthInterceptor", "Error trying to refresh the token: $e")
         }
 
-        val token = prefs.getString("jwtToken", null)
+        val token = userPreferencesRepository.getJwtToken()
         val newRequest = chain.request()
             .newBuilder()
             .header("Authorization", "Bearer $token")
@@ -37,22 +38,25 @@ class AuthInterceptor @Inject constructor(
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = prefs.getString("jwtToken", null)
-        return if (!token.isNullOrEmpty()) {
-            val newRequest = chain.request()
-                .newBuilder()
-                .header("Authorization", "Bearer $token")
-                .build()
-            val response = chain.proceed(newRequest)
-            if (response.code == 401) {
-                // If the response indicates unauthorized, try to refresh the token
-                runBlocking { refreshToken(chain) }
+        // Using runBlocking to call the suspend function within a non-suspend context
+        return runBlocking {
+            val token = userPreferencesRepository.getJwtToken()
+            if (!token.isNullOrEmpty()) {
+                val newRequest = chain.request()
+                    .newBuilder()
+                    .header("Authorization", "Bearer $token")
+                    .build()
+                val response = chain.proceed(newRequest)
+                if (response.code == 401) {
+                    // If the response indicates unauthorized, try to refresh the token
+                    refreshToken(chain)
+                } else {
+                    response
+                }
             } else {
-                response
+                // No token in shared preferences, proceed with the original request
+                chain.proceed(chain.request())
             }
-        } else {
-            // No token in shared preferences, proceed with the original request
-            chain.proceed(chain.request())
         }
     }
 }
