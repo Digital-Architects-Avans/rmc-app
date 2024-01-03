@@ -3,9 +3,10 @@ package com.digitalarchitects.rmc_app.fake
 import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.mapper.toRental
 import com.digitalarchitects.rmc_app.data.mapper.toRentalListFromLocal
-import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
-import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 
 class FakeRentalRepository: RentalRepository {
     override suspend fun getAllRentals(): List<Rental> {
@@ -20,16 +21,23 @@ class FakeRentalRepository: RentalRepository {
         return
     }
 
-    override suspend fun getRentalById(rentalId: Int): Rental? {
-        return FakeLocalDataSource.rentalList.firstOrNull { it.id == rentalId }?.toRental()
+    override suspend fun getRentalById(rentalId: String): Rental? {
+        return FakeLocalDataSource.rentalList.firstOrNull { it.rentalId == rentalId }?.toRental()
+    }
+
+    override suspend fun getRentalsForUser(userId: String): List<Rental>? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRentalsForVehicle(vehicleId: String): List<Rental>? {
+        TODO("Not yet implemented")
     }
 
     override suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental) {
         TODO("Not yet implemented")
     }
 
-
-    override suspend fun updateRental(rental: Rental) {
+    override suspend fun updateRental(rentalId: String, updatedRental: UpdateRentalDTO) {
         TODO("Not yet implemented")
     }
 
@@ -37,7 +45,7 @@ class FakeRentalRepository: RentalRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getRentalDate(rentalId: Int): String? {
+    override suspend fun getRentalDate(rentalId: String): String? {
         TODO("Not yet implemented")
     }
 }

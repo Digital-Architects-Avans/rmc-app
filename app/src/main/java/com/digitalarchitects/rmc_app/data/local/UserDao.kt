@@ -13,13 +13,13 @@ interface UserDao {
     suspend fun getAllUsers(): List<LocalUser>
 
     @Query("SELECT * FROM LocalUser WHERE userId = :userId")
-    suspend fun getUserById(userId: Int): LocalUser
+    suspend fun getUserById(userId: String): LocalUser
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllUsers(users: List<LocalUser>)
 
     @Query("SELECT firstName FROM LocalUser WHERE userId = :userId")
-    suspend fun getFirstName(userId: Int): String?
+    suspend fun getFirstName(userId: String): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addUser(user: LocalUser): Long

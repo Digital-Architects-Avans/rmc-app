@@ -2,9 +2,9 @@ package com.digitalarchitects.rmc_app.domain.repo
 
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
-import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
+import com.digitalarchitects.rmc_app.domain.model.User
 
 /**
  * Repository retrieves User data from underlying data source (remote and local).
@@ -25,7 +25,7 @@ interface UserRepository {
     suspend fun getAllUsersFromRemote()
 
     /** Retrieves [User] by id from underlying data source */
-    suspend fun getUserById(userId: Int): User
+    suspend fun getUserById(userId: String): User
 
     /** Adds [User] to the underlying data source */
     suspend fun addUser(user: User, signupDTO: SignupDTO)
@@ -38,6 +38,6 @@ interface UserRepository {
     suspend fun deleteUser(user: User): Result<Unit>
 
     /** Retrieves the first name of the [User] */
-    suspend fun getFirstName(userId: Int): String?
+    suspend fun getFirstName(userId: String): String?
 
 }

@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.domain.repo
 
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 
 /**
  * Repository retrieves Vehicle data from underlying data source (remote and local).
@@ -19,7 +19,7 @@ interface VehicleRepository {
     suspend fun getAllVehiclesFromRemote()
 
     /** Retrieves [Vehicle] by id from underlying data source */
-    suspend fun getVehicleById(vehicleId: Int): Vehicle?
+    suspend fun getVehicleById(vehicleId: String): Vehicle?
 
     /** Adds [Vehicle] to the underlying data source */
     suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO, vehicle: Vehicle)
@@ -31,6 +31,6 @@ interface VehicleRepository {
     suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit>
 
     /** Retrieves the model name from the [Vehicle]  */
-    suspend fun getVehicleModel(vehicleId: Int): String?
+    suspend fun getVehicleModel(vehicleId: String): String?
 
 }

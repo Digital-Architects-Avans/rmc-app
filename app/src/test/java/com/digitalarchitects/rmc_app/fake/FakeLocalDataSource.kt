@@ -1,17 +1,19 @@
 
-import com.digitalarchitects.rmc_app.domain.model.EngineType
-import com.digitalarchitects.rmc_app.domain.model.RentalStatus
-import com.digitalarchitects.rmc_app.domain.model.UserType
 import com.digitalarchitects.rmc_app.data.local.LocalRental
 import com.digitalarchitects.rmc_app.data.local.LocalUser
 import com.digitalarchitects.rmc_app.data.local.LocalVehicle
+import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.UserType
 import kotlinx.datetime.LocalDate
 
 object FakeLocalDataSource {
     val userList = listOf(
         LocalUser(
-            id = 1,
+            userId = "1",
             email = "email",
+            password = "password",
+            salt = "salt",
             userType = UserType.STAFF,
             firstName = "firstName",
             lastName = "lastName",
@@ -22,8 +24,10 @@ object FakeLocalDataSource {
             city = "city"
         ),
         LocalUser(
-            id = 2,
+            userId = "2",
             email = "email2",
+            password = "password",
+            salt = "salt",
             userType = UserType.CLIENT,
             firstName = "firstName2",
             lastName = "lastName2",
@@ -36,7 +40,7 @@ object FakeLocalDataSource {
     )
     val vehicleList = listOf(
         LocalVehicle(
-            id = 1,
+            vehicleId = "1",
             userId = 1,
             brand = "brand",
             model = "model",
@@ -44,14 +48,14 @@ object FakeLocalDataSource {
             vehicleClass = "vehicleClass1",
             engineType = EngineType.BEV,
             licensePlate = "licensePlate1",
-            imgLink = "https://www.google.com",
+            imgLink = 1,
             latitude = 2.0f,
             longitude = 2.0f,
             price = 2.0,
             availability = true
         ),
         LocalVehicle(
-            id = 2,
+            vehicleId = "2",
             userId = 2,
             brand = "brand2",
             model = "model2",
@@ -59,7 +63,7 @@ object FakeLocalDataSource {
             vehicleClass = "vehicleClass2",
             engineType = EngineType.BEV,
             licensePlate = "licensePlate2",
-            imgLink = "https://www.google.com",
+            imgLink = 2,
             latitude = 2.0f,
             longitude = 2.0f,
             price = 2.0,
@@ -68,7 +72,7 @@ object FakeLocalDataSource {
     )
     val rentalList = listOf(
         LocalRental(
-            id = 1,
+            rentalId = "2",
             vehicleId = 1,
             userId = 1,
             date = LocalDate(2021, 1, 1),
@@ -80,7 +84,7 @@ object FakeLocalDataSource {
             score = 1
         ),
         LocalRental(
-            id = 2,
+            rentalId = "2",
             vehicleId = 2,
             userId = 2,
             date = LocalDate(2021, 2, 2),

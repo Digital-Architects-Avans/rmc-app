@@ -8,7 +8,7 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun getAllUsersFromLocalDb(): List<LocalUser> =
         userDao.getAllUsers()
 
-    override suspend fun getUserByIdFromLocalDb(userId: Int): LocalUser =
+    override suspend fun getUserByIdFromLocalDb(userId: String): LocalUser =
         userDao.getUserById(userId)
 
     override suspend fun addAllUsersToLocalDb(users: List<LocalUser>) =
@@ -23,7 +23,7 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun deleteUserFromLocalDb(user: LocalUser) =
         userDao.deleteUser(user)
 
-    override suspend fun getFirstName(userId: Int): String? =
+    override suspend fun getFirstName(userId: String): String? =
         userDao.getFirstName(userId)
 
     override suspend fun clearUserCache() =
@@ -34,7 +34,7 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun getAllVehiclesFromLocalDb(): List<LocalVehicle> =
         vehicleDao.getAllVehicles()
 
-    override suspend fun getVehicleByIdFromLocalDb(vehicleId: Int): LocalVehicle =
+    override suspend fun getVehicleByIdFromLocalDb(vehicleId: String): LocalVehicle =
         vehicleDao.getVehicleById(vehicleId)
 
     override suspend fun addAllVehiclesToLocalDb(vehicles: List<LocalVehicle>) =
@@ -49,7 +49,7 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun deleteVehicleFromLocalDb(vehicle: LocalVehicle) =
         vehicleDao.deleteVehicle(vehicle)
 
-    override suspend fun getVehicleModel(vehicleId: Int) =
+    override suspend fun getVehicleModel(vehicleId: String) =
         vehicleDao.getVehicleModel(vehicleId)
 
     override suspend fun clearVehicleCache() =
@@ -60,13 +60,13 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun getAllRentalsFromLocalDb(): List<LocalRental> =
         rentalDao.getAllRentals()
 
-    override suspend fun getRentalByIdFromLocalDb(rentalId: Int): LocalRental =
+    override suspend fun getRentalByIdFromLocalDb(rentalId: String): LocalRental =
         rentalDao.getRentalById(rentalId)
 
-    override suspend fun getRentalsForUserFromLocalDb(userId: Int): List<LocalRental>? =
+    override suspend fun getRentalsForUserFromLocalDb(userId: String): List<LocalRental>? =
         rentalDao.getRentalsForUser(userId)
 
-    override suspend fun getRentalsForVehicleFromLocalDb(vehicleId: Int): List<LocalRental>? =
+    override suspend fun getRentalsForVehicleFromLocalDb(vehicleId: String): List<LocalRental>? =
         rentalDao.getRentalsForVehicle(vehicleId)
 
     override suspend fun addAllRentalsToLocalDb(rentals: List<LocalRental>) =
@@ -81,7 +81,7 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun deleteRentalFromLocalDb(rental: LocalRental) =
         rentalDao.deleteRental(rental)
 
-    override suspend fun getRentalDate(rentalId: Int): String? =
+    override suspend fun getRentalDate(rentalId: String): String? =
         rentalDao.getRentalDate(rentalId)
 
     override suspend fun clearRentalCache() =

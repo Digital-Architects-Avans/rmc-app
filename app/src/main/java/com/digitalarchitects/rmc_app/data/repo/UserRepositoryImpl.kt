@@ -7,15 +7,15 @@ import com.digitalarchitects.rmc_app.data.auth.AuthRequest
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
 import com.digitalarchitects.rmc_app.data.mapper.toLocalUser
 import com.digitalarchitects.rmc_app.data.mapper.toUser
 import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
-import com.digitalarchitects.rmc_app.domain.repo.UserRepository
-import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
-import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -177,7 +177,7 @@ class UserRepositoryImpl(
     }
 
     /** Returns [User] with ID from local data source*/
-    override suspend fun getUserById(userId: Int): User {
+    override suspend fun getUserById(userId: String): User {
         return rmcRoomDatabase.getUserByIdFromLocalDb(userId).toUser()
     }
 
@@ -225,7 +225,7 @@ class UserRepositoryImpl(
     }
 
     /** Returns the first name of [User] */
-    override suspend fun getFirstName(userId: Int): String? {
+    override suspend fun getFirstName(userId: String): String? {
         return rmcRoomDatabase.getFirstName(userId)
     }
 }

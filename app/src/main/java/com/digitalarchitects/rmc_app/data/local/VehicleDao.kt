@@ -14,13 +14,13 @@ interface VehicleDao {
     suspend fun getAllVehicles(): List<LocalVehicle>
 
     @Query("SELECT * FROM LocalVehicle WHERE vehicleId = :vehicleId")
-    suspend fun getVehicleById(vehicleId: Int): LocalVehicle
+    suspend fun getVehicleById(vehicleId: String): LocalVehicle
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllVehicles(vehicles: List<LocalVehicle>)
 
     @Query("SELECT model FROM LocalVehicle WHERE vehicleId = :vehicleId")
-    suspend fun getVehicleModel(vehicleId: Int): String?
+    suspend fun getVehicleModel(vehicleId: String): String?
 
     @Insert
     suspend fun insertVehicle(vehicle: LocalVehicle): Long

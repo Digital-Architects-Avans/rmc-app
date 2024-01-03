@@ -1,18 +1,20 @@
 package com.digitalarchitects.rmc_app.fake
 
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.UserType
-import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
-import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
-import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import kotlinx.datetime.LocalDate
 
 object FakeRemoteDataSource {
     val userList = listOf(
-        RemoteUser(
-            id = 1,
+        User(
+            userId = "1",
             email = "email",
+            password = "password",
+            salt = "salt",
             userType = UserType.STAFF,
             firstName = "firstName",
             lastName = "lastName",
@@ -22,9 +24,11 @@ object FakeRemoteDataSource {
             zipCode = "zipCode",
             city = "city"
         ),
-        RemoteUser(
-            id = 2,
+        User(
+            userId = "2",
             email = "email2",
+            password = "password",
+            salt = "salt",
             userType = UserType.CLIENT,
             firstName = "firstName2",
             lastName = "lastName2",
@@ -37,7 +41,8 @@ object FakeRemoteDataSource {
     )
     val vehicleList = listOf(
         RemoteVehicle(
-            id = 1,
+            objectId = "1",
+            vehicleId = "1",
             userId = 1,
             brand = "brand",
             model = "model",
@@ -45,14 +50,15 @@ object FakeRemoteDataSource {
             vehicleClass = "vehicleClass1",
             engineType = EngineType.BEV,
             licensePlate = "licensePlate1",
-            imgLink = "https://www.google.com",
+            imgLink = 1,
             latitude = 2.0f,
             longitude = 2.0f,
             price = 2.0,
             availability = true
         ),
         RemoteVehicle(
-            id = 2,
+            objectId = "2",
+            vehicleId = "2",
             userId = 2,
             brand = "brand2",
             model = "model2",
@@ -60,7 +66,7 @@ object FakeRemoteDataSource {
             vehicleClass = "vehicleClass2",
             engineType = EngineType.BEV,
             licensePlate = "licensePlate2",
-            imgLink = "https://www.google.com",
+            imgLink = 2,
             latitude = 2.0f,
             longitude = 2.0f,
             price = 2.0,
@@ -69,7 +75,8 @@ object FakeRemoteDataSource {
     )
     val rentalList = listOf(
         RemoteRental(
-            id = 1,
+            objectId = "1",
+            rentalId = "1",
             vehicleId = 1,
             userId = 1,
             date = LocalDate(2021, 1, 1),
@@ -81,7 +88,8 @@ object FakeRemoteDataSource {
             score = 1
         ),
         RemoteRental(
-            id = 2,
+            objectId = "1",
+            rentalId = "1",
             vehicleId = 2,
             userId = 2,
             date = LocalDate(2021, 2, 2),

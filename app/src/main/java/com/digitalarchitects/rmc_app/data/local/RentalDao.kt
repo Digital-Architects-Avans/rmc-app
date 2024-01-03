@@ -14,19 +14,19 @@ interface RentalDao {
     suspend fun getAllRentals(): List<LocalRental>
 
     @Query("SELECT * FROM LocalRental WHERE rentalId = :rentalId")
-    suspend fun getRentalById(rentalId: Int): LocalRental
+    suspend fun getRentalById(rentalId: String): LocalRental
 
     @Query("SELECT * FROM LocalRental WHERE userId = :userId")
-    suspend fun getRentalsForUser(userId: Int): List<LocalRental>?
+    suspend fun getRentalsForUser(userId: String): List<LocalRental>?
 
     @Query("SELECT * FROM LocalRental WHERE vehicleId = :vehicleId")
-    suspend fun getRentalsForVehicle(vehicleId: Int): List<LocalRental>?
+    suspend fun getRentalsForVehicle(vehicleId: String): List<LocalRental>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllRentals(rentals: List<LocalRental>)
 
     @Query("SELECT date FROM LocalRental WHERE rentalId = :rentalId")
-    suspend fun getRentalDate(rentalId: Int): String?
+    suspend fun getRentalDate(rentalId: String): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addRental(rental: LocalRental): Long

@@ -2,17 +2,17 @@ package com.digitalarchitects.rmc_app.data.repo
 
 import android.util.Log
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
 import com.digitalarchitects.rmc_app.data.mapper.toLocalRental
 import com.digitalarchitects.rmc_app.data.mapper.toLocalRentalList
 import com.digitalarchitects.rmc_app.data.mapper.toRental
 import com.digitalarchitects.rmc_app.data.mapper.toRentalListFromLocal
-import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
-import com.digitalarchitects.rmc_app.domain.model.Rental
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
-import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -73,15 +73,15 @@ class RentalRepositoryImpl(
         return empty
     }
 
-    override suspend fun getRentalById(rentalId: Int): Rental? {
+    override suspend fun getRentalById(rentalId: String): Rental? {
         return rmcRoomDatabase.getRentalByIdFromLocalDb(rentalId).toRental()
     }
 
-    override suspend fun getRentalsForUser(userId: Int): List<Rental>? {
+    override suspend fun getRentalsForUser(userId: String): List<Rental>? {
         return rmcRoomDatabase.getRentalsForUserFromLocalDb(userId)?.toRentalListFromLocal()
     }
 
-    override suspend fun getRentalsForVehicle(vehicleId: Int): List<Rental>? {
+    override suspend fun getRentalsForVehicle(vehicleId: String): List<Rental>? {
         return rmcRoomDatabase.getRentalsForVehicleFromLocalDb(vehicleId)?.toRentalListFromLocal()
     }
 
@@ -123,7 +123,7 @@ class RentalRepositoryImpl(
         }
     }
 
-    override suspend fun getRentalDate(rentalId: Int): String? {
+    override suspend fun getRentalDate(rentalId: String): String? {
         return rmcRoomDatabase.getRentalDate(rentalId)
     }
 }

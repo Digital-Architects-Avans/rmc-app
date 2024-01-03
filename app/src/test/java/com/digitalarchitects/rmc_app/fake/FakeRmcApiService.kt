@@ -1,77 +1,111 @@
 package com.digitalarchitects.rmc_app.fake
 
+import com.digitalarchitects.rmc_app.data.auth.AuthRequest
+import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
+import com.digitalarchitects.rmc_app.data.auth.TokenResponse
 import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
-import com.digitalarchitects.rmc_app.data.remote.dto.user.SigninDTO
-import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import retrofit2.Response
-import retrofit2.http.Header
 
 class FakeRmcApiService : RmcApiService {
-
-    override suspend fun addUser(signupDTO: SignupDTO): Response<Unit> {
+    override suspend fun signup(request: SignUpRequest) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun authenticateUser(signinDTO: SigninDTO): Response<Unit> {
+    override suspend fun signin(request: AuthRequest): TokenResponse {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAllUsers(@Header(value = "Authorization") token: String): List<RemoteUser> {
+    override suspend fun authenticate() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun refreshToken(): TokenResponse {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllUsers(): List<User> {
         return FakeRemoteDataSource.userList
     }
 
-    override suspend fun updateUser(token: String, id: Int?, user: RemoteUser): Response<Unit> {
+    override suspend fun getUserById(id: String): User? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteUser(token: String, id: Int?): Response<Unit> {
+    override suspend fun updateUser(id: String, updatedUser: UpdateUserDTO): Response<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addVehicle(
-        token: String,
-        createVehicleDTO: CreateVehicleDTO
-    ): Response<Unit> {
+    override suspend fun getUserByEmail(email: String): User? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAllVehicles(token: String): List<RemoteVehicle> {
+    override suspend fun deleteUser(id: String): Response<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllVehicles(): List<Vehicle> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getVehiclesById(id: String): RemoteVehicle? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getVehiclesByLicensePlate(licensePlate: String): RemoteVehicle? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO): Response<Unit> {
         TODO("Not yet implemented")
     }
 
     override suspend fun updateVehicle(
-        token: String,
-        id: Int?,
-        user: RemoteVehicle
+        id: String,
+        updatedVehicle: UpdateVehicleDTO
     ): Response<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteVehicle(token: String, id: Int?): Response<Unit> {
+    override suspend fun deleteVehicle(id: String): Response<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addRental(
-        token: String,
-        createRentalDTO: CreateRentalDTO
-    ): Response<Unit> {
+    override suspend fun getAllRentals(): List<Rental> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAllRentals(token: String): List<RemoteRental> {
+    override suspend fun getRentalById(id: String): RemoteRental? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateRental(token: String, id: Int?, user: RemoteRental): Response<Unit> {
+    override suspend fun getRentalsByUserId(userId: String): List<RemoteRental> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteRental(token: String, id: Int?): Response<Unit> {
+    override suspend fun updateRental(
+        rentalId: String,
+        updatedRental: UpdateRentalDTO
+    ): List<RemoteRental> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun addRental(createRentalDTO: CreateRentalDTO): Response<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteRental(id: String): Response<Unit> {
+        TODO("Not yet implemented")
+    }
+
 }

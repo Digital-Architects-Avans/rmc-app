@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.domain.repo
 
-import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
+import com.digitalarchitects.rmc_app.domain.model.Rental
 
 /**
  * Repository retrieves Rental data from underlying data source (remote and local).
@@ -19,13 +19,13 @@ interface RentalRepository {
     suspend fun getAllRentalsFromRemote()
 
     /** Retrieves [Rental] by id from underlying data source */
-    suspend fun getRentalById(rentalId: Int): Rental?
+    suspend fun getRentalById(rentalId: String): Rental?
 
     /** Retrieves [Rental] for a specific user from underlying data source */
-    suspend fun getRentalsForUser(userId: Int): List<Rental>?
+    suspend fun getRentalsForUser(userId: String): List<Rental>?
 
     /** Retrieves [Rental] for a specific vehicle from underlying data source */
-    suspend fun getRentalsForVehicle(vehicleId: Int): List<Rental>?
+    suspend fun getRentalsForVehicle(vehicleId: String): List<Rental>?
 
     /** Adds [Rental] to the underlying data source */
     suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental)
@@ -37,6 +37,6 @@ interface RentalRepository {
     suspend fun deleteRental(rental: Rental): Result<Unit>
 
     /** Retreives the rental date from the [Rental] */
-    suspend fun getRentalDate(rentalId: Int): String?
+    suspend fun getRentalDate(rentalId: String): String?
 
 }
