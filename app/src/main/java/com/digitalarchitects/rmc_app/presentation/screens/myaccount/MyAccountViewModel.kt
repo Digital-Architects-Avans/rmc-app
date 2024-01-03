@@ -1,10 +1,10 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myaccount
 
 import androidx.lifecycle.ViewModel
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
-import com.digitalarchitects.rmc_app.domain.repo.UserRepository
-import com.digitalarchitects.rmc_app.domain.model.UserType
 import com.digitalarchitects.rmc_app.data.local.LocalUser
+import com.digitalarchitects.rmc_app.domain.model.UserType
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ class MyAccountViewModel @Inject constructor(
                 try {
                     runBlocking {
                         val firstName = withContext(Dispatchers.IO) {
-                            userRepository.getFirstName(1)
+                            userRepository.getFirstName("1")
                         }
                         _state.value = _state.value.copy(firstName = "$firstName")
                     }

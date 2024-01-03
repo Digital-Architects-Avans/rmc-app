@@ -2,16 +2,16 @@ package com.digitalarchitects.rmc_app.data.repo
 
 import android.util.Log
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
 import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicleList
 import com.digitalarchitects.rmc_app.data.mapper.toVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
-import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
-import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -73,7 +73,7 @@ class VehicleRepositoryImpl(
         return empty
     }
 
-    override suspend fun getVehicleById(vehicleId: Int): Vehicle? {
+    override suspend fun getVehicleById(vehicleId: String): Vehicle? {
         return rmcRoomDatabase.getVehicleByIdFromLocalDb(vehicleId).toVehicle()
     }
 
@@ -118,7 +118,7 @@ class VehicleRepositoryImpl(
     }
 
     /** Returns the model name of [Vehicle] */
-    override suspend fun getVehicleModel(vehicleId: Int): String? {
+    override suspend fun getVehicleModel(vehicleId: String): String? {
         return rmcRoomDatabase.getVehicleModel(vehicleId)
     }
 }

@@ -2,11 +2,11 @@ package com.digitalarchitects.rmc_app.presentation.screens.editmyaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
-import com.digitalarchitects.rmc_app.domain.repo.UserRepository
-import com.digitalarchitects.rmc_app.domain.model.UserType
-import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.data.local.LocalUser
+import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
+import com.digitalarchitects.rmc_app.domain.model.UserType
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +36,7 @@ class EditMyAccountViewModel @Inject constructor(
                 try {
                     runBlocking {
                         val getUser = withContext(Dispatchers.IO) {
-                            userRepository.getUserById(1)
+                            userRepository.getUserById("1")
                         }
                         val email = getUser.email
                         val firstName = getUser.firstName

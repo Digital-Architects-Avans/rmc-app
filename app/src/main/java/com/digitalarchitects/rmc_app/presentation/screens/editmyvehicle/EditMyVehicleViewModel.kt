@@ -190,7 +190,7 @@ class EditMyVehicleViewModel @Inject constructor(
                 try {
                     val scope = CoroutineScope(Dispatchers.IO)
                     scope.launch {
-                        val getVehicle = vehicleRepository.getVehicleById(1)
+                        val getVehicle = vehicleRepository.getVehicleById("1")
                         val id = getVehicle?.vehicleId
                         val userId = getVehicle?.userId
                         val brand = getVehicle?.brand
