@@ -11,8 +11,8 @@ import kotlinx.datetime.LocalDate
 class LocalRental(
     @PrimaryKey(autoGenerate = false)
     val rentalId: String,
-    val vehicleId: Int,
-    val userId: Int,
+    val vehicleId: String,
+    val userId: String,
     val date: LocalDate,
     val price: Double,
     val latitude: Float,

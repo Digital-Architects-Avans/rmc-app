@@ -9,7 +9,7 @@ enum class EngineType{
 @Serializable
 data class Vehicle(
     val vehicleId: String,
-    val userId: Int,
+    val userId: String,
     val brand: String,
     val model: String,
     val year: Int,

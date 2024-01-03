@@ -8,7 +8,7 @@ import com.digitalarchitects.rmc_app.domain.model.EngineType
 class LocalVehicle(
     @PrimaryKey(autoGenerate = false)
     val vehicleId: String,
-    val userId: Int,
+    val userId: String,
     val brand: String,
     val model: String,
     val year: Int,

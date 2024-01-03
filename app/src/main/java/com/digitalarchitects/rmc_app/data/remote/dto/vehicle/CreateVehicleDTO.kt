@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateVehicleDTO(
-    val userId: Int,
+    val userId: String,
     val brand: String,
     val model: String,
     val year: Int,

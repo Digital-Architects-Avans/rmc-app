@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 data class RemoteRental(
     val objectId: String,
     val rentalId: String,
-    val vehicleId: Int,
-    val userId: Int,
+    val vehicleId: String,
+    val userId: String,
     val date: LocalDate,
     val price: Double,
     val latitude: Float,

@@ -12,7 +12,7 @@ fun DummyVehicleDTO(): List<Vehicle> {
     return listOf(
         Vehicle(
             vehicleId = "1",
-            userId = 1, // Assuming you have a userId associated with each vehicle
+            userId = "1", // Assuming you have a userId associated with each vehicle
             brand = "Toyota",
             model = "Yaris",
             year = 2011,
@@ -27,7 +27,7 @@ fun DummyVehicleDTO(): List<Vehicle> {
         ),
         Vehicle(
             vehicleId = "2",
-            userId = 1,
+            userId = "2",
             brand = "Honda",
             model = "Civic",
             year = 2020,
@@ -42,7 +42,7 @@ fun DummyVehicleDTO(): List<Vehicle> {
         ),
         Vehicle(
             vehicleId = "3",
-            userId = 2, // Assuming a different userId for this vehicle
+            userId = "2", // Assuming a different userId for this vehicle
             brand = "Ford",
             model = "Focus",
             year = 2019,
@@ -57,7 +57,7 @@ fun DummyVehicleDTO(): List<Vehicle> {
         ),
         Vehicle(
             vehicleId = "4",
-            userId = 2,
+            userId = "2",
             brand = "Chevrolet",
             model = "Malibu",
             year = 2022,

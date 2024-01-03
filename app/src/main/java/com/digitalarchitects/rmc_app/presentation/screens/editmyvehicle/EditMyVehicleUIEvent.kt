@@ -13,15 +13,15 @@ sealed interface EditMyVehicleUIEvent {
     object ConfirmEditMyVehicleButtonClicked: EditMyVehicleUIEvent
     object CancelEditMyVehicleButtonClicked: EditMyVehicleUIEvent
     object DeleteMyVehicleButtonClicked: EditMyVehicleUIEvent
-    data class SetId(val id: Int) : EditMyVehicleUIEvent
-    data class SetUserId(val userId: Int) : EditMyVehicleUIEvent
+    data class SetId(val id: String) : EditMyVehicleUIEvent
+    data class SetUserId(val userId: String) : EditMyVehicleUIEvent
     data class SetBrand(val brand: String) : EditMyVehicleUIEvent
     data class SetModel(val model: String) : EditMyVehicleUIEvent
     data class SetYear(val year: Int) : EditMyVehicleUIEvent
     data class SetVehicleClass(val vehicleClass: String) : EditMyVehicleUIEvent
     data class SetEngineType(val engineType: EngineType) : EditMyVehicleUIEvent
     data class SetLicensePlate(val licensePlate: String) : EditMyVehicleUIEvent
-    data class SetImgLink(val imgLink: String) : EditMyVehicleUIEvent
+    data class SetImgLink(val imgLink: Int) : EditMyVehicleUIEvent
     data class SetLatitude(val latitude: Float) : EditMyVehicleUIEvent
     data class SetLongitude(val longitude: Float) : EditMyVehicleUIEvent
     data class SetPrice(val price: Double) : EditMyVehicleUIEvent

@@ -3,8 +3,8 @@ package com.digitalarchitects.rmc_app.presentation.screens.editmyvehicle
 import com.digitalarchitects.rmc_app.domain.model.EngineType
 
 data class EditMyVehicleUIState (
-    val id: Int = 1,
-    val userId: Int = 1,
+    val id: String = "1",
+    val userId: String = "1",
     val brand: String = "",
     val model: String = "",
     val year: Int = 1990,

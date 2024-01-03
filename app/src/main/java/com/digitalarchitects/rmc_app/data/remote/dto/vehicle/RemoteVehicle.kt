@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class RemoteVehicle(
     val objectId: String,
     val vehicleId: String,
-    val userId: Int,
+    val userId: String,
     val brand: String,
     val model: String,
     val year: Int,
