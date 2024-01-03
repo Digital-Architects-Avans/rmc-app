@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.data.repo
 
-import android.content.SharedPreferences
 import android.util.Base64
 import android.util.Log
 import com.digitalarchitects.rmc_app.data.auth.AuthRequest
@@ -15,6 +14,7 @@ import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -22,14 +22,15 @@ import org.json.JSONObject
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.UnknownHostException
+import javax.inject.Inject
 
 /**
  * Implementation of [UserRepository] that retrieves [User] data from underlying data sources.
  */
-class UserRepositoryImpl(
+class UserRepositoryImpl @Inject constructor(
     private val rmcRoomDatabase: RmcRoomDatabaseRepo,
     private val rmcApiService: RmcApiService,
-    private val prefs: SharedPreferences,
+    private val userPreferencesRepository: UserPreferencesRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : UserRepository {
 
@@ -75,8 +76,8 @@ class UserRepositoryImpl(
                     password = password
                 )
             )
-            // Save the JWT token to shared preferences
-            prefs.edit().putString("jwtToken", response.token).apply()
+            // Save the JWT token to the Datastore using the userPreferencesRepository
+            userPreferencesRepository.saveJwt(response.token)
 
             // Get userId from JWT
             val payload = response.token.split(".")[1]
@@ -85,8 +86,8 @@ class UserRepositoryImpl(
             val jsonObject = JSONObject(decodedString)
             val userId = jsonObject.optString("userId", null)
 
-            // Store userId in shared preferences
-            prefs.edit().putString("userId", userId).apply()
+            // Store userId in Datastore
+            userPreferencesRepository.saveUserId(userId)
 
             AuthResult.Authorized()
         } catch (e: HttpException) {
@@ -110,7 +111,7 @@ class UserRepositoryImpl(
     override suspend fun authenticate(): AuthResult<Unit> {
         return try {
             // If no token present in shared preferences, return Unauthorized
-            val token = prefs.getString("jwtToken", null) ?: return AuthResult.Unauthorized()
+            val token = userPreferencesRepository.getJwtToken() ?: return AuthResult.Unauthorized()
             rmcApiService.authenticate()
             AuthResult.Authorized()
         } catch (e: HttpException) {
