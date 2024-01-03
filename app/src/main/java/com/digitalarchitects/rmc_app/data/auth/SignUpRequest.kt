@@ -1,6 +1,6 @@
 package com.digitalarchitects.rmc_app.data.auth
 
-import com.digitalarchitects.rmc_app.model.UserType
+import com.digitalarchitects.rmc_app.domain.model.UserType
 
 data class SignUpRequest(
     val email: String,

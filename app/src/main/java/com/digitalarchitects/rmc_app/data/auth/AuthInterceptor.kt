@@ -2,7 +2,7 @@ package com.digitalarchitects.rmc_app.data.auth
 
 import android.content.SharedPreferences
 import android.util.Log
-import com.digitalarchitects.rmc_app.remote.RmcApiService
+import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response

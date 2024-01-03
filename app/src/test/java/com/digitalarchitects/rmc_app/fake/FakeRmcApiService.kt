@@ -1,13 +1,13 @@
 package com.digitalarchitects.rmc_app.fake
 
-import com.digitalarchitects.rmc_app.remote.RmcApiService
-import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
-import com.digitalarchitects.rmc_app.remote.dto.rental.RemoteRental
-import com.digitalarchitects.rmc_app.remote.dto.user.RemoteUser
-import com.digitalarchitects.rmc_app.remote.dto.user.SigninDTO
-import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
-import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
-import com.digitalarchitects.rmc_app.remote.dto.vehicle.RemoteVehicle
+import com.digitalarchitects.rmc_app.data.remote.RmcApiService
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
+import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
+import com.digitalarchitects.rmc_app.data.remote.dto.user.SigninDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import retrofit2.Response
 import retrofit2.http.Header
 

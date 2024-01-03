@@ -1,11 +1,11 @@
 package com.digitalarchitects.rmc_app.fake
 
-import com.digitalarchitects.rmc_app.model.EngineType
-import com.digitalarchitects.rmc_app.model.RentalStatus
-import com.digitalarchitects.rmc_app.model.UserType
-import com.digitalarchitects.rmc_app.remote.dto.rental.RemoteRental
-import com.digitalarchitects.rmc_app.remote.dto.user.RemoteUser
-import com.digitalarchitects.rmc_app.remote.dto.vehicle.RemoteVehicle
+import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.UserType
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
+import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import kotlinx.datetime.LocalDate
 
 object FakeRemoteDataSource {

@@ -2,8 +2,8 @@ package com.digitalarchitects.rmc_app
 
 import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
-import com.digitalarchitects.rmc_app.data.repositorytest.RepositoryTestViewModel
-import com.digitalarchitects.rmc_app.data.repositorytest.ResultUiState
+import com.digitalarchitects.rmc_app.presentation.screens.repositorytest.RepositoryTestViewModel
+import com.digitalarchitects.rmc_app.presentation.screens.repositorytest.ResultUiState
 import com.digitalarchitects.rmc_app.fake.FakeRentalRepository
 import com.digitalarchitects.rmc_app.fake.FakeUserRepository
 import com.digitalarchitects.rmc_app.fake.FakeVehicleRepository

@@ -1,10 +1,10 @@
 
-import com.digitalarchitects.rmc_app.model.EngineType
-import com.digitalarchitects.rmc_app.model.RentalStatus
-import com.digitalarchitects.rmc_app.model.UserType
-import com.digitalarchitects.rmc_app.room.LocalRental
-import com.digitalarchitects.rmc_app.room.LocalUser
-import com.digitalarchitects.rmc_app.room.LocalVehicle
+import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.UserType
+import com.digitalarchitects.rmc_app.data.local.LocalRental
+import com.digitalarchitects.rmc_app.data.local.LocalUser
+import com.digitalarchitects.rmc_app.data.local.LocalVehicle
 import kotlinx.datetime.LocalDate
 
 object FakeLocalDataSource {

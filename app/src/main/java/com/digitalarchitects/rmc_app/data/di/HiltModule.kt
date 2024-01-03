@@ -12,10 +12,10 @@ import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.domain.util.LocalDateAdapter
-import com.digitalarchitects.rmc_app.remote.RmcApiService
-import com.digitalarchitects.rmc_app.room.RmcRoomDatabase
-import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
-import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepoImpl
+import com.digitalarchitects.rmc_app.data.remote.RmcApiService
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabase
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepoImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

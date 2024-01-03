@@ -7,11 +7,11 @@ import com.digitalarchitects.rmc_app.data.mapper.toLocalVehicleList
 import com.digitalarchitects.rmc_app.data.mapper.toVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
-import com.digitalarchitects.rmc_app.model.Vehicle
-import com.digitalarchitects.rmc_app.remote.RmcApiService
-import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
-import com.digitalarchitects.rmc_app.remote.dto.vehicle.UpdateVehicleDTO
-import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.data.remote.RmcApiService
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException

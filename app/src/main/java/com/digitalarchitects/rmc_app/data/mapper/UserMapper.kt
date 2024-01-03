@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.data.mapper
 
-import com.digitalarchitects.rmc_app.model.User
-import com.digitalarchitects.rmc_app.remote.dto.user.RemoteUser
-import com.digitalarchitects.rmc_app.room.LocalUser
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
+import com.digitalarchitects.rmc_app.data.local.LocalUser
 
 fun List<User>.toLocalUser(): List<LocalUser> {
     return this.map { user ->

@@ -11,11 +11,11 @@ import com.digitalarchitects.rmc_app.data.mapper.toLocalUser
 import com.digitalarchitects.rmc_app.data.mapper.toUser
 import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
-import com.digitalarchitects.rmc_app.model.User
-import com.digitalarchitects.rmc_app.remote.RmcApiService
-import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
-import com.digitalarchitects.rmc_app.remote.dto.user.UpdateUserDTO
-import com.digitalarchitects.rmc_app.room.RmcRoomDatabaseRepo
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.data.remote.RmcApiService
+import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
+import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.json.JSONObject

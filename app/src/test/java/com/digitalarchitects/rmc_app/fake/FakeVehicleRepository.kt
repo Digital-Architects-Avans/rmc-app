@@ -4,8 +4,8 @@ import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.mapper.toVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
-import com.digitalarchitects.rmc_app.model.Vehicle
-import com.digitalarchitects.rmc_app.remote.dto.vehicle.CreateVehicleDTO
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 
 // Class inherits from userRepository interface overrides the getUsers() fun to return fake data.
 class FakeVehicleRepository : VehicleRepository {

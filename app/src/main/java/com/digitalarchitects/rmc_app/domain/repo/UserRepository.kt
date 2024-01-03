@@ -2,9 +2,9 @@ package com.digitalarchitects.rmc_app.domain.repo
 
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
-import com.digitalarchitects.rmc_app.model.User
-import com.digitalarchitects.rmc_app.remote.dto.user.SignupDTO
-import com.digitalarchitects.rmc_app.remote.dto.user.UpdateUserDTO
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 
 /**
  * Repository retrieves User data from underlying data source (remote and local).

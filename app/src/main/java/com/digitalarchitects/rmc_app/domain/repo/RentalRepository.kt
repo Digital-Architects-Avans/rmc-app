@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.domain.repo
 
-import com.digitalarchitects.rmc_app.model.Rental
-import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
-import com.digitalarchitects.rmc_app.remote.dto.rental.UpdateRentalDTO
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
 
 /**
  * Repository retrieves Rental data from underlying data source (remote and local).

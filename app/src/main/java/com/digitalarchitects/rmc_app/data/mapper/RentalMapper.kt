@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.data.mapper
 
-import com.digitalarchitects.rmc_app.model.Rental
-import com.digitalarchitects.rmc_app.remote.dto.rental.RemoteRental
-import com.digitalarchitects.rmc_app.room.LocalRental
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
+import com.digitalarchitects.rmc_app.data.local.LocalRental
 
 fun List<LocalRental>.toRentalListFromLocal(): List<Rental> {
     return this.map { rental ->

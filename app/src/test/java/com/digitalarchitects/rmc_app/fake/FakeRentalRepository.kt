@@ -4,8 +4,8 @@ import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.mapper.toRental
 import com.digitalarchitects.rmc_app.data.mapper.toRentalListFromLocal
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
-import com.digitalarchitects.rmc_app.model.Rental
-import com.digitalarchitects.rmc_app.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 
 class FakeRentalRepository: RentalRepository {
     override suspend fun getAllRentals(): List<Rental> {
