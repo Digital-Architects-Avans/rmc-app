@@ -109,7 +109,8 @@ class UserRepositoryImpl(
     // Authenticate user using the JWT token stored in shared preferences
     override suspend fun authenticate(): AuthResult<Unit> {
         return try {
-            val token = prefs.getString("jwtToken", null) ?: return AuthResult.Authorized()
+            // If no token present in shared preferences, return Unauthorized
+            val token = prefs.getString("jwtToken", null) ?: return AuthResult.Unauthorized()
             rmcApiService.authenticate()
             AuthResult.Authorized()
         } catch (e: HttpException) {
