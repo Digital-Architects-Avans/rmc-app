@@ -47,7 +47,7 @@ class WelcomeViewModel @Inject constructor(
             }
 
             is WelcomeUIEvent.Authorized -> {
-                _navigateToScreen.value = RmcScreen.RmcTestScreen
+                _navigateToScreen.value = RmcScreen.RentACar
             }
 
             is WelcomeUIEvent.Unauthorized -> {
