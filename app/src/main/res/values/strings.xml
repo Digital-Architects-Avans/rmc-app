@@ -21,7 +21,7 @@
     <string name="close">Close</string>
     <string name="my_account">My account</string>
     <string name="add_vehicle">Add Vehicle</string>
-    <string name="rent_out_my_car">Rent out my car</string>
+    <string name="rent_my_car">Rent my car</string>
     <string name="my_rentals">My rentals</string>
     <string name="my_vehicles">My vehicles</string>
     <string name="vehicle">Vehicle</string>
@@ -91,7 +91,7 @@
     <string name="screen_title_search">Search</string>
     <string name="screen_title_vehicle_details">Vehicle Details</string>
     <string name="screen_title_my_rentals">My rentals</string>
-    <string name="screen_title_rent_my_car">Rent Out My Vehicle</string>
+    <string name="screen_title_rent_my_car">Rent My Car</string>
     <string name="screen_title_my_vehicles">My Vehicles</string>
     <string name="screen_title_register_vehicle">Register Vehicle</string>
     <string name="screen_title_my_account">My Account</string>
