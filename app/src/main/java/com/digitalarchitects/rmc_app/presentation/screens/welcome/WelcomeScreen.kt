@@ -22,6 +22,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcLogoText
@@ -40,7 +41,7 @@ fun WelcomeScreen(
         viewModel.authResult.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
-                    navigateToScreen("RentACar")
+                    navigateToScreen(RmcScreen.RentACar.name)
                 }
 
                 is AuthResult.Unauthorized -> {
@@ -106,7 +107,7 @@ fun WelcomeScreen(
                     RmcFilledTonalButton(
                         value = stringResource(id = R.string.register),
                         onClick = {
-                            navigateToScreen("Register")
+                            navigateToScreen(RmcScreen.Register.name)
                         }
                     )
                 }
@@ -114,7 +115,7 @@ fun WelcomeScreen(
                     RmcFilledButton(
                         value = stringResource(id = R.string.login),
                         onClick = {
-                            navigateToScreen("Login")
+                            navigateToScreen(RmcScreen.Login.name)
                         }
                     )
                 }

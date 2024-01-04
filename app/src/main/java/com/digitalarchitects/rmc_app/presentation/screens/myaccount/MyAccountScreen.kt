@@ -75,7 +75,7 @@ fun MyAccountScreen(
                     userIcon = uiState.imageResourceId,
                     size = dimensionResource(R.dimen.image_size_large),
                     onClick = {
-                        navigateToScreen("EditMyAccount")
+                        navigateToScreen(RmcScreen.EditMyAccount.name)
                     }
                 )
                 uiState.currentUser?.let {
@@ -88,7 +88,7 @@ fun MyAccountScreen(
                     value = stringResource(R.string.my_vehicles),
                     icon = Icons.Filled.DirectionsCar,
                     onClick = {
-                        navigateToScreen("MyVehicles")
+                        navigateToScreen(RmcScreen.MyVehicles.name)
                     }
                 )
                 RmcFilledButton(
@@ -102,7 +102,7 @@ fun MyAccountScreen(
                     value = stringResource(R.string.my_rentals),
                     icon = Icons.Filled.CarRental,
                     onClick = {
-                        navigateToScreen("MyRentals")
+                        navigateToScreen(RmcScreen.MyRentals.name)
                     }
                 )
                 RmcOutlinedButton(
@@ -110,7 +110,7 @@ fun MyAccountScreen(
                     icon = Icons.Filled.Output,
                     onClick = {
                         viewModel.onEvent(MyAccountUIEvent.OnLogoutButtonClicked)
-                        navigateToScreen("Welcome")
+                        navigateToScreen(RmcScreen.Welcome.name)
                     }
                 )
                 RmcSpacer()

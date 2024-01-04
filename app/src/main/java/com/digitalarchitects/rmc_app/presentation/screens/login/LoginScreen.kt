@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.ClickableLoginTextComponent
 import com.digitalarchitects.rmc_app.presentation.components.DividerTextComponent
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
@@ -53,7 +54,7 @@ fun LoginScreen(
         viewModel.authResult.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
-                    navigateToScreen("RentACar")
+                    navigateToScreen(RmcScreen.RentACar.name)
                 }
 
                 is AuthResult.Unauthorized -> {
@@ -88,7 +89,7 @@ fun LoginScreen(
             RmcAppBar(
                 title = R.string.screen_title_login,
                 navigationIcon = Icons.Rounded.ArrowBack,
-                navigateUp = { navigateToScreen("Welcome") }
+                navigateUp = { navigateToScreen(RmcScreen.Welcome.name) }
             )
         }
     ) { innerPadding ->
@@ -146,7 +147,7 @@ fun LoginScreen(
 
                 ClickableLoginTextComponent(
                     tryingToLogin = false,
-                    onTextSelected = { navigateToScreen("Register") }
+                    onTextSelected = { navigateToScreen(RmcScreen.Register.name) }
                 )
 
                 if (uiState.isLoading) {

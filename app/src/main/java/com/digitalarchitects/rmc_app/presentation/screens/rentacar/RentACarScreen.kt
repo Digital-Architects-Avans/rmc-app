@@ -245,7 +245,7 @@ fun RentACarScreen(
                         RmcFilledTonalIconButton(
                             icon = Icons.Filled.Key,
                             label = R.string.rent_my_car,
-                            onClick = { viewModel.onEvent(RentACarUIEvent.RentOutMyVehicleButtonClicked) },
+                            onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
                         )
                         RmcFilledTonalIconButton(
                             icon = Icons.Filled.CarRental,
