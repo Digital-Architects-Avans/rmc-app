@@ -41,10 +41,7 @@ fun EditMyAccountScreen(
     viewModel: EditMyAccountViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
+
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.onEvent(EditMyAccountUIEvent.InsertUser)
@@ -57,9 +54,8 @@ fun EditMyAccountScreen(
                 title = R.string.screen_title_edit_account,
                 navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = {
-                    viewModel.onEvent(EditMyAccountUIEvent.NavigateUpButtonClicked)
-
-                },
+                    navigateToScreen("MyAccount")
+                }
             )
         }
     ) { innerPadding ->
@@ -225,7 +221,7 @@ fun EditMyAccountScreen(
                 RmcFilledButton(
                     value = stringResource(id = R.string.cancel),
                     onClick = {
-                        viewModel.onEvent(EditMyAccountUIEvent.CancelEditMyAccountButtonClicked)
+                        navigateToScreen("MyAccount")
                     }
                 )
 
@@ -233,6 +229,7 @@ fun EditMyAccountScreen(
                     value = stringResource(id = R.string.apply),
                     onClick = {
                         viewModel.onEvent(EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked)
+                        navigateToScreen("MyRentals")
                     }
                 )
 

@@ -2,7 +2,6 @@ package com.digitalarchitects.rmc_app.presentation.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,9 +17,6 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRepository
 ): ViewModel() {
-
-    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
-    val navigateToScreen = _navigateToScreen.asStateFlow()
 
     private val _uiState = MutableStateFlow(LoginUIState())
     val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
@@ -44,30 +40,6 @@ class LoginViewModel @Inject constructor(
 
             is LoginUIEvent.LoginButtonClicked -> {
                 signIn()
-            }
-
-            is LoginUIEvent.RegisterButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.Register
-            }
-
-            is LoginUIEvent.NavigateUpButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-
-            is LoginUIEvent.Authorized -> {
-                _navigateToScreen.value = RmcScreen.RmcTestScreen
-            }
-
-            is LoginUIEvent.Unauthorized -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-
-            is LoginUIEvent.NoConnectionError -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-
-            is LoginUIEvent.UnknownError -> {
-                _navigateToScreen.value = RmcScreen.Welcome
             }
         }
     }

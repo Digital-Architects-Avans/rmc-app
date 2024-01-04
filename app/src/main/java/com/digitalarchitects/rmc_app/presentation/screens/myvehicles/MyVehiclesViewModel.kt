@@ -3,9 +3,9 @@ package com.digitalarchitects.rmc_app.presentation.screens.myvehicles
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
-import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.data.local.LocalVehicle
+import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,9 +28,6 @@ class MyVehiclesViewModel @Inject constructor(
 
     fun onEvent(event: MyVehiclesUIEvent) {
         when (event) {
-            is MyVehiclesUIEvent.NavigateUpButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.MyAccount
-            }
 
             is MyVehiclesUIEvent.NewVehicleButtonClicked -> {
                 _navigateToScreen.value = RmcScreen.RegisterVehicle

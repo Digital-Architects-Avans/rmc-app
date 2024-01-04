@@ -33,12 +33,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcSwitch
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
-import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.presentation.screens.search.RmcFilterChip
 
 @Composable
@@ -61,7 +61,7 @@ fun EditMyVehicleScreen(
                 title = R.string.screen_title_edit_vehicle,
                 navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = {
-                    viewModel.onEvent(EditMyVehicleUIEvent.NavigateUpButtonClicked)
+                    navigateToScreen("MyAccount")
                 },
             )
         }
@@ -298,7 +298,7 @@ fun EditMyVehicleScreen(
                     RmcFilledButton(
                         value = stringResource(id = R.string.cancel),
                         onClick = {
-                            viewModel.onEvent(EditMyVehicleUIEvent.CancelEditMyVehicleButtonClicked)
+                            navigateToScreen("MyAccount")
                         }
                     )
 
@@ -306,6 +306,7 @@ fun EditMyVehicleScreen(
                         value = stringResource(id = R.string.apply),
                         onClick = {
                             viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
+                            navigateToScreen("MyRentals")
                         }
                     )
                 }
