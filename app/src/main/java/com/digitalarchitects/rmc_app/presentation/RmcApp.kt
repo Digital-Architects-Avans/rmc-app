@@ -61,6 +61,7 @@ enum class RmcScreen(@StringRes val title: Int) {
 fun RmcApp(
     navController: NavHostController = rememberNavController()
 ) {
+
     val repositoryTestViewModel: RepositoryTestViewModel = hiltViewModel()
     val welcomeViewModel: WelcomeViewModel = hiltViewModel()
     val registerViewModel: RegisterViewModel = hiltViewModel()
@@ -74,7 +75,6 @@ fun RmcApp(
     val registerVehicleViewModel: RegisterVehicleViewModel = hiltViewModel()
     val myRentalsViewModel: MyRentalsViewModel = hiltViewModel()
     val editMyVehicleViewModel: EditMyVehicleViewModel = hiltViewModel()
-
     val myAccountViewModel: MyAccountViewModel = hiltViewModel()
 
     NavHost(
