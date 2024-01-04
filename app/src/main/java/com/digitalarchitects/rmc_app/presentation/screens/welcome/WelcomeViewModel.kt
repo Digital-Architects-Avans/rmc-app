@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.screens.register.RegisterUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -20,9 +19,6 @@ class WelcomeViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
-    val navigateToScreen = _navigateToScreen.asStateFlow()
-
     private val _uiState = MutableStateFlow(RegisterUIState())
     val uiState: StateFlow<RegisterUIState> = _uiState.asStateFlow()
 
@@ -33,35 +29,6 @@ class WelcomeViewModel @Inject constructor(
     // Disable if you would like to test the welcome / register / login screens
     init {
         authenticate()
-    }
-
-    fun onEvent(event: WelcomeUIEvent) {
-        when (event) {
-
-            is WelcomeUIEvent.RegisterButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.Register
-            }
-
-            is WelcomeUIEvent.LoginButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.Login
-            }
-
-            is WelcomeUIEvent.Authorized -> {
-                _navigateToScreen.value = RmcScreen.RentACar
-            }
-
-            is WelcomeUIEvent.Unauthorized -> {
-                return
-            }
-
-            is WelcomeUIEvent.NoConnectionError -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-
-            is WelcomeUIEvent.UnknownError -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-        }
     }
 
     // Authenticate user using the JWT token stored in shared preferences
