@@ -83,10 +83,6 @@ fun RentACarScreen(
     viewModel: RentACarViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
 // TODO default state
@@ -263,7 +259,7 @@ fun RentACarScreen(
                     ) {
                         RmcFilledTonalIconButton(
                             icon = Icons.Filled.Key,
-                            label = R.string.rent_out_my_car,
+                            label = R.string.rent_my_car,
                             onClick = { viewModel.onEvent(RentACarUIEvent.RentOutMyVehicleButtonClicked) },
                         )
                         RmcFilledTonalIconButton(
@@ -277,7 +273,7 @@ fun RentACarScreen(
                         RmcImgFilledIconButton(
                             image = R.drawable.civic,
                             label = R.string.my_rentals,
-                            onClick = { viewModel.onEvent(RentACarUIEvent.MyAccountButtonClicked) },
+                            onClick = { navigateToScreen("MyAccount") },
                             modifier = Modifier.padding(
                                 end = dimensionResource(R.dimen.padding_extra_small)
                             )

@@ -21,7 +21,7 @@ import androidx.compose.material.icons.filled.AddLocation
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.LocalOffer
 import androidx.compose.material.icons.filled.Toys
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -45,19 +45,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.data.local.LocalRental
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
-import com.digitalarchitects.rmc_app.data.local.LocalRental
 
 @Composable
 fun MyRentalsScreen(
     viewModel: MyRentalsViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
 //      TODO
@@ -67,9 +63,9 @@ fun MyRentalsScreen(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_my_rentals,
-                navigationIcon = Icons.Rounded.ArrowBack,
+                navigationIcon = Icons.Rounded.Close,
                 navigateUp = {
-                    viewModel.onEvent(MyRentalsUIEvent.NavigateUpButtonClicked)
+                    navigateToScreen("RentACar")
                 },
             )
         }

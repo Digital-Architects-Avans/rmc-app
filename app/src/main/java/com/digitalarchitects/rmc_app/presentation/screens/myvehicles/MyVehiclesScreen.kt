@@ -17,7 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,10 +53,6 @@ fun MyVehiclesScreen(
     viewModel: MyVehiclesViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -68,9 +64,9 @@ fun MyVehiclesScreen(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_my_vehicles,
-                navigationIcon = Icons.Rounded.ArrowBack,
+                navigationIcon = Icons.Rounded.Close,
                 navigateUp = {
-                    viewModel.onEvent(MyVehiclesUIEvent.NavigateUpButtonClicked)
+                    navigateToScreen("RentACar")
                 },
             )
         }
