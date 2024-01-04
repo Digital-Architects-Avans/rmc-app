@@ -230,4 +230,8 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getFirstName(userId: String): String? {
         return rmcRoomDatabase.getFirstName(userId)
     }
+
+    override suspend fun getCurrentUserIdFromDataStore(): String? {
+        return userPreferencesRepository.getUserId()
+    }
 }
