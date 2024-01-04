@@ -939,7 +939,7 @@ fun RmcMapVehicleItem() {
 @Composable
 fun RmcVehicleListItem(
     vehicle: Vehicle,
-    onClick: (Int) -> Unit
+    onClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -950,7 +950,7 @@ fun RmcVehicleListItem(
                     color = Color.Black
                 ),
                 onClick = {
-                    onClick(vehicle.vehicleId.toInt())
+                    onClick(vehicle.vehicleId)
                 }
             ),
         verticalAlignment = Alignment.CenterVertically
