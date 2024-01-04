@@ -6,7 +6,6 @@ import com.digitalarchitects.rmc_app.data.local.LocalUser
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.domain.model.UserType
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +22,6 @@ import javax.inject.Inject
 class EditMyAccountViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
-    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
-    val navigateToScreen = _navigateToScreen.asStateFlow()
 
     private val _state = MutableStateFlow(EditMyAccountUIState())
     private val _uiState = _state
@@ -36,8 +33,10 @@ class EditMyAccountViewModel @Inject constructor(
                 try {
                     runBlocking {
                         val getUser = withContext(Dispatchers.IO) {
-                            userRepository.getUserById("1")
+                        val userId = userRepository.getCurrentUserIdFromDataStore()
+                            userRepository.getUserById(userId!!)
                         }
+                        val userId = getUser.userId
                         val email = getUser.email
                         val firstName = getUser.firstName
                         val lastName = getUser.lastName
@@ -48,6 +47,7 @@ class EditMyAccountViewModel @Inject constructor(
                         val city = getUser.city
 
                         _state.value = _state.value.copy(
+                            userId = userId,
                             email = email,
                             firstName = firstName,
                             lastName = lastName,
@@ -184,8 +184,6 @@ class EditMyAccountViewModel @Inject constructor(
             is EditMyAccountUIEvent.User -> TODO()
 
             is EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked -> {
-                val email = _uiState.value.email
-//                val userType = state.value.userType
                 val firstName = _uiState.value.firstName
                 val lastName = _uiState.value.lastName
                 val phone = _uiState.value.phone
@@ -215,12 +213,8 @@ class EditMyAccountViewModel @Inject constructor(
                         userRepository.updateUser(updatedUser.userId, updatedUser)
                     }
                 }
-                _navigateToScreen.value = RmcScreen.MyAccount
             }
 
-            is EditMyAccountUIEvent.CancelEditMyAccountButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.MyAccount
-            }
 
             is EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
                 viewModelScope.launch {
@@ -229,10 +223,6 @@ class EditMyAccountViewModel @Inject constructor(
             }
 
             is EditMyAccountUIEvent.UpsertUser -> TODO()
-
-            is EditMyAccountUIEvent.NavigateUpButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.RentACar
-            }
         }
     }
 }
