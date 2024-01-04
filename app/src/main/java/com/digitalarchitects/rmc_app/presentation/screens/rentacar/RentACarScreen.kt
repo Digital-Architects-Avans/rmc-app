@@ -244,8 +244,8 @@ fun RentACarScreen(
                     ) {
                         RmcFilledTonalIconButton(
                             icon = Icons.Filled.Key,
-                            label = R.string.rent_out_my_car,
-                            onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
+                            label = R.string.rent_my_car,
+                            onClick = { viewModel.onEvent(RentACarUIEvent.RentOutMyVehicleButtonClicked) },
                         )
                         RmcFilledTonalIconButton(
                             icon = Icons.Filled.CarRental,
@@ -257,8 +257,8 @@ fun RentACarScreen(
                         )
                         RmcImgFilledIconButton(
                             image = R.drawable.civic,
-                            label = R.string.my_account,
-                            onClick = { navigateToScreen(RmcScreen.MyAccount.name) },
+                            label = R.string.my_rentals,
+                            onClick = { navigateToScreen("MyAccount") },
                             modifier = Modifier.padding(
                                 end = dimensionResource(R.dimen.padding_extra_small)
                             )

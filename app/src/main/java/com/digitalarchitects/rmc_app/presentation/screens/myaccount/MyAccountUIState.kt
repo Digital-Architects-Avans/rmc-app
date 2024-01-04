@@ -1,11 +1,10 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myaccount
 
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.data.local.LocalUser
+import com.digitalarchitects.rmc_app.domain.model.User
 
 data class MyAccountUIState(
-    val users: List<LocalUser> = emptyList(),
-    val firstName: String = "",
-    val lastName: String = "",
-    val imageResourceId: Int = R.drawable.usericon
-    )
+    var users: List<User> = emptyList(),
+    var currentUser: User? = null,
+    var imageResourceId: Int = R.drawable.usericon
+)

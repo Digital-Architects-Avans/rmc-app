@@ -30,7 +30,6 @@ interface UserRepository {
     /** Adds [User] to the underlying data source */
     suspend fun addUser(user: User, signupDTO: SignupDTO)
 
-
     /** Updates the [User] to the underlying data source */
     suspend fun updateUser(userId: String, updatedUser: UpdateUserDTO)
 
@@ -39,5 +38,8 @@ interface UserRepository {
 
     /** Retrieves the first name of the [User] */
     suspend fun getFirstName(userId: String): String?
+
+    /** Retrieves the userId of the [User] currently signed in from the DataStore */
+    suspend fun getCurrentUserIdFromDataStore(): String?
 
 }

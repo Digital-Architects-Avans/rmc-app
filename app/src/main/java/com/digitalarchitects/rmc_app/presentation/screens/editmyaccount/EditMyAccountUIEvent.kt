@@ -33,8 +33,7 @@ sealed interface EditMyAccountUIEvent {
         val id: Int
     ): EditMyAccountUIEvent
     object ConfirmEditMyAccountButtonClicked: EditMyAccountUIEvent
-    object CancelEditMyAccountButtonClicked: EditMyAccountUIEvent
     object DeleteMyAccountButtonClicked: EditMyAccountUIEvent
-    object NavigateUpButtonClicked: EditMyAccountUIEvent
+
 
 }

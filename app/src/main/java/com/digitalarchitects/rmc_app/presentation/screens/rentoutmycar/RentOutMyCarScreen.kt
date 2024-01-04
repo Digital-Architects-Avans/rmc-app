@@ -16,7 +16,7 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -41,22 +41,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcUserIcon
 import com.digitalarchitects.rmc_app.presentation.components.SmallHeadingTextComponent
-import com.digitalarchitects.rmc_app.domain.model.Rental
-import com.digitalarchitects.rmc_app.domain.model.User
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 
 @Composable
 fun RentOutMyCarScreen(
     viewModel: RentOutMyCarViewModel, navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
 // TODO
@@ -65,9 +61,9 @@ fun RentOutMyCarScreen(
     Scaffold(topBar = {
         RmcAppBar(
             title = R.string.screen_title_rent_my_car,
-            navigationIcon = Icons.Rounded.ArrowBack,
+            navigationIcon = Icons.Rounded.Close,
             navigateUp = {
-                viewModel.onEvent(RentOutMyCarUIEvent.NavigateUpButtonClicked)
+                navigateToScreen("RentACar")
             },
         )
     }) { innerPadding ->

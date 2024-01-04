@@ -32,18 +32,15 @@ fun WelcomeScreen(
     viewModel: WelcomeViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
 
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
     LaunchedEffect(viewModel, context) {
         viewModel.authResult.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
-                    viewModel.onEvent(WelcomeUIEvent.Authorized)
+                    navigateToScreen("RentACar")
                 }
 
                 is AuthResult.Unauthorized -> {
@@ -60,7 +57,6 @@ fun WelcomeScreen(
                         "No connection. Please try again later.",
                         Toast.LENGTH_SHORT
                     ).show()
-                    viewModel.onEvent(WelcomeUIEvent.NoConnectionError)
                 }
 
                 is AuthResult.UnknownError -> {
@@ -69,7 +65,6 @@ fun WelcomeScreen(
                         "Unknown error occurred. Please try again later.",
                         Toast.LENGTH_SHORT
                     ).show()
-                    viewModel.onEvent(WelcomeUIEvent.UnknownError)
                 }
             }
         }
@@ -111,7 +106,7 @@ fun WelcomeScreen(
                     RmcFilledTonalButton(
                         value = stringResource(id = R.string.register),
                         onClick = {
-                            viewModel.onEvent(WelcomeUIEvent.RegisterButtonClicked)
+                            navigateToScreen("Register")
                         }
                     )
                 }
@@ -119,7 +114,7 @@ fun WelcomeScreen(
                     RmcFilledButton(
                         value = stringResource(id = R.string.login),
                         onClick = {
-                            viewModel.onEvent(WelcomeUIEvent.LoginButtonClicked)
+                            navigateToScreen("Login")
                         }
                     )
                 }
