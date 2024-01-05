@@ -27,10 +27,6 @@ class RentACarViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RentACarUIState())
     val uiState: StateFlow<RentACarUIState> get() = _uiState.asStateFlow()
 
-    init {
-        getVehicles()
-    }
-
     // Fix me!
     // ☐ Get search settings from DataStore
     // ✓ Get all vehicles
@@ -52,6 +48,10 @@ class RentACarViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun setMapData() {
+        getVehicles()
     }
 
     private fun getVehicles() {

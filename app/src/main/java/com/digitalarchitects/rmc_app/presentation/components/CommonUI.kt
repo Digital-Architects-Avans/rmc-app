@@ -880,7 +880,8 @@ fun RmcSwitch(
             .clickable { onToggle(!value) }
     ) {
         val icon = if (value) Icons.Default.ToggleOn else Icons.Default.ToggleOff
-        val tint = if (value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+        val tint =
+            if (value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
@@ -955,18 +956,18 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.civic),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(dimensionResource(R.dimen.image_size_medium))
-                .clip(RoundedCornerShape(8.dp))
-        )
-        Column(
-            modifier = Modifier
-                .padding(start = dimensionResource(R.dimen.padding_large))
-        ) {
+        if (vehicle.imgLink != 1) {
+            Image(
+                painter = painterResource(id = R.drawable.civic),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.image_size_medium))
+                    .clip(RoundedCornerShape(8.dp))
+                    .padding(end = dimensionResource(R.dimen.padding_large))
+            )
+        }
+        Column {
             Text(
                 text = vehicle.licensePlate,
                 style = MaterialTheme.typography.displaySmall,
@@ -1088,7 +1089,7 @@ fun RmcVehicleDetails(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_large)),
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -1102,27 +1103,32 @@ fun RmcVehicleDetails(
             )
         }
     }
-    Image(
-        modifier = Modifier
-            .fillMaxWidth()
-            .size(height = 160.dp, width = 20.dp),
-        contentScale = ContentScale.Crop,
-        painter = painterResource(R.drawable.civic),
-        contentDescription = null
-    )
+    if (vehicle.imgLink != 1) {
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(height = 160.dp, width = 20.dp)
+                .padding(
+                    top = dimensionResource(R.dimen.padding_medium),
+                    bottom = dimensionResource(R.dimen.padding_large)
+                ),
+            contentScale = ContentScale.Crop,
+            painter = painterResource(vehicle.imgLink),
+            contentDescription = null
+        )
+    }
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
-        Text(
-            modifier = Modifier
-                .padding(
-                    top = dimensionResource(R.dimen.padding_large),
-                    bottom = dimensionResource(R.dimen.padding_small)
-                ),
-            text = "A cheap car to go away for a day.",
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        //Text(
+        //    modifier = Modifier
+        //        .padding(
+        //            bottom = dimensionResource(R.dimen.padding_small)
+        //        ),
+        //    text = "A cheap car to go away for a day.",
+        //    style = MaterialTheme.typography.bodyMedium,
+        //)
         Row(
             modifier = Modifier
                 .fillMaxWidth(),

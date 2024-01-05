@@ -33,6 +33,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -92,20 +93,24 @@ fun RentACarScreen(
         position = CameraPosition.fromLatLngZoom(uiState.startLocation, 10f)
     }
 
-    // Set Vehicle details bottom sheet state
+    // Set Vehicle details and List view bottom sheet state
     val detailsBottomSheet = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Hidden,
             skipHiddenState = false,
         )
     )
-    // Set List view bottom sheet state
     val listBottomSheet = rememberModalBottomSheetState()
+
+    // Get vehicles and create map items in view model
+    LaunchedEffect(Unit) {
+        viewModel.setMapData()
+    }
 
     // Start Rent A Car screen
     BottomSheetScaffold(
         scaffoldState = detailsBottomSheet,
-        sheetPeekHeight = 324.dp,
+        sheetPeekHeight = 194.dp, // 324.dp with image
 
         // Bottom sheet: Vehicle details
         sheetContent = {
