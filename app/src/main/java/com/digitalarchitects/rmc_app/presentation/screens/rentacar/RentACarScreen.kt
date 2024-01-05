@@ -110,7 +110,7 @@ fun RentACarScreen(
     // Start Rent A Car screen
     BottomSheetScaffold(
         scaffoldState = detailsBottomSheet,
-        sheetPeekHeight = 324.dp,
+        sheetPeekHeight = 194.dp, // 324.dp with image
 
         // Bottom sheet: Vehicle details
         sheetContent = {
