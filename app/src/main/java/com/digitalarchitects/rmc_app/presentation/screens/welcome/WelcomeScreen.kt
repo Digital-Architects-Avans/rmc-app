@@ -1,6 +1,8 @@
 package com.digitalarchitects.rmc_app.presentation.screens.welcome
 
+import android.content.Context
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcLogoText
@@ -36,39 +39,26 @@ fun WelcomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
+    fun showToast(context: Context, @StringRes messageResId: Int) {
+        Toast.makeText(context, context.getString(messageResId), Toast.LENGTH_SHORT).show()
+    }
+
     LaunchedEffect(viewModel, context) {
         viewModel.authResult.collect { result ->
-            when (result) {
+            val messageResId = when (result) {
                 is AuthResult.Authorized -> {
-                    navigateToScreen("RentACar")
+                    navigateToScreen(RmcScreen.RentACar.name)
+                    return@collect
                 }
-
-                is AuthResult.Unauthorized -> {
-                    Toast.makeText(
-                        context,
-                        "Log in or create an account.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                is AuthResult.NoConnectionError -> {
-                    Toast.makeText(
-                        context,
-                        "No connection. Please try again later.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                is AuthResult.UnknownError -> {
-                    Toast.makeText(
-                        context,
-                        "Unknown error occurred. Please try again later.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                is AuthResult.Unauthorized -> R.string.toast_unauthorized
+                is AuthResult.NoConnectionError -> R.string.toast_no_connection
+                is AuthResult.UnknownError -> R.string.toast_unknown_error
             }
+
+            showToast(context, messageResId)
         }
     }
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
