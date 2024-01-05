@@ -1121,14 +1121,14 @@ fun RmcVehicleDetails(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
-        Text(
-            modifier = Modifier
-                .padding(
-                    bottom = dimensionResource(R.dimen.padding_small)
-                ),
-            text = "A cheap car to go away for a day.",
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        //Text(
+        //    modifier = Modifier
+        //        .padding(
+        //            bottom = dimensionResource(R.dimen.padding_small)
+        //        ),
+        //    text = "A cheap car to go away for a day.",
+        //    style = MaterialTheme.typography.bodyMedium,
+        //)
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
