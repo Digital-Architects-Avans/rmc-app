@@ -39,11 +39,10 @@ fun MyAccountScreen(
     navigateToScreen: (String) -> Unit
 ) {
 
-
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(MyAccountUIEvent.InsertUser)
-        viewModel.onEvent(MyAccountUIEvent.ShowUser)
+
+    LaunchedEffect(uiState.currentUser) {
+        viewModel.onEvent(MyAccountUIEvent.FetchUser)
     }
 
     Scaffold(
@@ -95,7 +94,7 @@ fun MyAccountScreen(
                     value = stringResource(R.string.rent_my_car),
                     icon = Icons.Filled.Key,
                     onClick = {
-                        navigateToScreen("RentOutMyCar")
+                        navigateToScreen(RmcScreen.RentOutMyCar.name)
                     }
                 )
                 RmcFilledButton(

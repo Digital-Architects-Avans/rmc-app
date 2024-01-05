@@ -193,10 +193,8 @@ class UserRepositoryImpl @Inject constructor(
 
     /** Updates [User] to both remote and local data source */
     override suspend fun updateUser(userId: String, updatedUser: UpdateUserDTO) {
-        // Update remote data source
-        // Remove user from local data source
-        // Add updated user to local data source
         rmcApiService.updateUser(userId, updatedUser)
+        refreshRoomCache()
     }
 
     /** Removes [User] from remote data source, local data source will get updated automatically */
