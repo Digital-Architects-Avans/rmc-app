@@ -102,4 +102,10 @@
     <string name="loading_failed">Failed to load</string>
     <string name="loading">Loading</string>
     <string name="rmcTestScreenTitle">RmcApiTestScreen</string>
+    <string name="changes_saved">Changes saved</string>
+    <string name="unable_to_save_changes_try_again">Unable to save changes, try again.</string>
+    <string name="log_in_or_create_an_account">Log in or create an account.</string>
+    <string name="toast_unauthorized">Log in or create an account.</string>
+    <string name="toast_no_connection">No connection. Please try again later.</string>
+    <string name="toast_unknown_error">Unknown error occurred. Please try again later.</string>
 </resources>
