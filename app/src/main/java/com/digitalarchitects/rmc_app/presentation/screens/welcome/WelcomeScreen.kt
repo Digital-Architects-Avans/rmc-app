@@ -49,6 +49,7 @@ fun WelcomeScreen(
                 is AuthResult.Authorized -> {
                     navigateToScreen(RmcScreen.RentACar.name)
                     return@collect
+
                 }
                 is AuthResult.Unauthorized -> R.string.toast_unauthorized
                 is AuthResult.NoConnectionError -> R.string.toast_no_connection
@@ -96,7 +97,7 @@ fun WelcomeScreen(
                     RmcFilledTonalButton(
                         value = stringResource(id = R.string.register),
                         onClick = {
-                            navigateToScreen("Register")
+                            navigateToScreen(RmcScreen.Register.name)
                         }
                     )
                 }
@@ -104,7 +105,7 @@ fun WelcomeScreen(
                     RmcFilledButton(
                         value = stringResource(id = R.string.login),
                         onClick = {
-                            navigateToScreen("Login")
+                            navigateToScreen(RmcScreen.Login.name)
                         }
                     )
                 }

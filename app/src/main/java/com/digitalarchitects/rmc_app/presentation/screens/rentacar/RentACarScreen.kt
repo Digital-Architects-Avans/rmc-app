@@ -33,11 +33,9 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledIconButton
@@ -84,39 +83,24 @@ fun RentACarScreen(
     navigateToScreen: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-// TODO default state
-    }
 
-    // Get vehicle map items and details
-    val vehicleMapItems = remember { viewModel.getVehicleMapItems() }
-    val vehicleDetails = viewModel.listOfVehicles
-
-    // Set scope and camera and bottom sheet state
+    // Set CoroutineScope
     val scope = rememberCoroutineScope()
 
+    // Set Google Maps camera position
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(uiState.startLocation, 11f)
+        position = CameraPosition.fromLatLngZoom(uiState.startLocation, 10f)
     }
 
+    // Set Vehicle details bottom sheet state
     val detailsBottomSheet = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Hidden,
-            // skipPartiallyExpanded = false,
             skipHiddenState = false,
         )
     )
-
-//    val detailsBottomSheet = rememberBottomSheetScaffoldState(
-//        initialValue = SheetValue.Hidden,
-//       skipHiddenState = false,
-//
-//        bottomSheetState = SheetState(
-//            initialValue = SheetValue.Hidden,
-//            skipPartiallyExpanded = false,
-//            skipHiddenState = false
-//        )
-//    )
+    // Set List view bottom sheet state
+    val listBottomSheet = rememberModalBottomSheetState()
 
     // Start Rent A Car screen
     BottomSheetScaffold(
@@ -129,10 +113,12 @@ fun RentACarScreen(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                RmcVehicleDetails(
-                    vehicleDetails[uiState.detailsVehicleId],
-                    showAvailability = false
-                )
+                if (uiState.activeVehicleId != null) {
+                    RmcVehicleDetails(
+                        uiState.listOfVehicles.first { it.vehicleId == uiState.activeVehicleId },
+                        showAvailability = false
+                    )
+                }
                 RmcDivider()
                 RmcRentCarForm(
                     onValueChange = {
@@ -221,10 +207,9 @@ fun RentACarScreen(
                                 clusterManager?.renderer = renderer ?: return@SideEffect
                             }
                         }
-
                         if (clusterManager != null) {
                             Clustering(
-                                items = vehicleMapItems,
+                                items = uiState.vehicleMapItems,
                                 clusterManager = clusterManager,
                             )
                         }
@@ -245,7 +230,7 @@ fun RentACarScreen(
                         RmcFilledIconButton(
                             icon = Icons.Filled.Search,
                             label = R.string.search,
-                            onClick = { viewModel.onEvent(RentACarUIEvent.SearchButtonClicked) },
+                            onClick = { navigateToScreen(RmcScreen.Search.name) },
                             modifier = Modifier.padding(
                                 horizontal = dimensionResource(R.dimen.padding_extra_small)
                             )
@@ -260,12 +245,12 @@ fun RentACarScreen(
                         RmcFilledTonalIconButton(
                             icon = Icons.Filled.Key,
                             label = R.string.rent_my_car,
-                            onClick = { viewModel.onEvent(RentACarUIEvent.RentOutMyVehicleButtonClicked) },
+                            onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
                         )
                         RmcFilledTonalIconButton(
                             icon = Icons.Filled.CarRental,
                             label = R.string.my_rentals,
-                            onClick = { viewModel.onEvent(RentACarUIEvent.MyRentalsButtonClicked) },
+                            onClick = { navigateToScreen(RmcScreen.MyRentals.name) },
                             modifier = Modifier.padding(
                                 horizontal = dimensionResource(R.dimen.padding_extra_small)
                             )
@@ -319,8 +304,6 @@ fun RentACarScreen(
                 }
 
                 // Bottom sheet: Vehicle list view
-                val listBottomSheet = rememberModalBottomSheetState()
-
                 if (uiState.showVehicleList) {
                     ModalBottomSheet(
                         onDismissRequest = {
@@ -336,10 +319,8 @@ fun RentACarScreen(
                             modifier = Modifier
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            vehicleDetails.forEach { vehicle ->
-                                RmcVehicleListItem(
-                                    vehicle
-                                ) { vehicleId ->
+                            uiState.listOfVehicles.forEach { vehicle ->
+                                RmcVehicleListItem(vehicle) { vehicleId ->
                                     scope.launch { listBottomSheet.hide() }.invokeOnCompletion {
                                         viewModel.onEvent(
                                             RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId)
