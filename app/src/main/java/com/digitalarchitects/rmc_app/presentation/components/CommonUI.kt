@@ -956,18 +956,18 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.civic),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(dimensionResource(R.dimen.image_size_medium))
-                .clip(RoundedCornerShape(8.dp))
-        )
-        Column(
-            modifier = Modifier
-                .padding(start = dimensionResource(R.dimen.padding_large))
-        ) {
+        if (vehicle.imgLink != 1) {
+            Image(
+                painter = painterResource(id = R.drawable.civic),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.image_size_medium))
+                    .clip(RoundedCornerShape(8.dp))
+                    .padding(end = dimensionResource(R.dimen.padding_large))
+            )
+        }
+        Column {
             Text(
                 text = vehicle.licensePlate,
                 style = MaterialTheme.typography.displaySmall,
