@@ -39,11 +39,10 @@ fun MyAccountScreen(
     navigateToScreen: (String) -> Unit
 ) {
 
-
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(MyAccountUIEvent.InsertUser)
-        viewModel.onEvent(MyAccountUIEvent.ShowUser)
+
+    LaunchedEffect(uiState.currentUser) {
+        viewModel.onEvent(MyAccountUIEvent.FetchUser)
     }
 
     Scaffold(
@@ -75,7 +74,7 @@ fun MyAccountScreen(
                     userIcon = uiState.imageResourceId,
                     size = dimensionResource(R.dimen.image_size_large),
                     onClick = {
-                        navigateToScreen("EditMyAccount")
+                        navigateToScreen(RmcScreen.EditMyAccount.name)
                     }
                 )
                 uiState.currentUser?.let {
@@ -88,21 +87,21 @@ fun MyAccountScreen(
                     value = stringResource(R.string.my_vehicles),
                     icon = Icons.Filled.DirectionsCar,
                     onClick = {
-                        navigateToScreen("MyVehicles")
+                        navigateToScreen(RmcScreen.MyVehicles.name)
                     }
                 )
                 RmcFilledButton(
                     value = stringResource(R.string.rent_my_car),
                     icon = Icons.Filled.Key,
                     onClick = {
-                        navigateToScreen("RentOutMyCar")
+                        navigateToScreen(RmcScreen.RentOutMyCar.name)
                     }
                 )
                 RmcFilledButton(
                     value = stringResource(R.string.my_rentals),
                     icon = Icons.Filled.CarRental,
                     onClick = {
-                        navigateToScreen("MyRentals")
+                        navigateToScreen(RmcScreen.MyRentals.name)
                     }
                 )
                 RmcOutlinedButton(
@@ -110,7 +109,7 @@ fun MyAccountScreen(
                     icon = Icons.Filled.Output,
                     onClick = {
                         viewModel.onEvent(MyAccountUIEvent.OnLogoutButtonClicked)
-                        navigateToScreen("Welcome")
+                        navigateToScreen(RmcScreen.Welcome.name)
                     }
                 )
                 RmcSpacer()
