@@ -1,19 +1,19 @@
 package com.digitalarchitects.rmc_app.presentation.screens.editmyaccount
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.digitalarchitects.rmc_app.data.local.LocalUser
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.domain.model.UserType
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -24,109 +24,36 @@ class EditMyAccountViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EditMyAccountUIState())
-    private val _uiState = _state
-    val uiState: StateFlow<EditMyAccountUIState> get() = _uiState.asStateFlow()
+    val uiState: StateFlow<EditMyAccountUIState> = _state.asStateFlow()
+
+    private val _userUpdated = MutableStateFlow(false)
+    val userUpdated: StateFlow<Boolean> = _userUpdated.asStateFlow()
 
     fun onEvent(event: EditMyAccountUIEvent) {
         when (event) {
-            is EditMyAccountUIEvent.ShowUser -> {
-                try {
-                    runBlocking {
-                        val getUser = withContext(Dispatchers.IO) {
+            is EditMyAccountUIEvent.FetchUser -> {
+                viewModelScope.launch {
+                    try {
                         val userId = userRepository.getCurrentUserIdFromDataStore()
+                        val getUser = withContext(Dispatchers.IO) {
                             userRepository.getUserById(userId!!)
                         }
-                        val userId = getUser.userId
-                        val email = getUser.email
-                        val firstName = getUser.firstName
-                        val lastName = getUser.lastName
-                        val phone = getUser.phone
-                        val street = getUser.street
-                        val buildingNumber = getUser.buildingNumber
-                        val zipCode = getUser.zipCode
-                        val city = getUser.city
 
                         _state.value = _state.value.copy(
-                            userId = userId,
-                            email = email,
-                            firstName = firstName,
-                            lastName = lastName,
-                            phone = phone,
-                            street = street,
-                            buildingNumber = buildingNumber,
-                            zipCode = zipCode,
-                            city = city
+                            userId = getUser.userId,
+                            email = getUser.email,
+                            firstName = getUser.firstName,
+                            lastName = getUser.lastName,
+                            phone = getUser.phone,
+                            street = getUser.street,
+                            buildingNumber = getUser.buildingNumber,
+                            zipCode = getUser.zipCode,
+                            city = getUser.city
                         )
+                    } catch (e: Exception) {
+                        // Handle the exception or log the error
+                        Log.d("EditMyAccountViewModel", "Error fetching user details: $e")
                     }
-
-                } catch (e: Exception) {
-//                    _state.value = _state.value.copy(firstName = "Error")
-                }
-            }
-
-            is EditMyAccountUIEvent.InsertUser -> {
-                try {
-                    val user = LocalUser(
-                        userId = "1",
-                        email = "john.doe@example.com",
-                        password = "password",
-                        salt = "salt",
-                        userType = UserType.CLIENT,
-                        firstName = "John",
-                        lastName = "Doe",
-                        phone = "+1234567890",
-                        street = "Main St",
-                        buildingNumber = "123",
-                        zipCode = "12345",
-                        city = "Cityville",
-                        imageResourceId = 123
-                    )
-
-                    runBlocking {
-                        withContext(Dispatchers.IO) {
-                        // TODO("Implement UI logic to add user database")
-                        //userRepository.addUser(user.toUser())
-                        }
-
-                        _state.value = _state.value.copy(
-                            email = user.email,
-                            firstName = user.firstName,
-                            lastName = user.lastName,
-                            phone = user.phone,
-                            street = user.street,
-                            buildingNumber = user.buildingNumber,
-                            zipCode = user.zipCode,
-                            city = user.city
-                        )
-                    }
-                } catch (e: Exception) {
-                    // Handle the exception or log an error
-                    // TODO ERROR MESSAGE
-                    // _state.value = _state.value.copy(firstName = "Error")
-                }
-            }
-
-            is EditMyAccountUIEvent.SetBuildingNumber -> {
-                _state.update {
-                    it.copy(
-                        buildingNumber = event.buildingNumber
-                    )
-                }
-            }
-
-            is EditMyAccountUIEvent.SetCity -> {
-                _state.update {
-                    it.copy(
-                        city = event.city
-                    )
-                }
-            }
-
-            is EditMyAccountUIEvent.SetEmail -> {
-                _state.update {
-                    it.copy(
-                        email = event.email
-                    )
                 }
             }
 
@@ -138,20 +65,18 @@ class EditMyAccountViewModel @Inject constructor(
                 }
             }
 
-            is EditMyAccountUIEvent.SetId -> TODO()
-            is EditMyAccountUIEvent.SetImageResourceId -> TODO()
-            is EditMyAccountUIEvent.SetPassword -> {
-                _state.update {
-                    it.copy(
-                        lastName = event.password
-                    )
-                }
-            }
-
             is EditMyAccountUIEvent.SetLastName -> {
                 _state.update {
                     it.copy(
                         lastName = event.lastName
+                    )
+                }
+            }
+
+            is EditMyAccountUIEvent.SetEmail -> {
+                _state.update {
+                    it.copy(
+                        email = event.email
                     )
                 }
             }
@@ -172,7 +97,14 @@ class EditMyAccountViewModel @Inject constructor(
                 }
             }
 
-            is EditMyAccountUIEvent.SetUserType -> TODO()
+            is EditMyAccountUIEvent.SetBuildingNumber -> {
+                _state.update {
+                    it.copy(
+                        buildingNumber = event.buildingNumber
+                    )
+                }
+            }
+
             is EditMyAccountUIEvent.SetZipCode -> {
                 _state.update {
                     it.copy(
@@ -181,24 +113,40 @@ class EditMyAccountViewModel @Inject constructor(
                 }
             }
 
-            is EditMyAccountUIEvent.User -> TODO()
+            is EditMyAccountUIEvent.SetCity -> {
+                _state.update {
+                    it.copy(
+                        city = event.city
+                    )
+                }
+            }
+
+            is EditMyAccountUIEvent.SetPassword -> {
+                _state.update {
+                    it.copy(
+                        password = event.password
+                    )
+                }
+            }
+
+            is EditMyAccountUIEvent.SetImageResourceId -> TODO()
 
             is EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked -> {
-                val firstName = _uiState.value.firstName
-                val lastName = _uiState.value.lastName
-                val phone = _uiState.value.phone
-                val street = _uiState.value.street
-                val buildingNumber = _uiState.value.buildingNumber
-                val zipCode = _uiState.value.zipCode
-                val city = _uiState.value.city
-//                val imageResourceId = state.value.imageResourceId
-//                val id = state.value.id
-                // TODO ADD MORE PROPERTIES TO IF
+                val userId = _state.value.userId
+                val email = _state.value.email
+                val password = _state.value.password
+                val firstName = _state.value.firstName
+                val lastName = _state.value.lastName
+                val phone = _state.value.phone
+                val street = _state.value.street
+                val buildingNumber = _state.value.buildingNumber
+                val zipCode = _state.value.zipCode
+                val city = _state.value.city
 
                 val updatedUser = UpdateUserDTO(
-                    userId = "1",
-                    password = "password",
-                    salt = "salt",
+                    userId = userId,
+                    email = email,
+                    password = password,
                     userType = UserType.CLIENT,
                     firstName = firstName,
                     lastName = lastName,
@@ -208,21 +156,41 @@ class EditMyAccountViewModel @Inject constructor(
                     zipCode = zipCode,
                     city = city,
                 )
-                runBlocking {
-                    withContext(Dispatchers.IO) {
-                        userRepository.updateUser(updatedUser.userId, updatedUser)
+
+                // Had to use a userUpdated stateFlow to notify EditMyAccountScreen that data is updated
+                // And use that listener to navigate back to MyAccountScreen after 1 second
+                // Else the user will see the old first name in MyAccountScreen because
+                // the uiState is not updated yet when the user navigates back to MyAccountScreen
+                viewModelScope.launch {
+                    try {
+                        withContext(Dispatchers.IO) {
+                            userRepository.updateUser(updatedUser.userId, updatedUser)
+
+                            withContext(Dispatchers.Main) {
+                                resetPasswordField()
+
+                                // Notify EditMyAccountScreen that data is updated
+                                _userUpdated.value = true
+                                delay(1000)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        // Handle the exception or log the error
+                        Log.d("EditMyAccountViewModel", "Error updating user: $e")
                     }
                 }
             }
-
-
-            is EditMyAccountUIEvent.DeleteMyAccountButtonClicked -> {
-                viewModelScope.launch {
-//                  TODO  dao.deleteUser()
-                }
+            is EditMyAccountUIEvent.ResetUserUpdated -> {
+                _userUpdated.value = false
             }
+        }
+    }
 
-            is EditMyAccountUIEvent.UpsertUser -> TODO()
+    private fun resetPasswordField() {
+        _state.update {
+            it.copy(
+                password = ""
+            )
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.digitalarchitects.rmc_app.presentation.screens.editmyaccount
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,13 +27,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
 
@@ -43,9 +48,10 @@ fun EditMyAccountScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+    val userUpdated by viewModel.userUpdated.collectAsState()
+
     LaunchedEffect(Unit) {
-        viewModel.onEvent(EditMyAccountUIEvent.InsertUser)
-        viewModel.onEvent(EditMyAccountUIEvent.ShowUser)
+        viewModel.onEvent(EditMyAccountUIEvent.FetchUser)
     }
 
     Scaffold(
@@ -139,22 +145,6 @@ fun EditMyAccountScreen(
                 RmcSpacer(8)
 
                 RmcTextField(
-                    label = stringResource(id = R.string.password),
-                    icon = Icons.Filled.Lock,
-                    value = uiState.password,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
-                    ),
-                    isPassword = true,
-                    onValueChange = {
-                        viewModel.onEvent(EditMyAccountUIEvent.SetPassword(it))
-                    }
-                )
-
-                RmcSpacer(8)
-
-                RmcTextField(
                     label = stringResource(id = R.string.address),
                     icon = Icons.Filled.Home,
                     value = uiState.street,
@@ -209,31 +199,63 @@ fun EditMyAccountScreen(
                     value = uiState.city,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Next
                     ),
                     onValueChange = {
                         viewModel.onEvent(EditMyAccountUIEvent.SetCity(it))
                     }
                 )
 
+                RmcSpacer(8)
+
+                RmcTextField(
+                    label = stringResource(id = R.string.password),
+                    icon = Icons.Filled.Lock,
+                    value = uiState.password,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    isPassword = true,
+                    onValueChange = {
+                        viewModel.onEvent(EditMyAccountUIEvent.SetPassword(it))
+                    }
+                )
+
                 RmcSpacer(32)
 
-                RmcFilledButton(
-                    value = stringResource(id = R.string.cancel),
-                    onClick = {
-                        navigateToScreen("MyAccount")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        RmcFilledButton(
+                            value = stringResource(id = R.string.apply),
+                            onClick = {
+                                viewModel.onEvent(EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked)
+                            }
+                        )
                     }
-                )
-
-                RmcFilledButton(
-                    value = stringResource(id = R.string.apply),
-                    onClick = {
-                        viewModel.onEvent(EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked)
-                        navigateToScreen("MyRentals")
+                    Column(Modifier.weight(1f)) {
+                        RmcOutlinedButton(
+                            value = stringResource(id = R.string.cancel),
+                            onClick = {
+                                navigateToScreen(RmcScreen.MyAccount.name)
+                            }
+                        )
                     }
-                )
-
-
+                }
+                val context = LocalContext.current
+                val toastMessage = if (userUpdated) {
+                    stringResource(R.string.changes_saved)
+                } else {
+                    stringResource(R.string.unable_to_save_changes_try_again)
+                }
+                if (userUpdated) {
+                    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                    navigateToScreen(RmcScreen.MyAccount.name)
+                    viewModel.onEvent(EditMyAccountUIEvent.ResetUserUpdated)
+                }
             }
         }
     }
