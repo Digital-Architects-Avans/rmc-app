@@ -1,7 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.search
 
 import androidx.lifecycle.ViewModel
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,9 +10,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
 ) : ViewModel() {
-    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
-    val navigateToScreen = _navigateToScreen.asStateFlow()
-
     private val _uiState = MutableStateFlow(SearchUIState())
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
 
@@ -74,22 +70,21 @@ class SearchViewModel @Inject constructor(
                 )
             }
 
-            is SearchUIEvent.ApplyFiltersButtonClicked -> {
-                // TODO apply filter logic
-                _navigateToScreen.value = RmcScreen.RentACar
+            is SearchUIEvent.ClearFiltersButtonClicked -> {
+                clearFilters()
             }
 
-            is SearchUIEvent.NavigateUpButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.RentACar
+            is SearchUIEvent.ApplyFiltersButtonClicked -> {
+                applyFilters()
             }
         }
     }
 
-    fun applyFilters() {
+    private fun applyFilters() {
         TODO("Implement callback to NavHost with filters to Rent A Car view for search")
     }
 
-    fun clearFilters() {
+    private fun clearFilters() {
         _uiState.value = _uiState.value.copy(
             date = "",
             location = "",
