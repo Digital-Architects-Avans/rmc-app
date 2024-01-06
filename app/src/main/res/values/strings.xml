@@ -112,4 +112,8 @@
     <string name="latitude">Latitude</string>
     <string name="vehicle_registered_successfully">Vehicle registered successfully</string>
     <string name="unable_to_register_vehicle">Unable to register vehicle</string>
+    <string name="delete_vehicle">Delete Vehicle</string>
+    <string name="edit_vehicle">Edit Vehicle</string>
+    <string name="vehicle_updated_successfully">Vehicle updated successfully</string>
+    <string name="unable_to_update_vehicle">Unable to update vehicle</string>
 </resources>
