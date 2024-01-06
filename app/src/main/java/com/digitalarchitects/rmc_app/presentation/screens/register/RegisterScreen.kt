@@ -39,6 +39,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.data.auth.AuthResult
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.CheckboxComponent
 import com.digitalarchitects.rmc_app.presentation.components.ClickableLoginTextComponent
 import com.digitalarchitects.rmc_app.presentation.components.DividerTextComponent
@@ -46,24 +48,19 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
-import com.digitalarchitects.rmc_app.data.auth.AuthResult
 
 @Composable
 fun RegisterScreen(
     viewModel: RegisterViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(viewModel, context) {
         viewModel.authResult.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
-                    viewModel.onEvent(RegisterUIEvent.Authorized)
+                    navigateToScreen(RmcScreen.RentACar.name)
                 }
 
                 is AuthResult.Unauthorized -> {
@@ -80,7 +77,7 @@ fun RegisterScreen(
                         "No connection. Please try again later.",
                         Toast.LENGTH_SHORT
                     ).show()
-                    viewModel.onEvent(RegisterUIEvent.NoConnectionError)
+                    navigateToScreen(RmcScreen.Welcome.name)
                 }
 
                 is AuthResult.UnknownError -> {
@@ -89,7 +86,7 @@ fun RegisterScreen(
                         "Unknown error occurred. Please try again later.",
                         Toast.LENGTH_SHORT
                     ).show()
-                    viewModel.onEvent(RegisterUIEvent.UnknownError)
+                    navigateToScreen(RmcScreen.Welcome.name)
                 }
             }
         }
@@ -102,7 +99,7 @@ fun RegisterScreen(
                 title = R.string.screen_title_register,
                 navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = {
-                    viewModel.onEvent(RegisterUIEvent.NavigateUpButtonClicked)
+                    navigateToScreen(RmcScreen.Welcome.name)
                 }
             )
         }
@@ -282,7 +279,7 @@ fun RegisterScreen(
 
                 ClickableLoginTextComponent(
                     tryingToLogin = true,
-                    onTextSelected = { viewModel.onEvent(RegisterUIEvent.LoginButtonClicked) }
+                    onTextSelected = { navigateToScreen(RmcScreen.Login.name) }
 
                 )
 
