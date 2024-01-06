@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myvehicles
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,20 +15,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,32 +45,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
+import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetailsOwner
 
 // BottomSheets and scaffolds, used resources below:
 // https://developer.android.com/reference/kotlin/androidx/compose/material/package-summary#BottomSheetScaffold(kotlin.Function1,androidx.compose.ui.Modifier,androidx.compose.material.BottomSheetScaffoldState,kotlin.Function0,kotlin.Function1,kotlin.Function0,androidx.compose.material.FabPosition,kotlin.Boolean,androidx.compose.ui.graphics.Shape,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,kotlin.Function1)
 // https://developer.android.com/jetpack/compose/components/bottom-sheets
 // https://developer.android.com/jetpack/compose/components/scaffold
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun MyVehiclesScreen(
     viewModel: MyVehiclesViewModel,
-    navigateToScreen: (String) -> Unit
+    navigateToScreen: (String) -> Unit,
+    navigateToEditVehicle: (String, String?) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val vehicleBottomSheet = rememberModalBottomSheetState()
+
     LaunchedEffect(uiState.listOfVehicles) {
         viewModel.onEvent(MyVehiclesUIEvent.FetchVehicles)
-        Log.d(
-            "MyVehiclesScreen",
-            "LaunchedEffect vehicle list size: ${uiState.listOfVehicles.size}"
-        )
     }
 
     Scaffold(
@@ -76,22 +86,16 @@ fun MyVehiclesScreen(
                 navigateUp = {
                     navigateToScreen(RmcScreen.RentACar.name)
                 },
-
-                )
+            )
         },
         floatingActionButton = {
-            Button(
+            RmcFloatingActionButton(
+                icon = Icons.Default.Add,
+                label = R.string.add_vehicle,
                 onClick = {
                     navigateToScreen(RmcScreen.RegisterVehicle.name)
-                },
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_vehicle)
-                )
-                Text(stringResource(R.string.add_vehicle))
-            }
+                }
+            )
         }
     ) { innerPadding ->
         Surface(
@@ -109,8 +113,22 @@ fun MyVehiclesScreen(
                             .fillMaxSize()
                             .padding(24.dp)
                     ) {
-                        items(uiState.listOfVehicles) { vehicle ->
-                            VehicleListItem(vehicle)
+                        itemsIndexed(uiState.listOfVehicles) { index, vehicle ->
+                            VehicleListItem(
+                                vehicle = vehicle,
+                                onItemClick = {
+                                    viewModel.onEvent(MyVehiclesUIEvent.ShowVehicleDetails(vehicle.vehicleId))
+                                }
+                            )
+
+                            if (index < uiState.listOfVehicles.lastIndex)
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 16.dp),
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                                    thickness = 1.dp
+                                )
                         }
                     }
                 } else {
@@ -121,87 +139,162 @@ fun MyVehiclesScreen(
                             .align(Alignment.Center)
                     )
                 }
+
+                // Display vehicle details in a modal bottom sheet when a vehicle is selected
+                uiState.selectedVehicle?.let { vehicle ->
+                    VehicleDetailsBottomSheet(
+                        vehicle = vehicle,
+                        sheetState = vehicleBottomSheet,
+                        onDeleteClick = {
+                            viewModel.onEvent(MyVehiclesUIEvent.DeleteVehicle(vehicle.vehicleId))
+                            viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
+                        },
+                        onEditClick = {
+                            navigateToEditVehicle(RmcScreen.EditMyVehicle.name, vehicle.vehicleId)
+                            viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
+                        },
+                        onCancel = {
+                            viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
+                        }
+                    )
+                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VehicleDetailsBottomSheet(
+    vehicle: Vehicle,
+    sheetState: SheetState,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onCancel: () -> Unit
+) {
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = onCancel,
+    ) {
+        RmcVehicleDetailsOwner(
+            vehicle = vehicle,
+            showAvailability = true,
+            onDeleteClick = { onDeleteClick() },
+            onEditClick = { onEditClick() }
+        )
+    }
+}
 
 @Composable
-fun VehicleListItem(vehicle: Vehicle) {
-    Row(modifier = Modifier.height(92.dp)) {
+fun VehicleListItem(
+    vehicle: Vehicle,
+    onItemClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clickable { onItemClick() }
+    ) {
 
-        Image(
-            painter = painterResource(id = R.drawable.civic),
-            contentDescription = stringResource(R.string.vehicle),
+        Row(
             modifier = Modifier
-                .padding(end = 6.dp)
                 .height(92.dp)
-                .width(92.dp)
-                .clip(shape = RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop
-        )
-        Column(
-            modifier = Modifier
-                .padding(start = 6.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceAround
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+
+            Image(
+                painter = painterResource(id = R.drawable.civic),
+                contentDescription = stringResource(R.string.vehicle),
+                modifier = Modifier
+                    .padding(end = 6.dp)
+                    .height(92.dp)
+                    .width(92.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 6.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceAround
             ) {
-                Text(
-                    text = vehicle.licensePlate,
-                    color = Color.Red,
-                    fontSize = 16.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold
-                )
-                Box(
-                    modifier = Modifier
-                        .height(24.dp)
-                        .background(
-                            color = Color.DarkGray,
-                            shape = RoundedCornerShape(12.dp)
-                        )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                        text = stringResource(R.string.available),
-                        color = Color.White,
+                        text = vehicle.licensePlate,
+                        color = Color.Red,
+                        fontSize = 16.sp,
+                        fontStyle = FontStyle.Italic,
+                        fontWeight = FontWeight.Bold
                     )
-                }
-            }
-            Text(
-                text = vehicle.model, fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.Place,
-                        contentDescription = stringResource(R.string.location)
-                    )
-                    Text(text = vehicle.latitude.toString())
-                }
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = stringResource(R.string.price)
-                    )
-                    Text(
-                        text = vehicle.price.toString(),
-                        modifier = Modifier
-                            .padding(end = 24.dp)
-                            .width(54.dp)
-                    )
-                }
 
+                    // Declare text, color, and backgroundColor variables here
+                    val (text, color, backgroundColor) = if (vehicle.availability) {
+                        Triple(
+                            stringResource(R.string.available),
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    } else {
+                        Triple(
+                            stringResource(R.string.unavailable),
+                            MaterialTheme.colorScheme.error,
+                            MaterialTheme.colorScheme.errorContainer
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .height(24.dp)
+                            .background(
+                                color = backgroundColor,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            text = text,
+                            color = color
+                        )
+                    }
+                }
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(vehicle.brand)
+                        }
+                        append(" ")
+                        append(vehicle.model)
+                    },
+                    fontSize = 16.sp,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = stringResource(R.string.location)
+                        )
+                        Text(text = vehicle.latitude.toString())
+                    }
+                    Row {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = stringResource(R.string.price)
+                        )
+                        Text(
+                            text = vehicle.price.toString(),
+                            modifier = Modifier
+                                .padding(end = 24.dp)
+                                .width(54.dp)
+                        )
+                    }
+
+                }
             }
         }
     }
