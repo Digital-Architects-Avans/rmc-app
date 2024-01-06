@@ -108,4 +108,8 @@
     <string name="toast_unauthorized">Log in or create an account.</string>
     <string name="toast_no_connection">No connection. Please try again later.</string>
     <string name="toast_unknown_error">Unknown error occurred. Please try again later.</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="vehicle_registered_successfully">Vehicle registered successfully</string>
+    <string name="unable_to_register_vehicle">Unable to register vehicle</string>
 </resources>
