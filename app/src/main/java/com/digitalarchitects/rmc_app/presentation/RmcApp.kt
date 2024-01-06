@@ -5,9 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.presentation.screens.editmyaccount.EditMyAccountScreen
 import com.digitalarchitects.rmc_app.presentation.screens.editmyaccount.EditMyAccountViewModel
@@ -123,28 +125,21 @@ fun RmcApp(
                 viewModel = myRentalsViewModel,
                 navigateToScreen = { route -> navController.navigate(route) }
             )
-//             TODO CREATE SCREEN
-//             MyRentalsScreen(
-//                  viewModel = viewModel as MyRentalsViewModel,
-//                  navigateToScreen = { route -> navController.navigate(route) }
-//             )
         }
         composable(route = RmcScreen.RentOutMyCar.name) {
-//            val listOfRentals = DummyRentalDTO()
-//            val listOfVehicles = DummyVehicleDTO()
-//            val user = DummyUserDTO()
+
             RentOutMyCarScreen(
-//                list = listOfRentals, vehicles = listOfVehicles, user = user
                 viewModel = rentOutMyCarViewModel,
                 navigateToScreen = { route -> navController.navigate(route) }
             )
         }
         composable(route = RmcScreen.MyVehicles.name) {
-//            val listOfVehicles = DummyVehicleDTO()
             MyVehiclesScreen(
-//                list = listOfVehicles
                 viewModel = myVehiclesViewModel,
-                navigateToScreen = { route -> navController.navigate(route) }
+                navigateToScreen = { route -> navController.navigate(route) },
+                navigateToEditVehicle = { route, vehicleId ->
+                    navController.navigate("$route/$vehicleId")
+                }
             )
         }
         composable(route = RmcScreen.RegisterVehicle.name) {
@@ -153,16 +148,16 @@ fun RmcApp(
                 navigateToScreen = { route -> navController.navigate(route) }
             )
         }
-        composable(route = RmcScreen.EditMyVehicle.name) {
+        composable(
+            route = "${RmcScreen.EditMyVehicle.name}/{vehicleId}",
+            arguments = listOf(navArgument("vehicleId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val vehicleId = backStackEntry.arguments?.getString("vehicleId")
             EditMyVehicleScreen(
                 viewModel = editMyVehicleViewModel,
-                navigateToScreen = { route -> navController.navigate(route) }
+                navigateToScreen = { route -> navController.navigate(route) },
+                vehicleId = vehicleId
             )
-//            TODO("Implement RegisterVehicle screen")
-//             RegisterVehicleScreen(
-//                 viewModel = viewModel as RegisterVehicleViewModel,
-//                 navigateToScreen = { route -> navController.navigate(route) }
-//             )
         }
         composable(route = RmcScreen.MyAccount.name) {
             MyAccountScreen(
