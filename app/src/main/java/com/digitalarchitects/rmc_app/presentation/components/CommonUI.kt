@@ -536,8 +536,8 @@ fun RmcFilledButton(
         onClick = { onClick() },
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(color),
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
+                .fillMaxWidth()
     ) {
         icon?.let {
             Icon(
@@ -1065,7 +1065,7 @@ fun RmcVehicleDetails(
                 color = Color(0xFFC00000)
             )
             if (showAvailability) {
-                if (!vehicle.availability) {
+                if (vehicle.availability) {
                     RmcTextBadge(
                         label = stringResource(R.string.available),
                         labelTextColor = MaterialTheme.colorScheme.primary,
@@ -1103,20 +1103,20 @@ fun RmcVehicleDetails(
             )
         }
     }
-    if (vehicle.imgLink != 1) {
-        Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(height = 160.dp, width = 20.dp)
-                .padding(
-                    top = dimensionResource(R.dimen.padding_medium),
-                    bottom = dimensionResource(R.dimen.padding_large)
-                ),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(vehicle.imgLink),
-            contentDescription = null
-        )
-    }
+
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(height = 160.dp, width = 20.dp)
+            .padding(
+                top = dimensionResource(R.dimen.padding_medium),
+                bottom = dimensionResource(R.dimen.padding_large)
+            ),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(R.drawable.civic),
+        contentDescription = null
+    )
+
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
@@ -1143,6 +1143,135 @@ fun RmcVehicleDetails(
                 label = vehicle.engineType.toString(),
                 icon = Icons.Rounded.LocalGasStation
             )
+        }
+    }
+}
+
+@Composable
+fun RmcVehicleDetailsOwner(
+    vehicle: Vehicle,
+    showAvailability: Boolean,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = vehicle.licensePlate,
+                style = MaterialTheme.typography.displayMedium,
+                color = Color(0xFFC00000)
+            )
+            if (showAvailability) {
+                if (vehicle.availability) {
+                    RmcTextBadge(
+                        label = stringResource(R.string.available),
+                        labelTextColor = MaterialTheme.colorScheme.primary,
+                        labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                } else {
+                    RmcTextBadge(
+                        label = stringResource(R.string.unavailable),
+                        labelTextColor = MaterialTheme.colorScheme.error,
+                        labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                }
+            }
+        }
+        Text(
+            modifier = Modifier
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = "Eindhoven",
+                icon = Icons.Rounded.LocationOn
+            )
+            RmcIconLabel(
+                label = vehicle.price.toInt().toString(),
+                icon = Icons.Rounded.PriceChange
+            )
+        }
+    }
+
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(height = 240.dp, width = 20.dp)
+            .padding(
+                top = dimensionResource(R.dimen.padding_medium),
+                bottom = dimensionResource(R.dimen.padding_large)
+            ),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(R.drawable.civic),
+        contentDescription = null
+    )
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = vehicle.vehicleClass,
+                icon = Icons.Rounded.Straighten
+            )
+            RmcIconLabel(
+                label = vehicle.engineType.toString(),
+                icon = Icons.Rounded.LocalGasStation
+            )
+        }
+
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+            thickness = 1.dp
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+        ) {
+            Column(Modifier.weight(1f)) {
+                RmcFilledTonalButton(
+                    value = stringResource(id = R.string.delete_vehicle),
+                    onClick = {
+                        onDeleteClick()
+                    }
+                )
+            }
+            Column(Modifier.weight(1f)) {
+                RmcFilledButton(
+                    value = stringResource(id = R.string.edit_vehicle),
+                    onClick = {
+                        onEditClick()
+                    }
+                )
+            }
         }
     }
 }
