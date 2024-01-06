@@ -13,14 +13,5 @@ sealed class RegisterUIEvent{
     data class BuildingNumberChanged(val buildingNumber: String) : RegisterUIEvent()
     data class CityChanged(val city: String) : RegisterUIEvent()
     data class PrivacyPolicyCheckBoxClicked(val status:Boolean) : RegisterUIEvent()
-
     object RegisterButtonClicked : RegisterUIEvent()
-    object NavigateUpButtonClicked: RegisterUIEvent()
-    object LoginButtonClicked : RegisterUIEvent()
-    object Authorized : RegisterUIEvent()
-    object Unauthorized : RegisterUIEvent()
-    object NoConnectionError : RegisterUIEvent()
-    object UnknownError : RegisterUIEvent()
-
-
 }

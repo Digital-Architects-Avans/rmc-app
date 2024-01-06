@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.registervehicle
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,12 +35,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcSwitch
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
-import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.presentation.screens.search.RmcFilterChip
 
 @Composable
@@ -46,13 +49,11 @@ fun RegisterVehicleScreen(
     viewModel: RegisterVehicleViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
     val uiState by viewModel.uiState.collectAsState()
+    val vehicleUpdated by viewModel.vehicleUpdated.collectAsState()
+
     LaunchedEffect(Unit) {
-//
+        viewModel.onEvent(RegisterVehicleUIEvent.FetchUserId)
     }
     Scaffold(
         topBar = {
@@ -60,7 +61,7 @@ fun RegisterVehicleScreen(
                 title = R.string.screen_title_register_vehicle,
                 navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = {
-                    viewModel.onEvent(RegisterVehicleUIEvent.NavigateUpButtonClicked)
+                    navigateToScreen(RmcScreen.MyVehicles.name)
                 },
             )
         }
@@ -116,7 +117,7 @@ fun RegisterVehicleScreen(
                         RmcTextField(
                             label = stringResource(id = R.string.year),
 //                            icon = Icons.Filled.Person,
-                            value = uiState.year,
+                            value = uiState.year.toString(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
@@ -175,13 +176,16 @@ fun RegisterVehicleScreen(
                         RmcTextField(
                             label = stringResource(id = R.string.price),
 //                            icon = Icons.Filled.Person,
-                            value = uiState.price,
+                            value = uiState.price.toString(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Next
                             ),
-                            onValueChange = {
-                                viewModel.onEvent(RegisterVehicleUIEvent.SetPrice(it.toDouble()))
+                            onValueChange = { input ->
+                                // Check if the input is a valid float before updating the state
+                                if (input.isEmpty() || input.toDoubleOrNull() != null) {
+                                    viewModel.onEvent(RegisterVehicleUIEvent.SetPrice(input.toDouble()))
+                                }
                             },
                             modifier = Modifier.weight(1f)
                         )
@@ -277,15 +281,44 @@ fun RegisterVehicleScreen(
                         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large))
                     ) {
                         RmcTextField(
-                            label = stringResource(id = R.string.location),
+                            label = stringResource(id = R.string.latitude),
 //                            icon = Icons.Filled.Person,
-                            value = uiState.latitude,
+                            value = uiState.latitude.toString(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            onValueChange = { input ->
+                                // Check if the input is a valid float before updating the state
+                                if (input.isEmpty() || input.toFloatOrNull() != null) {
+                                    viewModel.onEvent(RegisterVehicleUIEvent.SetLatitude(input.toFloatOrNull() ?: 0f))
+                                }
+                            },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    RmcSpacer(8)
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large))
+                    ) {
+                        RmcTextField(
+                            label = stringResource(id = R.string.longitude),
+//                            icon = Icons.Filled.Person,
+                            value = uiState.longitude.toString(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done
                             ),
-                            onValueChange = {
-                                viewModel.onEvent(RegisterVehicleUIEvent.SetLatitude(it.toFloat()))
+                            onValueChange = { input ->
+                                // Check if the input is a valid float before updating the state
+                                if (input.isEmpty() || input.toFloatOrNull() != null) {
+                                    viewModel.onEvent(RegisterVehicleUIEvent.SetLongitude(input.toFloatOrNull() ?: 0f))
+                                }
                             },
                             modifier = Modifier.weight(1f)
                         )
@@ -299,6 +332,17 @@ fun RegisterVehicleScreen(
                             viewModel.onEvent(RegisterVehicleUIEvent.ConfirmRegisterVehicleButtonClicked)
                         }
                     )
+                    val context = LocalContext.current
+                    val toastMessage = if (vehicleUpdated) {
+                        stringResource(R.string.vehicle_registered_successfully)
+                    } else {
+                        stringResource(R.string.unable_to_register_vehicle)
+                    }
+                    if (vehicleUpdated) {
+                        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                        navigateToScreen(RmcScreen.MyVehicles.name)
+                        viewModel.onEvent(RegisterVehicleUIEvent.ResetVehicleUpdated)
+                    }
                 }
             }
         }

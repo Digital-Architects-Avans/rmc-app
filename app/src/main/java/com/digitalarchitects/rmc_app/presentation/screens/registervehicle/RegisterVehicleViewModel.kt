@@ -1,90 +1,116 @@
 package com.digitalarchitects.rmc_app.presentation.screens.registervehicle
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
-import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
+import androidx.lifecycle.viewModelScope
+import com.digitalarchitects.rmc_app.data.di.IoDispatcher
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
+import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterVehicleViewModel @Inject constructor(
-    private val vehicleRepository: VehicleRepository
+    private val vehicleRepository: VehicleRepository,
+    private val userRepository: UserRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
-    val navigateToScreen = _navigateToScreen.asStateFlow()
 
-    private val _state = MutableStateFlow(RegisterVehicleUIState())
-    private val _uiState = _state
+    private val _uiState = MutableStateFlow(RegisterVehicleUIState())
     val uiState: StateFlow<RegisterVehicleUIState> get() = _uiState.asStateFlow()
+
+    private val _vehicleUpdated = MutableStateFlow(false)
+    val vehicleUpdated: StateFlow<Boolean> = _vehicleUpdated.asStateFlow()
+
+    init {
+        getUserId()
+    }
+
+    // SEt the uiState.userId so we can attach it to the vehicle
+    private fun getUserId() {
+        viewModelScope.launch(dispatcher) {
+            try {
+                val userId = userRepository.getCurrentUserIdFromDataStore()
+                withContext(Dispatchers.Main) {
+                    _uiState.update {
+                        it.copy(
+                            userId = userId!!
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("RegisterVehicleViewModel", "error: $e")
+            }
+        }
+    }
 
     fun onEvent(event: RegisterVehicleUIEvent) {
         when (event) {
-            is RegisterVehicleUIEvent.NavigateUpButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.MyVehicles
+
+            is RegisterVehicleUIEvent.FetchUserId -> {
+                getUserId()
             }
 
-            is RegisterVehicleUIEvent.AvailabilityToggleButtonClicked -> {
-                _state.update {
+            is RegisterVehicleUIEvent.SetBrand -> {
+                _uiState.update {
                     it.copy(
-                        availability = !it.availability
+                        brand = event.brand
                     )
                 }
             }
 
-            is RegisterVehicleUIEvent.ConfirmRegisterVehicleButtonClicked -> {
-                try {
-                    val scope = CoroutineScope(Dispatchers.IO)
-                    scope.launch {
-                        val id = _uiState.value.id
-                        val userId = _uiState.value.userId
-                        val brand = _uiState.value.brand
-                        val model = _uiState.value.model
-                        val year = _uiState.value.year
-                        val vehicleClass = _uiState.value.vehicleClass
-                        val engineType = _uiState.value.engineType
-                        val licensePlate = _uiState.value.licensePlate
-                        val imgLink = _uiState.value.imgLink
-                        val latitude = _uiState.value.latitude
-                        val longitude = _uiState.value.longitude
-                        val price = _uiState.value.price
-                        val availability = _uiState.value.availability
+            is RegisterVehicleUIEvent.SetYear -> {
+                _uiState.update {
+                    it.copy(
+                        year = event.year
+                    )
+                }
+            }
 
-                        // TODO("Fix Code to add vehicle to remote data source instead of local")
-//                        val newVehicle = LocalVehicle(
-//                            vehicleId = id,
-//                            userId = userId,
-//                            brand = brand,
-//                            model = model,
-//                            year = year.toInt(),
-//                            vehicleClass = vehicleClass,
-//                            engineType = engineType,
-//                            licensePlate = licensePlate,
-//                            imgLink = "",
-//                            latitude = 51.4416f,
-//                            longitude = 5.4697f,
-//                            price = price.toDouble(),
-//                            availability = availability
-//                        )
-                        //vehicleRepository.addVehicle(vehicle = newVehicle)
-                    }
-                    _navigateToScreen.value = RmcScreen.MyVehicles
+            is RegisterVehicleUIEvent.SetModel -> {
+                _uiState.update {
+                    it.copy(
+                        model = event.model
+                    )
+                }
+            }
 
-                } catch (e: Exception) {
-                    // Handle the exception or log an error
-                    // TODO ERROR MESSAGE
+            is RegisterVehicleUIEvent.SetLicensePlate -> {
+                _uiState.update {
+                    it.copy(
+                        licensePlate = event.licensePlate
+                    )
+                }
+            }
+
+            is RegisterVehicleUIEvent.SetPrice -> {
+                _uiState.update {
+                    it.copy(
+                        price = event.price
+                    )
+                }
+            }
+
+            is RegisterVehicleUIEvent.SetVehicleClass -> {
+                _uiState.update {
+                    it.copy(
+                        vehicleClass = event.vehicleClass
+                    )
                 }
             }
 
             is RegisterVehicleUIEvent.EngineTypeBEVButtonClicked -> {
-                _state.update {
+                _uiState.update {
                     it.copy(
                         engineType = EngineType.BEV
                     )
@@ -92,7 +118,7 @@ class RegisterVehicleViewModel @Inject constructor(
             }
 
             is RegisterVehicleUIEvent.EngineTypeFCEVButtonClicked -> {
-                _state.update {
+                _uiState.update {
                     it.copy(
                         engineType = EngineType.FCEV
                     )
@@ -100,47 +126,23 @@ class RegisterVehicleViewModel @Inject constructor(
             }
 
             is RegisterVehicleUIEvent.EngineTypeICEButtonClicked -> {
-                _state.update {
+                _uiState.update {
                     it.copy(
                         engineType = EngineType.ICE
                     )
                 }
             }
 
-            is RegisterVehicleUIEvent.SetAvailability -> {
-                _state.update {
+            is RegisterVehicleUIEvent.AvailabilityToggleButtonClicked -> {
+                _uiState.update {
                     it.copy(
-                        availability = event.availability
-                    )
-                }
-            }
-
-            is RegisterVehicleUIEvent.SetBrand -> {
-                _state.update {
-                    it.copy(
-                        brand = event.brand
-                    )
-                }
-            }
-
-            is RegisterVehicleUIEvent.SetEngineType -> {
-                _state.update {
-                    it.copy(
-                        engineType = event.engineType
-                    )
-                }
-            }
-
-            is RegisterVehicleUIEvent.SetId -> {
-                _state.update {
-                    it.copy(
-                        id = event.id
+                        availability = !it.availability
                     )
                 }
             }
 
             is RegisterVehicleUIEvent.SetImgLink -> {
-                _state.update {
+                _uiState.update {
                     it.copy(
                         imgLink = event.imgLink
                     )
@@ -148,67 +150,69 @@ class RegisterVehicleViewModel @Inject constructor(
             }
 
             is RegisterVehicleUIEvent.SetLatitude -> {
-                _state.update {
+                _uiState.update {
                     it.copy(
-                        latitude = event.latitude.toString()
-                    )
-                }
-            }
-
-            is RegisterVehicleUIEvent.SetLicensePlate -> {
-                _state.update {
-                    it.copy(
-                        licensePlate = event.licensePlate
+                        latitude = event.latitude
                     )
                 }
             }
 
             is RegisterVehicleUIEvent.SetLongitude -> {
-                _state.update {
+                _uiState.update {
                     it.copy(
-                        longitude = event.longitude.toString()
+                        longitude = event.longitude
                     )
                 }
             }
 
-            is RegisterVehicleUIEvent.SetModel -> {
-                _state.update {
-                    it.copy(
-                        model = event.model
-                    )
+            is RegisterVehicleUIEvent.ConfirmRegisterVehicleButtonClicked -> {
+                val userId = _uiState.value.userId
+                val brand = _uiState.value.brand
+                val model = _uiState.value.model
+                val year = _uiState.value.year
+                val vehicleClass = _uiState.value.vehicleClass
+                val engineType = _uiState.value.engineType
+                val licensePlate = _uiState.value.licensePlate
+                val imgLink = _uiState.value.imgLink
+                val latitude = _uiState.value.latitude
+                val longitude = _uiState.value.longitude
+                val price = _uiState.value.price
+                val availability = _uiState.value.availability
+
+                val newVehicle = CreateVehicleDTO(
+                    userId = userId,
+                    brand = brand,
+                    model = model,
+                    year = year,
+                    vehicleClass = vehicleClass,
+                    engineType = engineType,
+                    licensePlate = licensePlate,
+                    imgLink = imgLink,
+                    latitude = latitude,
+                    longitude = longitude,
+                    price = price,
+                    availability = availability
+                )
+
+                viewModelScope.launch {
+                    try {
+                        withContext(Dispatchers.IO) {
+                            vehicleRepository.addVehicle(newVehicle)
+
+                            withContext(Dispatchers.Main) {
+                                _vehicleUpdated.value = true
+                            }
+                        }
+                        Log.d("RegisterVehicleViewModel", "Created vehicle successfully")
+
+                    } catch (e: Exception) {
+                        _vehicleUpdated.value = false
+                        Log.d("RegisterVehicleViewModel", "Error creating vehicle: $e")
+                    }
                 }
             }
-
-            is RegisterVehicleUIEvent.SetPrice -> {
-                _state.update {
-                    it.copy(
-                        price = event.price.toString()
-                    )
-                }
-            }
-
-            is RegisterVehicleUIEvent.SetUserId -> {
-                _state.update {
-                    it.copy(
-                        userId = event.userId
-                    )
-                }
-            }
-
-            is RegisterVehicleUIEvent.SetVehicleClass -> {
-                _state.update {
-                    it.copy(
-                        vehicleClass = event.vehicleClass
-                    )
-                }
-            }
-
-            is RegisterVehicleUIEvent.SetYear -> {
-                _state.update {
-                    it.copy(
-                        year = event.year.toString()
-                    )
-                }
+            is RegisterVehicleUIEvent.ResetVehicleUpdated -> {
+                _vehicleUpdated.value = false
             }
         }
     }

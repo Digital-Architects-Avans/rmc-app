@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.data.mapper
 
-import com.digitalarchitects.rmc_app.domain.model.Rental
-import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
 import com.digitalarchitects.rmc_app.data.local.LocalRental
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
+import com.digitalarchitects.rmc_app.domain.model.Rental
 
 fun List<LocalRental>.toRentalListFromLocal(): List<Rental> {
     return this.map { rental ->
@@ -73,7 +73,7 @@ fun Rental.toLocalRental(): LocalRental {
 
 fun Rental.toRemoteRental(): RemoteRental {
     return RemoteRental(
-        objectId = rentalId,
+        _id = rentalId,
         rentalId = rentalId,
         vehicleId = vehicleId,
         userId = userId,

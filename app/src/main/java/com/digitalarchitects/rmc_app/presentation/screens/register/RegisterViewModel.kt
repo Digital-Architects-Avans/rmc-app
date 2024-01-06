@@ -2,11 +2,10 @@ package com.digitalarchitects.rmc_app.presentation.screens.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
-import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.model.UserType
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,9 +19,6 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val userRepository: UserRepository
 )  : ViewModel() {
-    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
-    val navigateToScreen = _navigateToScreen.asStateFlow()
-
     private val _uiState = MutableStateFlow(RegisterUIState())
     val uiState: StateFlow<RegisterUIState> = _uiState.asStateFlow()
 
@@ -93,30 +89,6 @@ class RegisterViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     privacyPolicyAccepted = event.status
                 )
-            }
-
-            is RegisterUIEvent.NavigateUpButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-
-            is RegisterUIEvent.LoginButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.Login
-            }
-
-            is RegisterUIEvent.Authorized -> {
-                _navigateToScreen.value = RmcScreen.RmcTestScreen
-            }
-
-            is RegisterUIEvent.Unauthorized -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-
-            is RegisterUIEvent.NoConnectionError -> {
-                _navigateToScreen.value = RmcScreen.Welcome
-            }
-
-            is RegisterUIEvent.UnknownError -> {
-                _navigateToScreen.value = RmcScreen.Welcome
             }
         }
     }

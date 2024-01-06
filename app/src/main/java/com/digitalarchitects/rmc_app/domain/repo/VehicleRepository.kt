@@ -22,7 +22,7 @@ interface VehicleRepository {
     suspend fun getVehicleById(vehicleId: String): Vehicle?
 
     /** Adds [Vehicle] to the underlying data source */
-    suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO, vehicle: Vehicle)
+    suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO)
 
     /** Updates the [Vehicle] to the underlying data source */
     suspend fun updateVehicle(vehicleId: String, updatedVehicle: UpdateVehicleDTO)

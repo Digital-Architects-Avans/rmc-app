@@ -1,44 +1,61 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myvehicles
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.digitalarchitects.rmc_app.data.local.LocalVehicle
+import androidx.lifecycle.viewModelScope
+import com.digitalarchitects.rmc_app.data.di.IoDispatcher
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
-import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyVehiclesViewModel @Inject constructor(
-    private val vehicleRepository: VehicleRepository
+    private val vehicleRepository: VehicleRepository,
+    private val userRepository: UserRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    private val _vehicleList = MutableLiveData<List<LocalVehicle>>()
-    val vehicleList: LiveData<List<LocalVehicle>> get() = _vehicleList
+    private val _uiState = MutableStateFlow(MyVehiclesUIState())
+    val uiState: StateFlow<MyVehiclesUIState> = _uiState.asStateFlow()
 
-    private val _navigateToScreen = MutableStateFlow<RmcScreen?>(null)
-    val navigateToScreen = _navigateToScreen.asStateFlow()
+    init {
+        getVehiclesOfUser()
+    }
 
-    private val _state = MutableStateFlow(MyVehiclesUIState())
-    private val _uiState = _state
-    val uiState: StateFlow<MyVehiclesUIState> get() = _uiState.asStateFlow()
+    private fun getVehiclesOfUser() {
+        viewModelScope.launch(dispatcher) {
+
+            // Set the loading state to true to prevent the LazyColumn to load the list
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            val result: Result<List<Vehicle>> = runCatching {
+                vehicleRepository.getAllVehicles()
+            }
+            val userId = userRepository.getCurrentUserIdFromDataStore()
+
+            result.onSuccess { listOfVehicles ->
+                _uiState.value.listOfVehicles = listOfVehicles.filter { vehicle ->
+                    vehicle.userId == userId
+                }
+
+                // Set the loading state to false to allow the LazyColumn to load the list
+                _uiState.value = _uiState.value.copy(isLoading = false)
+
+            }.onFailure { e ->
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun onEvent(event: MyVehiclesUIEvent) {
         when (event) {
-
-            is MyVehiclesUIEvent.NewVehicleButtonClicked -> {
-                _navigateToScreen.value = RmcScreen.RegisterVehicle
-            }
-
-            is MyVehiclesUIEvent.ShowVehicles -> {
-//                viewModelScope.launch {
-//                    // Collect the Flow to get updates when data changes
-//                    vehicleRepository.getAllVehicles().collect { getVehicles ->
-//                        _vehicleList.value = getVehicles
-//                    }
+            is MyVehiclesUIEvent.FetchVehicles -> {
+                getVehiclesOfUser()
             }
         }
     }

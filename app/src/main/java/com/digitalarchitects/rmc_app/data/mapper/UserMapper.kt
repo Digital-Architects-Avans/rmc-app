@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.data.mapper
 
-import com.digitalarchitects.rmc_app.domain.model.User
-import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
 import com.digitalarchitects.rmc_app.data.local.LocalUser
+import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
+import com.digitalarchitects.rmc_app.domain.model.User
 
 fun List<User>.toLocalUser(): List<LocalUser> {
     return this.map { user ->
@@ -83,7 +83,7 @@ fun User.toLocalUser(): LocalUser {
 
 fun User.toRemoteUser(): RemoteUser {
     return RemoteUser(
-        objectId = userId,
+        _id = userId,
         userId = userId,
         email = email,
         password = password,
