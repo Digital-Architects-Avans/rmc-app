@@ -1,8 +1,8 @@
 package com.digitalarchitects.rmc_app.data.mapper
 
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
-import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import com.digitalarchitects.rmc_app.data.local.LocalVehicle
+import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 
 fun List<LocalVehicle>.toVehicleListFromLocal(): List<Vehicle>{
     return this.map { vehicle ->
@@ -65,7 +65,7 @@ fun Vehicle.toLocalVehicle(): LocalVehicle {
 
 fun Vehicle.toRemoteVehicle(): RemoteVehicle {
     return RemoteVehicle(
-        objectId = vehicleId,
+        _id = vehicleId,
         vehicleId = vehicleId,
         userId = userId,
         brand = brand,
@@ -102,6 +102,24 @@ fun LocalVehicle.toVehicle(): Vehicle {
 
 fun RemoteVehicle.toVehicle(): Vehicle {
     return Vehicle(
+        vehicleId = vehicleId,
+        userId = userId,
+        brand = brand,
+        model = model,
+        year = year,
+        vehicleClass = vehicleClass,
+        engineType = engineType,
+        licensePlate = licensePlate,
+        imgLink = imgLink,
+        latitude = latitude,
+        longitude = longitude,
+        price = price,
+        availability = availability
+    )
+}
+
+fun RemoteVehicle.toLocalVehicle(): LocalVehicle {
+    return LocalVehicle(
         vehicleId = vehicleId,
         userId = userId,
         brand = brand,
