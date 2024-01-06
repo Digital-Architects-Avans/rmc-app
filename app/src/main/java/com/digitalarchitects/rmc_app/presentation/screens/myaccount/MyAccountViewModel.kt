@@ -21,8 +21,8 @@ class MyAccountViewModel @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(MyAccountUIState())
-    val uiState: StateFlow<MyAccountUIState> = _state.asStateFlow()
+    private val _uiState = MutableStateFlow(MyAccountUIState())
+    val uiState: StateFlow<MyAccountUIState> = _uiState.asStateFlow()
 
     init {
         fetchUserDetails()
@@ -34,7 +34,7 @@ class MyAccountViewModel @Inject constructor(
                 val userId = userRepository.getCurrentUserIdFromDataStore()
                 val currentUser = userRepository.getUserById(userId!!)
                 withContext(Dispatchers.Main) {
-                    _state.value.currentUser = currentUser
+                    _uiState.value.currentUser = currentUser
                 }
             } catch (e: Exception) {
                 Log.d("MyAccountViewModel", "error: $e")
