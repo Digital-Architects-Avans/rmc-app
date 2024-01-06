@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.editmyvehicle
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,8 +36,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcSwitch
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
@@ -44,24 +48,25 @@ import com.digitalarchitects.rmc_app.presentation.screens.search.RmcFilterChip
 @Composable
 fun EditMyVehicleScreen(
     viewModel: EditMyVehicleViewModel,
-    navigateToScreen: (String) -> Unit
+    navigateToScreen: (String) -> Unit,
+    vehicleId: String?
 ) {
-    val navigateToScreenEvent by viewModel.navigateToScreen.collectAsState()
-    if (navigateToScreenEvent != null) {
-        navigateToScreen(navigateToScreenEvent!!.name)
-    }
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-//        viewModel.onEvent(EditMyVehicleUIEvent.InsertUser)
-        viewModel.onEvent(EditMyVehicleUIEvent.ShowVehicle)
+    val vehicleUpdated by viewModel.vehicleUpdated.collectAsState()
+
+    LaunchedEffect(vehicleId) {
+        if (vehicleId != null) {
+            viewModel.fetchVehicleDetails(vehicleId)
+        }
     }
+
     Scaffold(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_edit_vehicle,
                 navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = {
-                    navigateToScreen("MyAccount")
+                    navigateToScreen(RmcScreen.MyVehicles.name)
                 },
             )
         }
@@ -295,20 +300,40 @@ fun EditMyVehicleScreen(
 
                     RmcSpacer(32)
 
-                    RmcFilledButton(
-                        value = stringResource(id = R.string.cancel),
-                        onClick = {
-                            navigateToScreen("MyAccount")
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            RmcOutlinedButton(
+                                value = stringResource(id = R.string.cancel),
+                                onClick = {
+                                    navigateToScreen(RmcScreen.MyVehicles.name)
+                                }
+                            )
                         }
-                    )
+                        Column(Modifier.weight(1f)) {
+                            RmcFilledButton(
+                                value = stringResource(id = R.string.apply),
+                                onClick = {
+                                    viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
+                                }
+                            )
+                        }
+                    }
 
-                    RmcFilledButton(
-                        value = stringResource(id = R.string.apply),
-                        onClick = {
-                            viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
-                            navigateToScreen("MyRentals")
-                        }
-                    )
+                    val context = LocalContext.current
+                    val toastMessage = if (vehicleUpdated) {
+                        stringResource(R.string.vehicle_updated_successfully)
+                    } else {
+                        stringResource(R.string.unable_to_update_vehicle)
+                    }
+                    if (vehicleUpdated) {
+                        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                        navigateToScreen(RmcScreen.MyVehicles.name)
+                        viewModel.onEvent(EditMyVehicleUIEvent.ResetVehicleUpdated)
+                    }
                 }
             }
         }

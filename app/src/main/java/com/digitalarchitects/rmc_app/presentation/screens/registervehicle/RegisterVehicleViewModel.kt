@@ -201,6 +201,7 @@ class RegisterVehicleViewModel @Inject constructor(
 
                             withContext(Dispatchers.Main) {
                                 _vehicleUpdated.value = true
+                                resetRegisterVehicleUiState()
                             }
                         }
                         Log.d("RegisterVehicleViewModel", "Created vehicle successfully")
@@ -214,6 +215,23 @@ class RegisterVehicleViewModel @Inject constructor(
             is RegisterVehicleUIEvent.ResetVehicleUpdated -> {
                 _vehicleUpdated.value = false
             }
+        }
+    }
+    private fun resetRegisterVehicleUiState() {
+        _uiState.update {
+            it.copy(
+                brand = "",
+                model = "",
+                year = 1999,
+                vehicleClass = "",
+                engineType = EngineType.ICE,
+                licensePlate = "",
+                imgLink = 0,
+                latitude = 0.0F,
+                longitude = 0.0F,
+                price = 0.00,
+                availability = false
+            )
         }
     }
 }

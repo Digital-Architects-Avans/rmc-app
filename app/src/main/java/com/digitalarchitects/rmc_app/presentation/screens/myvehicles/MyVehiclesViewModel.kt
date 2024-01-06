@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,6 +57,39 @@ class MyVehiclesViewModel @Inject constructor(
         when (event) {
             is MyVehiclesUIEvent.FetchVehicles -> {
                 getVehiclesOfUser()
+            }
+
+            is MyVehiclesUIEvent.ShowVehicleDetails -> {
+                // Access the vehicleId property directly from the event
+                val vehicleId: String? = event.vehicleId
+
+                // Find the vehicle with the matching vehicleId
+                val selectedVehicle = uiState.value.listOfVehicles.find { it.vehicleId == vehicleId }
+
+                // Update the UI state with the selected vehicle
+                _uiState.update {
+                    it.copy(selectedVehicle = selectedVehicle)
+                }
+            }
+
+            is MyVehiclesUIEvent.CancelShowVehicleDetails -> {
+                _uiState.update {
+                    it.copy(selectedVehicle = null)
+                }
+            }
+
+            is MyVehiclesUIEvent.DeleteVehicle -> {
+                val vehicleId: String = event.vehicleId
+
+                viewModelScope.launch(dispatcher) {
+                    try {
+                        vehicleRepository.deleteVehicle(vehicleId = vehicleId)
+                        getVehiclesOfUser()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
             }
         }
     }

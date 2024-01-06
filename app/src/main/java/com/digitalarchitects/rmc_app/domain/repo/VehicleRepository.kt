@@ -28,7 +28,7 @@ interface VehicleRepository {
     suspend fun updateVehicle(vehicleId: String, updatedVehicle: UpdateVehicleDTO)
 
     /** Deletes the [Vehicle] from the underlying data source */
-    suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit>
+    suspend fun deleteVehicle(vehicleId: String): Result<Unit>
 
     /** Retrieves the model name from the [Vehicle]  */
     suspend fun getVehicleModel(vehicleId: String): String?
