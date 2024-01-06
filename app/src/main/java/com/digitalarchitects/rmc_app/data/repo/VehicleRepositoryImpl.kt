@@ -73,7 +73,7 @@ class VehicleRepositoryImpl(
         return empty
     }
 
-    override suspend fun getVehicleById(vehicleId: String): Vehicle? {
+    override suspend fun getVehicleById(vehicleId: String): Vehicle {
         return rmcRoomDatabase.getVehicleByIdFromLocalDb(vehicleId).toVehicle()
     }
 
@@ -95,12 +95,13 @@ class VehicleRepositoryImpl(
         rmcApiService.updateVehicle(vehicleId, updatedVehicle)
     }
 
-    override suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit> {
+    override suspend fun deleteVehicle(vehicleId: String): Result<Unit> {
         return try {
-            val response = rmcApiService.deleteVehicle(vehicle.vehicleId)
+            val response = rmcApiService.deleteVehicle(vehicleId)
 
             if (response.isSuccessful) {
-                Log.i("API_DELETE", "Vehicle deleted successfully: ${vehicle.vehicleId}")
+                Log.i("API_DELETE", "Vehicle deleted successfully: $vehicleId")
+                getAllVehiclesFromRemote()
                 Result.success(Unit)
             } else {
                 val errorMessage =
@@ -111,7 +112,7 @@ class VehicleRepositoryImpl(
         } catch (e: Exception) {
             when (e) {
                 is UnknownHostException, is ConnectException, is HttpException -> {
-                    Log.e("HTTP", "Error: Could not delete vehicle", e)
+                    Log.e("API_DELETE", "Error: Could not delete vehicle", e)
                     Result.failure(e)
                 }
 
