@@ -22,7 +22,7 @@ interface VehicleDao {
     @Query("SELECT model FROM LocalVehicle WHERE vehicleId = :vehicleId")
     suspend fun getVehicleModel(vehicleId: String): String?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVehicle(vehicle: LocalVehicle): Long
 
     @Upsert
