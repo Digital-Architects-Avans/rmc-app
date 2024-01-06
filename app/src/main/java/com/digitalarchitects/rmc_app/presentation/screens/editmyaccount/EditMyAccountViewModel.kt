@@ -8,7 +8,6 @@ import com.digitalarchitects.rmc_app.domain.model.UserType
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -158,7 +157,7 @@ class EditMyAccountViewModel @Inject constructor(
                 )
 
                 // Had to use a userUpdated stateFlow to notify EditMyAccountScreen that data is updated
-                // And use that listener to navigate back to MyAccountScreen after 1 second
+                // And use that listener to navigate back to MyAccountScreen
                 // Else the user will see the old first name in MyAccountScreen because
                 // the uiState is not updated yet when the user navigates back to MyAccountScreen
                 viewModelScope.launch {
@@ -171,11 +170,10 @@ class EditMyAccountViewModel @Inject constructor(
 
                                 // Notify EditMyAccountScreen that data is updated
                                 _userUpdated.value = true
-                                delay(1000)
                             }
                         }
                     } catch (e: Exception) {
-                        // Handle the exception or log the error
+                        _userUpdated.value = false
                         Log.d("EditMyAccountViewModel", "Error updating user: $e")
                     }
                 }
