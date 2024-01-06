@@ -77,9 +77,15 @@ class VehicleRepositoryImpl(
         return rmcRoomDatabase.getVehicleByIdFromLocalDb(vehicleId).toVehicle()
     }
 
-    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO, vehicle: Vehicle) {
-        rmcRoomDatabase.addVehicleToLocalDb(vehicle.toLocalVehicle())
-        rmcApiService.addVehicle(createVehicleDTO)
+    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO) {
+        try {
+            val remoteVehicle = rmcApiService.addVehicle(createVehicleDTO)
+            rmcRoomDatabase.addVehicleToLocalDb(remoteVehicle.toLocalVehicle())
+        } catch (e: Exception) {
+            Log.d("VehicleRepositoryImpl", "Error: Could not add vehicle $e")
+            e.printStackTrace()
+            throw e
+        }
     }
 
     override suspend fun updateVehicle(vehicleId: String, updatedVehicle: UpdateVehicleDTO) {
