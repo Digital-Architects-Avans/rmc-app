@@ -3,9 +3,6 @@ package com.digitalarchitects.rmc_app.data.remote
 import com.digitalarchitects.rmc_app.data.auth.AuthRequest
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
 import com.digitalarchitects.rmc_app.data.auth.TokenResponse
-import com.digitalarchitects.rmc_app.domain.model.Rental
-import com.digitalarchitects.rmc_app.domain.model.User
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
@@ -13,6 +10,9 @@ import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -79,14 +79,14 @@ interface RmcApiService {
     ): RemoteVehicle?
 
     @GET("vehicles/{licensePlate}")
-    suspend fun getVehiclesByLicensePlate(
+    suspend fun getVehicleByLicensePlate(
         @Path("licensePlate") licensePlate: String
     ): RemoteVehicle?
 
     @POST("vehicles")
     suspend fun addVehicle(
         @Body createVehicleDTO: CreateVehicleDTO
-    ): Response<Unit>
+    ): RemoteVehicle
 
     @PUT("vehicles/{id}")
     suspend fun updateVehicle(
