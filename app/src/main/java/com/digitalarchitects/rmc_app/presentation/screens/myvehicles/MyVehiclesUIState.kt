@@ -4,5 +4,6 @@ import com.digitalarchitects.rmc_app.domain.model.Vehicle
 
 data class MyVehiclesUIState(
     var listOfVehicles: List<Vehicle> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val selectedVehicle: Vehicle? = null
 )
