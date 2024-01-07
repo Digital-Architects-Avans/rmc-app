@@ -7,7 +7,6 @@ import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
-import com.digitalarchitects.rmc_app.data.remote.dto.user.RemoteUser
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
@@ -62,11 +61,11 @@ class FakeRmcApiService : RmcApiService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getVehiclesByLicensePlate(licensePlate: String): RemoteVehicle? {
+    override suspend fun getVehicleByLicensePlate(licensePlate: String): RemoteVehicle? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO): Response<Unit> {
+    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO): RemoteVehicle {
         TODO("Not yet implemented")
     }
 
