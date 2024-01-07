@@ -97,7 +97,7 @@ fun WelcomeScreen(
                     RmcFilledTonalButton(
                         value = stringResource(id = R.string.register),
                         onClick = {
-                            navigateToScreen(RmcScreen.Register.name)
+                            navigateToScreen(RmcScreen.RmcLocationTestScreen.name)
                         }
                     )
                 }
