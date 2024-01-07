@@ -1,11 +1,11 @@
 package com.digitalarchitects.rmc_app.fake
 
-import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
-import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.UserType
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import kotlinx.datetime.LocalDate
 
 object FakeRemoteDataSource {
@@ -40,8 +40,7 @@ object FakeRemoteDataSource {
         )
     )
     val vehicleList = listOf(
-        RemoteVehicle(
-            objectId = "1",
+        Vehicle(
             vehicleId = "1",
             userId = "1",
             brand = "brand",
@@ -56,8 +55,7 @@ object FakeRemoteDataSource {
             price = 2.0,
             availability = true
         ),
-        RemoteVehicle(
-            objectId = "2",
+        Vehicle(
             vehicleId = "2",
             userId = "2",
             brand = "brand2",
@@ -74,8 +72,7 @@ object FakeRemoteDataSource {
         )
     )
     val rentalList = listOf(
-        RemoteRental(
-            objectId = "1",
+        Rental(
             rentalId = "1",
             vehicleId = "1",
             userId = "1",
@@ -87,8 +84,7 @@ object FakeRemoteDataSource {
             distanceTravelled = 1.0,
             score = 1
         ),
-        RemoteRental(
-            objectId = "1",
+        Rental(
             rentalId = "1",
             vehicleId = "2",
             userId = "2",
