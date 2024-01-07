@@ -1,23 +1,25 @@
 package com.digitalarchitects.rmc_app.fake
 
-import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.data.auth.SignUpRequest
-import com.digitalarchitects.rmc_app.data.mapper.toUser
-import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
 import com.digitalarchitects.rmc_app.data.remote.dto.user.SignupDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 
-// Class inherits from userRepository interface overrides the getUsers() fun to return fake data.
 class FakeUserRepository : UserRepository {
+    private val signInResults: MutableMap<Pair<String, String>, AuthResult<Unit>> = mutableMapOf()
+
+    fun setSignInResult(email: String, password: String, result: AuthResult<Unit>) {
+        signInResults[email to password] = result
+    }
+
     override suspend fun signUp(request: SignUpRequest): AuthResult<Unit> {
         TODO("Not yet implemented")
     }
 
     override suspend fun signIn(username: String, password: String): AuthResult<Unit> {
-        TODO("Not yet implemented")
+        return signInResults[username to password] ?: AuthResult.UnknownError()
     }
 
     override suspend fun authenticate(): AuthResult<Unit> {
@@ -25,18 +27,19 @@ class FakeUserRepository : UserRepository {
     }
 
     override suspend fun getAllUsers(): List<User> {
-        return FakeLocalDataSource.userList.toUserListFromLocal()
+        TODO("Not yet implemented")
     }
 
     override suspend fun getAllUsersFromLocalCache(): List<User> {
-        return FakeLocalDataSource.userList.toUserListFromLocal()
+        TODO("Not yet implemented")
     }
 
     override suspend fun getAllUsersFromRemote() {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getUserById(userId: String): User {
-        return FakeLocalDataSource.userList.first { it.userId == userId }.toUser()
+        TODO("Not yet implemented")
     }
 
     override suspend fun addUser(user: User, signupDTO: SignupDTO) {

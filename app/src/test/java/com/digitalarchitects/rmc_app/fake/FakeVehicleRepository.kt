@@ -26,7 +26,7 @@ class FakeVehicleRepository : VehicleRepository {
         return FakeLocalDataSource.vehicleList.firstOrNull { it.vehicleId == vehicleId }?.toVehicle()
     }
 
-    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO, vehicle: Vehicle) {
+    override suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO) {
         TODO("Not yet implemented")
     }
 
@@ -34,7 +34,7 @@ class FakeVehicleRepository : VehicleRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteVehicle(vehicle: Vehicle): Result<Unit> {
+    override suspend fun deleteVehicle(vehicleId: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 
