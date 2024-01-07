@@ -11,7 +11,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class LoginViewModelTest {
+class LoginScreenUiTest {
 
     private lateinit var userRepository: FakeUserRepository
     private lateinit var viewModel: LoginViewModel
