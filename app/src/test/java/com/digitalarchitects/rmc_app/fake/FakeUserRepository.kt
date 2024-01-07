@@ -54,4 +54,8 @@ class FakeUserRepository : UserRepository {
     override suspend fun getFirstName(userId: String): String? {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getCurrentUserIdFromDataStore(): String? {
+        TODO("Not yet implemented")
+    }
 }
