@@ -1,7 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.locationtest
 
 import android.Manifest
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +44,6 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
-
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -53,7 +51,6 @@ fun LocationTestScreen(
     viewModel: LocationTestViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-
     val permissionState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
