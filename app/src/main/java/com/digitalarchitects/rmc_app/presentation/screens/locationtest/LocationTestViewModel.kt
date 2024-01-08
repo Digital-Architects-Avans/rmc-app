@@ -4,8 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.digitalarchitects.rmc_app.domain.util.GetLocationUseCase
+import com.digitalarchitects.rmc_app.data.remote.ILocationService
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,8 +17,9 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
 class LocationTestViewModel @Inject constructor(
-    private val getLocationUseCase: GetLocationUseCase
+    private val locationService: ILocationService
 ) : ViewModel() {
+    operator fun invoke(): Flow<LatLng?> = locationService.requestLocationUpdates()
 
     private val _uiState: MutableStateFlow<LocationTestUIState> =
         MutableStateFlow(LocationTestUIState.Loading)
@@ -28,7 +31,7 @@ class LocationTestViewModel @Inject constructor(
         when (event) {
             LocationTestUIEvent.Granted -> {
                 viewModelScope.launch {
-                    getLocationUseCase.invoke().collect { location ->
+                    invoke().collect { location ->
                         _uiState.value = LocationTestUIState.Success(location)
                     }
                 }
