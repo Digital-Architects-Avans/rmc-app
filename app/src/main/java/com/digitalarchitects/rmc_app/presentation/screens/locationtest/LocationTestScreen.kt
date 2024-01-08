@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.presentation.screens.locationtest
 
 import android.Manifest
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -60,11 +62,13 @@ fun LocationTestScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val context: Context = LocalContext.current
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface,
     ) {
-        LaunchedEffect(!hasLocationPermission()) {
+        LaunchedEffect(!context.hasLocationPermission()) {
             permissionState.launchMultiplePermissionRequest()
         }
 
@@ -112,9 +116,9 @@ fun LocationTestScreen(
                             onClick = {
                                 //startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                             },
-                            enabled = !hasLocationPermission()
+                            enabled = !context.hasLocationPermission()
                         ) {
-                            if (hasLocationPermission()) CircularProgressIndicator(
+                            if (context.hasLocationPermission()) CircularProgressIndicator(
                                 modifier = Modifier.size(14.dp),
                                 color = Color.White
                             )
