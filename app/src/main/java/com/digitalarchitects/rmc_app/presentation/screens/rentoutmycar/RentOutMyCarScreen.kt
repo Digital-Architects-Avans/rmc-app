@@ -1,6 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentoutmycar
 
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,72 +8,78 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
-import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
-import com.digitalarchitects.rmc_app.presentation.components.RmcUserIcon
-import com.digitalarchitects.rmc_app.presentation.components.SmallHeadingTextComponent
+import com.digitalarchitects.rmc_app.presentation.components.RmcRentalDetailsOwner
+import com.digitalarchitects.rmc_app.presentation.components.RmcTextBadge
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RentOutMyCarScreen(
-    viewModel: RentOutMyCarViewModel, navigateToScreen: (String) -> Unit
+    viewModel: RentOutMyCarViewModel,
+    navigateToScreen: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-// TODO
+
+    val rentalBottomSheet = rememberModalBottomSheetState()
+
+    LaunchedEffect(
+        uiState.listOfRentalsForUser
+    ) {
+        viewModel.onEvent(RentOutMyCarUIEvent.FetchRentals)
     }
 
-    Scaffold(topBar = {
-        RmcAppBar(
-            title = R.string.screen_title_rent_my_car,
-            navigationIcon = Icons.Rounded.Close,
-            navigateUp = {
-                navigateToScreen("RentACar")
-            },
-        )
-    }) { innerPadding ->
+    Log.d("RentOutMyCarScreen", "RentOutMyCarScreen: ${uiState.listOfRentalsForUser}")
+
+    Scaffold(
+        topBar = {
+            RmcAppBar(
+                title = R.string.screen_title_rent_my_car,
+                navigationIcon = Icons.Rounded.Close,
+                navigateUp = {
+                    navigateToScreen(RmcScreen.RentACar.name)
+                },
+            )
+        }
+    ) { innerPadding ->
         Surface(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             color = MaterialTheme.colorScheme.surface
         ) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -85,58 +91,201 @@ fun RentOutMyCarScreen(
                     backgroundColor = colorResource(R.color.white),
                     contentColor = colorResource(R.color.purple_500)
                 ) {
-                    RentalTab.values().forEachIndexed { index, tab ->
+                    RentalTab.values().forEach { tab ->
                         Tab(
                             text = { Text(stringResource(id = tab.tabNameResourceId)) },
                             selected = uiState.selectedTab == tab,
-                            onClick = { uiState.selectedTab = tab },
+                            onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(tab)) },
                             modifier = Modifier.padding(8.dp)
                         )
                     }
                 }
+            }
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (!uiState.isLoading) {
+                    when (uiState.selectedTab) {
+                        RentalTab.PENDING -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 56.dp)
+                                    .padding(24.dp)
+                            ) {
+                                itemsIndexed(uiState.pendingRentalsList) { index, rental ->
+                                    RentalListItem(
+                                        rental = rental.first,
+                                        vehicle = rental.second,
+                                        user = rental.third,
+                                        onItemClick = {
+                                            viewModel.onEvent(
+                                                RentOutMyCarUIEvent.ShowRentalDetails(
+                                                    tab = RentalTab.PENDING,
+                                                    index = index
+                                                )
+                                            )
+                                        }
+                                    )
 
-                RmcSpacer()
+                                    if (index < uiState.pendingRentalsList.lastIndex)
+                                        Divider(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                            color = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.08f
+                                            ),
+                                            thickness = 1.dp
+                                        )
+                                }
+                            }
+                        }
 
-                LazyColumn {
-//           TODO  val filteredList = getFilteredRentals(list, selectedTab)
+                        RentalTab.OPEN -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 56.dp)
+                                    .padding(24.dp)
+                            ) {
+                                itemsIndexed(uiState.openRentalsList) { index, rental ->
+                                    RentalListItem(
+                                        rental = rental.first,
+                                        vehicle = rental.second,
+                                        user = rental.third,
+                                        onItemClick = {
+                                            viewModel.onEvent(
+                                                RentOutMyCarUIEvent.ShowRentalDetails(
+                                                    tab = RentalTab.OPEN,
+                                                    index = index
+                                                )
+                                            )
+                                        }
+                                    )
 
-//            items(filteredList) { rental ->
-//                vehicles.find { it.id == rental.vehicleId }
-//                    ?.let { RentalItem(rental = rental, vehicle = it, user = user) }
-//            }
+                                    if (index < uiState.openRentalsList.lastIndex)
+                                        Divider(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                            color = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.08f
+                                            ),
+                                            thickness = 1.dp
+                                        )
+                                }
+                            }
+                        }
+
+                        RentalTab.HISTORY -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 56.dp)
+                                    .padding(24.dp)
+                            ) {
+                                itemsIndexed(uiState.historyRentalsList) { index, rental ->
+                                    RentalListItem(
+                                        rental = rental.first,
+                                        vehicle = rental.second,
+                                        user = rental.third,
+                                        onItemClick = {
+                                            viewModel.onEvent(
+                                                RentOutMyCarUIEvent.ShowRentalDetails(
+                                                    tab = RentalTab.HISTORY,
+                                                    index = index
+                                                )
+                                            )
+                                        }
+                                    )
+
+                                    if (index < uiState.historyRentalsList.lastIndex)
+                                        Divider(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                            color = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.08f
+                                            ),
+                                            thickness = 1.dp
+                                        )
+                                }
+                            }
+
+                        }
+
+                    }
+                } else {
+                    // Show loading indicator or any other UI when isLoading is true
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.Center)
+                    )
                 }
             }
         }
 
-
-//fun getFilteredRentals(list: List<Rental>, selectedTab: RentalTab): List<Rental> {
-//    return when (selectedTab) {
-//        RentalTab.PENDING -> list.filter { it.status == RentalStatus.PENDING }
-//        RentalTab.OPEN -> list.filter { it.status == RentalStatus.APPROVED && it.date.isAfter(LocalDate.now()) }
-//        RentalTab.HISTORY -> list.filter {
-//            it.status == RentalStatus.DENIED || it.status == RentalStatus.CANCELLED || (it.status == RentalStatus.APPROVED && it.date.isBefore(LocalDate.now()))
-//        }
-//    }
-//}
-
+        // Display vehicle details in a modal bottom sheet when a vehicle is selected
+        uiState.selectedRentalItem?.let { details ->
+            RentalDetailsBottomSheet(
+                details = details,
+                sheetState = rentalBottomSheet,
+                onRejectClick = {
+                    viewModel.onEvent(RentOutMyCarUIEvent.RejectRental(details.first.rentalId))
+                    viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
+                },
+                onAcceptClick = {
+                    viewModel.onEvent(RentOutMyCarUIEvent.AcceptRental(details.first.rentalId))
+                    viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
+                },
+                onCancel = {
+                    viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
+                }
+            )
+        }
 
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
-    val sheetState = rememberModalBottomSheetState()
-    var isSheetOpen by rememberSaveable {
-        mutableStateOf(false)
+fun RentalDetailsBottomSheet(
+    details: Triple<Rental, Vehicle, User>,
+    sheetState: SheetState,
+    onRejectClick: () -> Unit,
+    onAcceptClick: () -> Unit,
+    onCancel: () -> Unit
+) {
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = onCancel,
+    ) {
+        RmcRentalDetailsOwner(
+            rental = details.first,
+            vehicle = details.second,
+            user = details.third,
+            onRejectClick = { onRejectClick() },
+            onAcceptClick = { onAcceptClick() }
+        )
     }
+}
+
+@Composable
+fun RentalListItem(
+    rental: Rental,
+    vehicle: Vehicle,
+    user: User,
+    onItemClick: () -> Unit,
+) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .clickable {
-                isSheetOpen = true
-            },
+            .clickable { onItemClick() },
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
         Row(
@@ -144,16 +293,8 @@ fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row {
-                Text(text = stringResource(id = R.string.vehicle))
-                Text(text = ": ${rental.vehicleId}")
-            }
-            Row {
                 Text(text = stringResource(id = R.string.date))
                 Text(text = ": ${rental.date}")
-            }
-            Row {
-                Text(text = stringResource(id = R.string.price))
-                Text(text = ": ${rental.price}")
             }
         }
         Row(
@@ -162,78 +303,52 @@ fun RentalItem(rental: Rental, vehicle: Vehicle, user: User) {
         ) {
             Row {
                 Text(text = stringResource(id = R.string.renter))
-                Text(text = ": ${rental.userId}")
+                Text(text = ": ${user.firstName} ${user.lastName}")
             }
-            Row {
-                Text(text = stringResource(id = R.string.status))
-                Text(text = ": ${rental.status}")
+            val (rentalStatus, labelTextColor, backgroundColor) = when (rental.status) {
+                RentalStatus.PENDING ->
+                    Triple(
+                        stringResource(R.string.pending),
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondaryContainer
+                    )
+
+                RentalStatus.APPROVED ->
+                    Triple(
+                        stringResource(R.string.approved),
+                        colorResource(id = R.color.primary_green_text),
+                        colorResource(id = R.color.primary_green_bg)
+                    )
+
+                RentalStatus.DENIED ->
+                    Triple(
+                        stringResource(R.string.denied),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
+
+                RentalStatus.CANCELLED ->
+                    Triple(
+                        stringResource(R.string.cancelled),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
             }
+            RmcTextBadge(
+                label = rentalStatus,
+                labelTextColor = labelTextColor,
+                labelBackgroundColor = backgroundColor
+            )
         }
-    }
-    Divider(modifier = Modifier.padding(8.dp))
-    if (isSheetOpen) {
-        ModalBottomSheet(
-            modifier = Modifier.height(500.dp),
-            sheetState = sheetState,
-            onDismissRequest = { isSheetOpen = false },
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier
-                    .height(500.dp)
-                    .padding(16.dp, 0.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "${rental.date}",
-                    color = Color.Red,
-                    fontSize = 24.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold
-                )
-                Row {
-                    RmcUserIcon(userIcon = R.drawable.usericon,
-                        size = dimensionResource(R.dimen.image_size_medium),
-                        onClick = {})
-                    SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .height(24.dp)
-                            .background(
-                                color = Color.Red, shape = RoundedCornerShape(12.dp)
-                            )
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 18.dp),
-                            text = stringResource(id = R.string.reject_rental),
-                            color = Color.White,
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .height(24.dp)
-                            .background(
-                                color = Color.Green, shape = RoundedCornerShape(12.dp)
-                            )
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            text = stringResource(id = R.string.accept_rental),
-                            color = Color.White,
-                        )
-                    }
-                }
-                RmcSpacer()
-                Column {
-//                VehicleListItem(vehicle = vehicle)
-                }
-                RmcSpacer()
-                RmcSpacer()
+            Row {
+                Text(text = stringResource(id = R.string.vehicle))
+                Text(text = ": ${vehicle.brand} ${vehicle.model}")
             }
         }
     }
 }
+
