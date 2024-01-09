@@ -25,15 +25,20 @@ interface RentalRepository {
     suspend fun getRentalById(rentalId: String): Rental?
 
     /** Retrieves [Rental] for a specific user from underlying data source */
-    suspend fun getRentalsForUser(userId: String): List<Rental>?
+    suspend fun getRentalsForRenter(userId: String): List<Rental>?
 
     /** Retrieves [Rental] for a specific vehicle from underlying data source */
     suspend fun getRentalsForVehicle(vehicleId: String): List<Rental>?
 
+    /** Retrieves a list of Triple containing [Rental] details for a specific Renter from underlying data source
+     * Contains the [Rental], [Vehicle] being rented and [User] as owner of the vehicle */
+    suspend fun getListOfRentalDetailsForRenter(userId: String): List<Triple<Rental, Vehicle, User>>
+
     /** Retrieves [Rental] [Vehicle] and [User] for a specific rental from underlying data source */
     suspend fun getRentalDetails(rentalId: String): Triple<Rental, Vehicle, User>
 
-    /** Retrieves a list of Triple containing rental details for a specific user from underlying data source */
+    /** Retrieves a list of Triple containing rental details for a specific user from underlying data source
+    * Contains the [Rental], [Vehicle] being rented and [User] as the renter */
     suspend fun getListOfRentalDetailsForOwner(userId: String): List<Triple<Rental, Vehicle, User>>
 
     /** Adds [Rental] to the underlying data source */
