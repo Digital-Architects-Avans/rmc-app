@@ -19,9 +19,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -43,7 +43,6 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -107,7 +106,7 @@ fun RentACarScreen(
     navigateToScreen: (String) -> Unit
 ) {
     // UI States
-    val rentACarUiState by viewModel.rentACarUiState.collectAsState()
+    val rentACarUiState by viewModel.rentACarUiState.collectAsStateWithLifecycle()
     val locationPermissionsUiState by viewModel.locationPermissionsUiState.collectAsStateWithLifecycle()
 
     // Set scope and context
@@ -169,7 +168,7 @@ fun RentACarScreen(
 
     with(locationPermissionsUiState) {
         when (this) {
-            is LocationPermissionsUIState.Success -> {
+            is LocationPermissionsUIState.GrantedPermissions -> {
                 rentACarUiState.userLocation =
                     LatLng(
                         this.location?.latitude ?: 0.0,

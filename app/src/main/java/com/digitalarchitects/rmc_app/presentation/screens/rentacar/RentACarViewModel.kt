@@ -28,15 +28,13 @@ class RentACarViewModel @Inject constructor(
     private val locationService: ILocationService,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    operator fun invoke(): Flow<LatLng?> = locationService.requestLocationUpdates()
-
     // Rent A Car UI state
     private val _rentACarUiState = MutableStateFlow(RentACarUIState())
     val rentACarUiState: StateFlow<RentACarUIState> get() = _rentACarUiState.asStateFlow()
 
     // Location permissions UI state
     private val _locationPermissionsUiState: MutableStateFlow<LocationPermissionsUIState> =
-        MutableStateFlow(LocationPermissionsUIState.Loading)
+        MutableStateFlow(LocationPermissionsUIState.PendingPermissions)
     val locationPermissionsUiState: StateFlow<LocationPermissionsUIState> =
         _locationPermissionsUiState.asStateFlow()
 
@@ -61,17 +59,21 @@ class RentACarViewModel @Inject constructor(
                 )
             }
 
+            // Invoke locationService when permissions are granted
             is RentACarUIEvent.PermissionsGranted -> {
                 viewModelScope.launch {
                     invoke().collect { location ->
+                        _rentACarUiState.value.userLocation = location
                         _locationPermissionsUiState.value =
-                            LocationPermissionsUIState.Success(location)
+                            LocationPermissionsUIState.GrantedPermissions(location)
                     }
+                    _rentACarUiState.value.permissionStatus = PermissionsStatus.GRANTED
                 }
             }
 
             is RentACarUIEvent.PermissionsRevoked -> {
                 _locationPermissionsUiState.value = LocationPermissionsUIState.RevokedPermissions
+                _rentACarUiState.value.permissionStatus = PermissionsStatus.REVOKED
             }
 
             is RentACarUIEvent.ShowPermissionDialog -> {
@@ -124,6 +126,9 @@ class RentACarViewModel @Inject constructor(
         }
         return mapItems
     }
+
+    // Location service
+    operator fun invoke(): Flow<LatLng?> = locationService.requestLocationUpdates()
 }
 
 data class VehicleMapItem(
