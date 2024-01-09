@@ -403,11 +403,8 @@ fun RentACarScreen(
                         },
                         sheetState = listBottomSheet,
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                        ) {
-                            rentACarUiState.listOfVehicles.forEach { vehicle ->
+                        LazyColumn {
+                            itemsIndexed(rentACarUiState.listOfVehicles) { index, vehicle ->
                                 RmcVehicleListItem(vehicle) { vehicleId ->
                                     scope.launch {
                                         cameraState.centerOnLocation(
@@ -427,9 +424,11 @@ fun RentACarScreen(
                                         detailsBottomSheet.bottomSheetState.partialExpand()
                                     }
                                 }
-                                RmcDivider()
+                                if (index < rentACarUiState.listOfVehicles.lastIndex)
+                                    RmcDivider()
                             }
                         }
+                        RmcSpacer()
                     }
                 }
             }
