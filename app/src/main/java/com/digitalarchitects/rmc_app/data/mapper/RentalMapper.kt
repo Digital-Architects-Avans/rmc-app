@@ -91,6 +91,21 @@ fun Rental.toRemoteRental(): RemoteRental {
     )
 }
 
+fun RemoteRental.toLocalRental(): LocalRental {
+    return LocalRental(
+        rentalId = rentalId,
+        vehicleId = vehicleId,
+        userId = userId,
+        date = date,
+        price = price,
+        latitude = latitude,
+        longitude = longitude,
+        status = status,
+        distanceTravelled = distanceTravelled,
+        score = score
+    )
+}
+
 fun LocalRental.toRental(): Rental {
     return Rental(
         rentalId = rentalId,

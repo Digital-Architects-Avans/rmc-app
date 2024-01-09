@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.google.android.gms.maps.model.LatLng
+import java.time.LocalDate
 
 enum class PermissionsStatus(val status: String) {
     PENDING(status = "PENDING"),
@@ -25,12 +26,17 @@ data class RentACarUIState(
     // Google Maps
     val startLocation: LatLng = LatLng(51.587959, 4.775130),
     var userLocation: LatLng? = null,
+    var zoomLevel: Float = 10f,
+    var cameraPosition: LatLng = startLocation,
 
     // Vehicle data
     var listOfVehicles: List<Vehicle> = emptyList(),
     var vehicleMapItems: List<VehicleMapItem> = emptyList(),
-
-    // Vehicle actions
     var showVehicleList: Boolean = false,
+
+    // Rental data
     var activeVehicleId: String? = null,
+    var date: String = LocalDate.now().plusDays(1).toString(),
+    var userId: String = "",
+    var placingReservation: Boolean = false
 )

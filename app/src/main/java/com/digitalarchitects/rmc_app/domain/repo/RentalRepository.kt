@@ -42,7 +42,7 @@ interface RentalRepository {
     suspend fun getListOfRentalDetailsForOwner(userId: String): List<Triple<Rental, Vehicle, User>>
 
     /** Adds [Rental] to the underlying data source */
-    suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental)
+    suspend fun addRental(createRentalDTO: CreateRentalDTO)
 
     /** Updates the [Rental] to the underlying data source */
     suspend fun updateRental(rentalId: String, updatedRental: UpdateRentalDTO)

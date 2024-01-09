@@ -150,9 +150,15 @@ class RentalRepositoryImpl(
     }
 
 
-    override suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental) {
-        rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
-        rmcApiService.addRental(createRentalDTO)
+    override suspend fun addRental(createRentalDTO: CreateRentalDTO) {
+        try {
+            val remoteRental = rmcApiService.addRental(createRentalDTO)
+            rmcRoomDatabase.addRentalToLocalDb(remoteRental.toLocalRental())
+        } catch (e: Exception) {
+            Log.d("RentalRepositoryImpl", "Error: Could not add rental $e")
+            e.printStackTrace()
+            throw e
+        }
     }
 
     override suspend fun updateRental(rentalId: String, updatedRental: UpdateRentalDTO) {

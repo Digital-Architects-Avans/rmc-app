@@ -22,7 +22,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-
 /**
  * CRUD operations on API database - perform other operations on local database
  * Local database acts as single source of truth and is updated from API database
@@ -131,7 +130,7 @@ interface RmcApiService {
     @POST("rentals")
     suspend fun addRental(
         @Body createRentalDTO: CreateRentalDTO
-    ): Response<Unit>
+    ): RemoteRental
 
     @DELETE("rentals/{id}")
     suspend fun deleteRental(
