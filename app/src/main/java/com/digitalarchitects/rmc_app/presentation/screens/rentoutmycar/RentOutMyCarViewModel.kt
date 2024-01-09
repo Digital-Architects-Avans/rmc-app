@@ -47,6 +47,10 @@ class RentOutMyCarViewModel @Inject constructor(
 
             try {
                 val userId = userRepository.getCurrentUserIdFromDataStore()
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
+
                 if (userId != null) {
 
                     // Fetch all relevant data in a single call
@@ -59,14 +63,11 @@ class RentOutMyCarViewModel @Inject constructor(
                             _uiState.value.listOfRentalsForUser = triples
 
                             _uiState.value.pendingRentalsList =
-                                triples.filter { it.first.status == RentalStatus.PENDING }
+                                triples.filter { it.first.date >= today && it.first.status == RentalStatus.PENDING }
                             _uiState.value.openRentalsList =
-                                triples.filter { it.first.status == RentalStatus.APPROVED }
+                                triples.filter { it.first.date >= today && it.first.status == RentalStatus.APPROVED }
                             _uiState.value.historyRentalsList = triples.filter {
-                                it.first.status == RentalStatus.DENIED || it.first.status == RentalStatus.CANCELLED ||
-                                        it.first.date > Clock.System.now().toLocalDateTime(
-                                    TimeZone.currentSystemDefault()
-                                ).date
+                                it.first.date < today || it.first.status == RentalStatus.DENIED || it.first.status == RentalStatus.CANCELLED
                             }
                         }
                     }.onFailure { e ->

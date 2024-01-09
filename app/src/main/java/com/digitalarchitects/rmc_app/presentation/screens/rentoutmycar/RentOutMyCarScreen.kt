@@ -232,6 +232,8 @@ fun RentOutMyCarScreen(
             RentalDetailsBottomSheet(
                 details = details,
                 sheetState = rentalBottomSheet,
+                showAcceptButton = details.first.status == RentalStatus.PENDING,
+                showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
                 onRejectClick = {
                     viewModel.onEvent(RentOutMyCarUIEvent.RejectRental(details.first.rentalId))
                     viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
@@ -255,6 +257,8 @@ fun RentOutMyCarScreen(
 fun RentalDetailsBottomSheet(
     details: Triple<Rental, Vehicle, User>,
     sheetState: SheetState,
+    showAcceptButton: Boolean,
+    showRejectButton: Boolean,
     onRejectClick: () -> Unit,
     onAcceptClick: () -> Unit,
     onCancel: () -> Unit
@@ -267,6 +271,8 @@ fun RentalDetailsBottomSheet(
             rental = details.first,
             vehicle = details.second,
             user = details.third,
+            showAcceptButton = showAcceptButton,
+            showRejectButton = showRejectButton,
             onRejectClick = { onRejectClick() },
             onAcceptClick = { onAcceptClick() }
         )
