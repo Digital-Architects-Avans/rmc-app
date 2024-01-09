@@ -396,7 +396,7 @@ fun RentACarScreen(
                         }
                         RmcFloatingActionButton(
                             icon = Icons.Filled.List,
-                            label = R.string.view_list,
+                            label = R.string.list_view,
                             onClick = {
                                 viewModel.onEvent(RentACarUIEvent.ShowListView(true))
                             }
