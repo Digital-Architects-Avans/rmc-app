@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,8 +17,8 @@ class SearchViewModel @Inject constructor(
     // TODO: Initialize search options based on current settings, passed in by the NavHost
     init {
         _uiState.value = _uiState.value.copy(
-            date = "Date from NavHost",
-            location = "Location from NavHost",
+            date = LocalDate.now().plusDays(1).toString(),
+            location = "Breda",
             price = 0.0,
             distance = 0,
             engineTypeIce = true,
@@ -58,13 +59,13 @@ class SearchViewModel @Inject constructor(
                 )
             }
 
-            is SearchUIEvent.EngineTypeCevChanged -> {
+            is SearchUIEvent.EngineTypeBevChanged -> {
                 _uiState.value = _uiState.value.copy(
                     engineTypeBev = !event.selected
                 )
             }
 
-            is SearchUIEvent.EngineTypeFbevChanged -> {
+            is SearchUIEvent.EngineTypeFcevChanged -> {
                 _uiState.value = _uiState.value.copy(
                     engineTypeFcev = !event.selected
                 )
