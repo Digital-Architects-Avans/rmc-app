@@ -966,9 +966,9 @@ fun RmcVehicleListItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .padding(end = dimensionResource(R.dimen.padding_large))
                     .size(dimensionResource(R.dimen.image_size_medium))
                     .clip(RoundedCornerShape(8.dp))
-                    .padding(end = dimensionResource(R.dimen.padding_large))
             )
         }
         Column {
