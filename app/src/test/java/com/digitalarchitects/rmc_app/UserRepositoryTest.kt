@@ -1,11 +1,10 @@
 package com.digitalarchitects.rmc_app
 
-import com.digitalarchitects.rmc_app.data.mapper.toUserListFromRemote
 import com.digitalarchitects.rmc_app.fake.FakeRemoteDataSource
 import com.digitalarchitects.rmc_app.fake.FakeUserRepository
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import org.junit.Test
 
 // Test the NetworkUserRepository class in a coroutine environment
 class UserRepositoryTest {
@@ -21,6 +20,6 @@ class UserRepositoryTest {
      * testing doesn't depend on untested code or APIs that could change or have unforeseen problems
      */
 
-        Assertions.assertEquals(FakeRemoteDataSource.userList.toUserListFromRemote(), userRepository.getAllUsers())
+        assertEquals(FakeRemoteDataSource.userList, userRepository.getAllUsers())
     }
 }

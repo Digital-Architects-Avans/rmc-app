@@ -47,9 +47,9 @@ fun WelcomeScreen(
         viewModel.authResult.collect { result ->
             val messageResId = when (result) {
                 is AuthResult.Authorized -> {
+                    viewModel.getDataFromRemoteSource()
                     navigateToScreen(RmcScreen.RentACar.name)
                     return@collect
-
                 }
                 is AuthResult.Unauthorized -> R.string.toast_unauthorized
                 is AuthResult.NoConnectionError -> R.string.toast_no_connection

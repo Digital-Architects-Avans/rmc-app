@@ -2,18 +2,18 @@ package com.digitalarchitects.rmc_app
 
 import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.mapper.toUserListFromLocal
-import com.digitalarchitects.rmc_app.presentation.screens.repositorytest.RepositoryTestViewModel
-import com.digitalarchitects.rmc_app.presentation.screens.repositorytest.ResultUiState
 import com.digitalarchitects.rmc_app.fake.FakeRentalRepository
 import com.digitalarchitects.rmc_app.fake.FakeUserRepository
 import com.digitalarchitects.rmc_app.fake.FakeVehicleRepository
+import com.digitalarchitects.rmc_app.presentation.screens.repositorytest.RepositoryTestViewModel
+import com.digitalarchitects.rmc_app.presentation.screens.repositorytest.ResultUiState
 import com.digitalarchitects.rmc_app.rules.TestDispatcherRule
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import org.junit.Test
 
 class RepositoryTestViewModelTest {
     @get:Rule
@@ -42,7 +42,7 @@ class RepositoryTestViewModelTest {
             formatSuccessMessage(expectedListResult),
             expectedListResult
         )
-        Assertions.assertEquals(expectedState, viewModel.resultUiState)
+        assertEquals(expectedState, viewModel.resultUiState)
     }
 
     private fun <T> formatSuccessMessage(listResult: List<T>): String {

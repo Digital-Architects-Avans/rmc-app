@@ -11,6 +11,7 @@ import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
 import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import retrofit2.Response
@@ -120,6 +121,12 @@ interface RmcApiService {
         @Path("rentalId") rentalId: String,
         @Body updatedRental: UpdateRentalDTO
     ): List<RemoteRental>
+
+    @GET("rentals/{rentalId}/{status}")
+    suspend fun setRentalStatus(
+        @Path("rentalId") rentalId: String,
+        @Path("status") status: RentalStatus
+    ): Response<Unit>
 
     @POST("rentals")
     suspend fun addRental(

@@ -120,4 +120,8 @@
     <string name="dismiss">Dismiss</string>
     <string name="approve">Approve</string>
     <string name="your_location">Your location</string>
+    <string name="approved">Approved</string>
+    <string name="rejected">Rejected</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="denied">Denied</string>
 </resources>

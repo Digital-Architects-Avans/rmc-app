@@ -1,8 +1,12 @@
 package com.digitalarchitects.rmc_app.data.mapper
 
 import com.digitalarchitects.rmc_app.data.local.LocalRental
+import com.digitalarchitects.rmc_app.data.local.LocalUser
+import com.digitalarchitects.rmc_app.data.local.LocalVehicle
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
 import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 
 fun List<LocalRental>.toRentalListFromLocal(): List<Rental> {
     return this.map { rental ->
@@ -132,4 +136,12 @@ fun List<RemoteRental>.toLocalRentalListFromRemote(): List<LocalRental> {
             score = rental.score
         )
     }
+}
+
+fun Triple<LocalRental, LocalVehicle, LocalUser>.toTripleFromLocal(): Triple<Rental, Vehicle, User> {
+    val rental = this.first.toRental()
+    val vehicle = this.second.toVehicle()
+    val user = this.third.toUser()
+
+    return Triple(rental, vehicle, user)
 }
