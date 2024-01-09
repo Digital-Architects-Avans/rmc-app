@@ -116,4 +116,7 @@
     <string name="edit_vehicle">Edit Vehicle</string>
     <string name="vehicle_updated_successfully">Vehicle updated successfully</string>
     <string name="unable_to_update_vehicle">Unable to update vehicle</string>
+    <string name="location_permissions">Rent My Car needs location permissions to focus the map\'s camera position on you.</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="approve">Approve</string>
 </resources>
