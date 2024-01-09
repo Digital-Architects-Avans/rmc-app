@@ -485,8 +485,8 @@ fun HyperlinkTextComponent(
 @Composable
 fun ButtonComponent(
     value: String, onButtonClicked: () -> Unit,
-    isEnabled: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
 ) {
     Button(
         modifier = Modifier
@@ -626,10 +626,12 @@ fun RmcFilledIconButton(
     icon: ImageVector,
     @StringRes label: Int,
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier
 ) {
     FilledIconButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
     ) {
         Icon(
@@ -644,13 +646,15 @@ fun RmcFilledTonalIconButton(
     icon: ImageVector,
     @StringRes label: Int,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     FilledTonalIconButton(
         onClick = onClick,
         colors = IconButtonDefaults.filledTonalIconButtonColors(
             contentColor = MaterialTheme.colorScheme.primary
         ),
+        enabled = enabled,
         modifier = modifier
     ) {
         Icon(
@@ -965,9 +969,9 @@ fun RmcVehicleListItem(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .padding(end = dimensionResource(R.dimen.padding_large))
                     .size(dimensionResource(R.dimen.image_size_medium))
                     .clip(RoundedCornerShape(8.dp))
-                    .padding(end = dimensionResource(R.dimen.padding_large))
             )
         }
         Column {
@@ -1106,20 +1110,20 @@ fun RmcVehicleDetails(
             )
         }
     }
-
-    Image(
-        modifier = Modifier
-            .fillMaxWidth()
-            .size(height = 160.dp, width = 20.dp)
-            .padding(
-                top = dimensionResource(R.dimen.padding_medium),
-                bottom = dimensionResource(R.dimen.padding_large)
-            ),
-        contentScale = ContentScale.Crop,
-        painter = painterResource(R.drawable.civic),
-        contentDescription = null
-    )
-
+    if (vehicle.imgLink != 1) {
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(height = 160.dp, width = 20.dp)
+                .padding(
+                    top = dimensionResource(R.dimen.padding_medium),
+                    bottom = dimensionResource(R.dimen.padding_large)
+                ),
+            contentScale = ContentScale.Crop,
+            painter = painterResource(vehicle.imgLink),
+            contentDescription = null
+        )
+    }
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))

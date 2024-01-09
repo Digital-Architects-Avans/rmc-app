@@ -1,20 +1,27 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
+import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -23,6 +30,7 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -35,23 +43,26 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.domain.util.hasLocationPermission
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledIconButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalIconButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcImgFilledIconButton
@@ -61,39 +72,53 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MapsComposeExperimentalApi
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
-@OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class)
+@RequiresApi(Build.VERSION_CODES.S)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    MapsComposeExperimentalApi::class,
+    ExperimentalPermissionsApi::class
+)
 @Composable
 fun RentACarScreen(
     viewModel: RentACarViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    // UI States
+    val rentACarUiState by viewModel.rentACarUiState.collectAsStateWithLifecycle()
+    val locationPermissionsUiState by viewModel.locationPermissionsUiState.collectAsStateWithLifecycle()
 
-    // Set CoroutineScope
+    // Set scope and context
     val scope = rememberCoroutineScope()
+    val context: Context = LocalContext.current
 
-    // Set Google Maps camera position
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(uiState.startLocation, 10f)
+    // Set Maps and bottom sheets states
+    val cameraState = rememberCameraPositionState {
+        if (rentACarUiState.userLocation == null) {
+            position = CameraPosition.fromLatLngZoom(rentACarUiState.startLocation, 10f)
+        }
     }
-
-    // Set Vehicle details and List view bottom sheet state
     val detailsBottomSheet = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Hidden,
@@ -107,6 +132,54 @@ fun RentACarScreen(
         viewModel.setMapData()
     }
 
+    // Location permissions
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+
+    when {
+        permissionState.allPermissionsGranted -> {
+            LaunchedEffect(Unit) {
+                viewModel.onEvent(RentACarUIEvent.PermissionsGranted)
+            }
+        }
+
+        permissionState.shouldShowRationale -> {
+            if (rentACarUiState.showRationaleDialog) {
+                RmcPermissionDialog(
+                    onDismiss = {
+                        viewModel.onEvent(RentACarUIEvent.PermissionsRevoked)
+                        viewModel.onEvent(RentACarUIEvent.ShowPermissionDialog(false))
+                    },
+                    onConfirm = { permissionState.launchMultiplePermissionRequest() }
+                )
+            }
+        }
+
+        !permissionState.allPermissionsGranted && !permissionState.shouldShowRationale -> {
+            LaunchedEffect(Unit) {
+                viewModel.onEvent(RentACarUIEvent.PermissionsRevoked)
+            }
+        }
+    }
+
+    with(locationPermissionsUiState) {
+        when (this) {
+            is LocationPermissionsUIState.GrantedPermissions -> {
+                rentACarUiState.userLocation =
+                    LatLng(
+                        this.location?.latitude ?: 0.0,
+                        this.location?.longitude ?: 0.0
+                    )
+            }
+
+            else -> {}
+        }
+    }
+
     // Start Rent A Car screen
     BottomSheetScaffold(
         scaffoldState = detailsBottomSheet,
@@ -118,9 +191,11 @@ fun RentACarScreen(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (uiState.activeVehicleId != null) {
+                if (rentACarUiState.activeVehicleId != null) {
                     RmcVehicleDetails(
-                        uiState.listOfVehicles.first { it.vehicleId == uiState.activeVehicleId },
+                        rentACarUiState.listOfVehicles.first { vehicle ->
+                            vehicle.vehicleId == rentACarUiState.activeVehicleId
+                        },
                         showAvailability = false
                     )
                 }
@@ -153,25 +228,32 @@ fun RentACarScreen(
                         googleMapOptionsFactory = {
                             GoogleMapOptions().mapId("DEMO_MAP_ID")
                         },
-                        cameraPositionState = cameraPositionState,
+                        cameraPositionState = cameraState,
+                        properties = MapProperties(
+                            isMyLocationEnabled = false,
+                            mapType = MapType.NORMAL,
+                            maxZoomPreference = 18f,
+                            minZoomPreference = 8f,
+                            isTrafficEnabled = false
+                        ),
+                        uiSettings = MapUiSettings(
+                            zoomControlsEnabled = false,
+                            zoomGesturesEnabled = true,
+                            tiltGesturesEnabled = false
+                        ),
                         onMapClick = { location ->
                             Log.d(TAG, "On map clicked: $location")
                             scope.launch { detailsBottomSheet.bottomSheetState.hide() }
                         }
-
                     ) {
-                        // Set map properties & settings
-                        MapProperties(
-                            mapType = MapType.NORMAL,
-                            maxZoomPreference = 18f,
-                            minZoomPreference = 8f
-                        )
-                        MapUiSettings(
-                            compassEnabled = false,
-                            mapToolbarEnabled = false,
-                            zoomControlsEnabled = true
-                        )
-
+                        // Draw marker if user location is set
+                        if (rentACarUiState.userLocation != null) {
+                            Marker(
+                                state = MarkerState(position = rentACarUiState.userLocation!!),
+                                title = stringResource(R.string.your_location),
+                                draggable = false
+                            )
+                        }
                         // Set cluster manager and callback functions
                         val clusterManager = rememberClusterManager<VehicleMapItem>()
                         val renderer = rememberClusterRenderer(
@@ -187,24 +269,25 @@ fun RentACarScreen(
                             clusterManager ?: return@SideEffect
                             clusterManager.setOnClusterClickListener { clusterItem ->
                                 Log.d(TAG, "Cluster clicked: $clusterItem")
-                                cameraPositionState.move(CameraUpdateFactory.zoomTo(12f))
+                                cameraState.move(CameraUpdateFactory.zoomTo(12f))
                                 false
                             }
                             clusterManager.setOnClusterItemClickListener { vehicleItem ->
                                 Log.d(TAG, "Item clicked: $vehicleItem")
                                 viewModel.onEvent(
-                                    RentACarUIEvent.RmcMapVehicleItemClicked(
-                                        vehicleItem.getId()
-                                    )
+                                    RentACarUIEvent.RmcMapVehicleItemClicked(vehicleItem.getId())
                                 )
                                 scope.launch {
                                     detailsBottomSheet.bottomSheetState.partialExpand()
                                 }
-                                cameraPositionState.move(CameraUpdateFactory.zoomTo(14f))
+                                cameraState.move(CameraUpdateFactory.zoomTo(14f))
                                 false
                             }
                             clusterManager.setOnClusterItemInfoWindowClickListener { vehicleItem ->
-                                Log.d(TAG, "Cluster item info window clicked: $vehicleItem")
+                                Log.d(TAG, "Item info window clicked: $vehicleItem")
+                                scope.launch {
+                                    detailsBottomSheet.bottomSheetState.expand()
+                                }
                             }
                         }
                         SideEffect {
@@ -214,7 +297,7 @@ fun RentACarScreen(
                         }
                         if (clusterManager != null) {
                             Clustering(
-                                items = uiState.vehicleMapItems,
+                                items = rentACarUiState.vehicleMapItems,
                                 clusterManager = clusterManager,
                             )
                         }
@@ -284,20 +367,33 @@ fun RentACarScreen(
                     Column(
                         horizontalAlignment = Alignment.End
                     ) {
-                        RmcFilledIconButton(
-                            icon = Icons.Filled.MyLocation,
-                            label = R.string.my_location,
-                            onClick = {
-                                cameraPositionState.move(
-                                    CameraUpdateFactory.newLatLng(
-                                        uiState.userLocation
-                                    )
+                        if (!context.hasLocationPermission()) {
+                            RmcFilledTonalIconButton(
+                                icon = Icons.Filled.MyLocation,
+                                label = R.string.my_location,
+                                onClick = {
+                                    permissionState.launchMultiplePermissionRequest()
+                                    viewModel.onEvent(RentACarUIEvent.ShowPermissionDialog(true))
+                                },
+                                modifier = Modifier.padding(
+                                    bottom = dimensionResource(R.dimen.padding_medium)
                                 )
-                            },
-                            modifier = Modifier.padding(
-                                bottom = dimensionResource(R.dimen.padding_medium)
                             )
-                        )
+                        } else {
+                            RmcFilledIconButton(
+                                icon = Icons.Filled.MyLocation,
+                                label = R.string.my_location,
+                                enabled = rentACarUiState.userLocation != null,
+                                onClick = {
+                                    scope.launch {
+                                        cameraState.centerOnLocation(rentACarUiState.userLocation!!)
+                                    }
+                                },
+                                modifier = Modifier.padding(
+                                    bottom = dimensionResource(R.dimen.padding_medium)
+                                )
+                            )
+                        }
                         RmcFloatingActionButton(
                             icon = Icons.Filled.List,
                             label = R.string.view_list,
@@ -309,44 +405,39 @@ fun RentACarScreen(
                 }
 
                 // Bottom sheet: Vehicle list view
-                if (uiState.showVehicleList) {
+                if (rentACarUiState.showVehicleList) {
                     ModalBottomSheet(
                         onDismissRequest = {
-                            viewModel.onEvent(
-                                RentACarUIEvent.ShowListView(
-                                    false
-                                )
-                            )
+                            viewModel.onEvent(RentACarUIEvent.ShowListView(false))
                         },
                         sheetState = listBottomSheet,
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                        ) {
-                            uiState.listOfVehicles.forEach { vehicle ->
+                        LazyColumn {
+                            itemsIndexed(rentACarUiState.listOfVehicles) { index, vehicle ->
                                 RmcVehicleListItem(vehicle) { vehicleId ->
-                                    scope.launch { listBottomSheet.hide() }.invokeOnCompletion {
-                                        viewModel.onEvent(
-                                            RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId)
-                                        )
-                                    }
-                                    cameraPositionState.move(
-                                        CameraUpdateFactory.newLatLng(
+                                    scope.launch {
+                                        cameraState.centerOnLocation(
                                             LatLng(
                                                 vehicle.latitude.toDouble(),
                                                 vehicle.longitude.toDouble()
                                             )
                                         )
-                                    )
+                                    }
+                                    scope.launch { listBottomSheet.hide() }.invokeOnCompletion {
+                                        viewModel.onEvent(
+                                            RentACarUIEvent.RmcMapVehicleItemClicked(id = vehicleId)
+                                        )
+                                    }
                                     scope.launch {
                                         delay(400L)
                                         detailsBottomSheet.bottomSheetState.partialExpand()
                                     }
                                 }
-                                RmcDivider()
+                                if (index < rentACarUiState.listOfVehicles.lastIndex)
+                                    RmcDivider()
                             }
                         }
+                        RmcSpacer()
                     }
                 }
             }
@@ -354,6 +445,52 @@ fun RentACarScreen(
     }
 }
 
+// Dialog to explain required permissions
+@Composable
+fun RmcPermissionDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false
+        )
+    ) {
+        androidx.compose.material3.Surface(
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = AlertDialogDefaults.TonalElevation,
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight()
+        ) {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))) {
+                Text(text = stringResource(R.string.location_permissions))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_large)))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        RmcFilledTonalButton(
+                            value = stringResource(id = R.string.dismiss),
+                            onClick = onDismiss
+                        )
+                    }
+                    Column(Modifier.weight(1f)) {
+                        RmcFilledButton(
+                            value = stringResource(id = R.string.approve),
+                            onClick = onConfirm
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Form to reserve a vehicle
 @Composable
 fun RmcRentCarForm(
     onValueChange: (String) -> Unit,
@@ -372,10 +509,10 @@ fun RmcRentCarForm(
         RmcTextField(
             label = stringResource(id = R.string.date),
             icon = Icons.Filled.CalendarMonth,
-            value = "03-12-2023",
+            value = LocalDate.now().plusDays(1).toString(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Send
             ),
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth()
@@ -389,11 +526,13 @@ fun RmcRentCarForm(
     }
 }
 
-@Preview
-@Composable
-fun RentACarScreenPreview() {
-    RentACarScreen(
-        viewModel = viewModel(),
-        navigateToScreen = { }
-    )
-}
+// Center camera position on location
+private suspend fun CameraPositionState.centerOnLocation(
+    location: LatLng
+) = animate(
+    update = CameraUpdateFactory.newLatLngZoom(
+        location,
+        15f
+    ),
+    durationMs = 1500
+)

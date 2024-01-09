@@ -55,7 +55,8 @@ enum class RmcScreen(@StringRes val title: Int) {
     MyAccount(title = R.string.screen_title_my_account),
     EditMyAccount(title = R.string.screen_title_edit_account),
     EditMyVehicle(title = R.string.screen_title_edit_vehicle),
-    RmcTestScreen(title = R.string.rmcTestScreenTitle)
+    RmcTestScreen(title = R.string.rmcTestScreenTitle),
+    RmcLocationTestScreen(title = R.string.rmcTestScreenTitle)
 }
 
 @Preview(showBackground = true)
