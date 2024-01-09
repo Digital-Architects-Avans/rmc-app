@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -8,23 +9,33 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.remote.ILocationService
+import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
+import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.datetime.toLocalDate
+import java.time.LocalDate
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
 class RentACarViewModel @Inject constructor(
     private val vehicleRepository: VehicleRepository,
+    private val rentalRepository: RentalRepository,
+    private var userRepository: UserRepository,
     private val locationService: ILocationService,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -38,14 +49,15 @@ class RentACarViewModel @Inject constructor(
     val locationPermissionsUiState: StateFlow<LocationPermissionsUIState> =
         _locationPermissionsUiState.asStateFlow()
 
-    // Fix me!
-    // ☐ Get search settings from DataStore
-    // ✓ Get all vehicles
-    // ☐ Filter all vehicles on search settings in getVehicles
-    // ✓ Pass vehicleList to screen via UIState
+    // Set user ID
+    init {
+        setUserId()
+    }
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
+
+            // Map controls
             is RentACarUIEvent.ShowListView -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
                     showVehicleList = event.show
@@ -59,6 +71,64 @@ class RentACarViewModel @Inject constructor(
                 )
             }
 
+            // Rental
+            is RentACarUIEvent.DateChanged -> {
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    date = event.date
+                )
+            }
+
+            is RentACarUIEvent.ReserveVehicleButtonClicked -> {
+                // Disable form
+                setReserveVehicleUiState(true)
+
+                // Get Vehicle info
+                val vehicle = _rentACarUiState.value.listOfVehicles.first { vehicle ->
+                    vehicle.vehicleId == _rentACarUiState.value.activeVehicleId
+                }
+
+                // Create rental DTO
+                val vehicleId = vehicle.vehicleId
+                val userId = _rentACarUiState.value.userId
+                val date = _rentACarUiState.value.date.toLocalDate()
+                val price = vehicle.price
+                val latitude = vehicle.latitude
+                val longitude = vehicle.longitude
+                val status = RentalStatus.PENDING
+                val distanceTravelled = 0.0
+                val score = 0
+
+                val newRentalDTO = CreateRentalDTO(
+                    vehicleId = vehicleId,
+                    userId = userId,
+                    date = date,
+                    price = price,
+                    latitude = latitude,
+                    longitude = longitude,
+                    status = status,
+                    distanceTravelled = distanceTravelled,
+                    score = score
+                )
+
+                viewModelScope.launch {
+                    try {
+                        withContext(Dispatchers.IO) {
+                            rentalRepository.addRental(createRentalDTO = newRentalDTO)
+
+                            withContext(Dispatchers.Main) {
+                                setReserveVehicleUiState(false)
+                            }
+                        }
+                        Log.d("RegisterRentalViewModel", "Created reservation successfully")
+
+                    } catch (e: Exception) {
+                        // Re-enable reserve button
+                        Log.d("RegisterRentalViewModel", "Error creating reservation: $e")
+                    }
+                }
+            }
+
+            // Permissions
             // Invoke locationService when permissions are granted
             is RentACarUIEvent.PermissionsGranted -> {
                 viewModelScope.launch {
@@ -76,6 +146,7 @@ class RentACarViewModel @Inject constructor(
                 _rentACarUiState.value.permissionStatus = PermissionsStatus.REVOKED
             }
 
+            // Show/hide permission dialog
             is RentACarUIEvent.ShowPermissionDialog -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
                     showRationaleDialog = event.show
@@ -125,6 +196,30 @@ class RentACarViewModel @Inject constructor(
             )
         }
         return mapItems
+    }
+
+    private fun setUserId() {
+        viewModelScope.launch(dispatcher) {
+            try {
+                val userId = userRepository.getCurrentUserIdFromDataStore()
+                withContext(Dispatchers.Main) {
+                    _rentACarUiState.value.userId = userId!!
+                }
+            } catch (e: Exception) {
+                Log.d("MyAccountViewModel", "error: $e")
+            }
+        }
+    }
+
+    private fun setReserveVehicleUiState(state: Boolean) {
+        _rentACarUiState.value = _rentACarUiState.value.copy(
+            placingReservation = state
+        )
+        if (!state) {
+            _rentACarUiState.value = _rentACarUiState.value.copy(
+                date = LocalDate.now().plusDays(1).toString()
+            )
+        }
     }
 
     // Location service

@@ -43,6 +43,7 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -92,7 +93,6 @@ import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(
@@ -106,7 +106,7 @@ fun RentACarScreen(
     navigateToScreen: (String) -> Unit
 ) {
     // UI States
-    val rentACarUiState by viewModel.rentACarUiState.collectAsStateWithLifecycle()
+    val rentACarUiState by viewModel.rentACarUiState.collectAsState()
     val locationPermissionsUiState by viewModel.locationPermissionsUiState.collectAsStateWithLifecycle()
 
     // Set scope and context
@@ -201,11 +201,14 @@ fun RentACarScreen(
                 }
                 RmcDivider()
                 RmcRentCarForm(
-                    onValueChange = {
-                        // rentACarUIState: Add date for rental
+                    value = rentACarUiState.date,
+                    enabled = !rentACarUiState.placingReservation,
+                    onValueChange = { date ->
+                        viewModel.onEvent(RentACarUIEvent.DateChanged(date))
                     },
                     onReserveButtonClicked = {
-                        // rentACarViewModel: Add event for Reserve car
+                        viewModel.onEvent(RentACarUIEvent.ReserveVehicleButtonClicked)
+                        navigateToScreen(RmcScreen.MyRentals.name)
                     }
                 )
                 RmcSpacer()
@@ -269,7 +272,9 @@ fun RentACarScreen(
                             clusterManager ?: return@SideEffect
                             clusterManager.setOnClusterClickListener { clusterItem ->
                                 Log.d(TAG, "Cluster clicked: $clusterItem")
-                                cameraState.move(CameraUpdateFactory.zoomTo(12f))
+                                scope.launch {
+                                    cameraState.centerOnLocation(clusterItem.position, 12f)
+                                }
                                 false
                             }
                             clusterManager.setOnClusterItemClickListener { vehicleItem ->
@@ -279,8 +284,8 @@ fun RentACarScreen(
                                 )
                                 scope.launch {
                                     detailsBottomSheet.bottomSheetState.partialExpand()
+                                    cameraState.centerOnLocation(vehicleItem.position)
                                 }
-                                cameraState.move(CameraUpdateFactory.zoomTo(14f))
                                 false
                             }
                             clusterManager.setOnClusterItemInfoWindowClickListener { vehicleItem ->
@@ -493,6 +498,8 @@ fun RmcPermissionDialog(
 // Form to reserve a vehicle
 @Composable
 fun RmcRentCarForm(
+    value: String,
+    enabled: Boolean,
     onValueChange: (String) -> Unit,
     onReserveButtonClicked: () -> Unit
 ) {
@@ -509,7 +516,8 @@ fun RmcRentCarForm(
         RmcTextField(
             label = stringResource(id = R.string.date),
             icon = Icons.Filled.CalendarMonth,
-            value = LocalDate.now().plusDays(1).toString(),
+            value = value,
+            enabled = enabled,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Send
@@ -521,6 +529,7 @@ fun RmcRentCarForm(
         RmcFilledButton(
             value = stringResource(id = R.string.reserve),
             icon = Icons.Filled.Key,
+            isEnabled = enabled,
             onClick = { onReserveButtonClicked() }
         )
     }
@@ -528,11 +537,12 @@ fun RmcRentCarForm(
 
 // Center camera position on location
 private suspend fun CameraPositionState.centerOnLocation(
-    location: LatLng
+    location: LatLng,
+    zoom: Float = 15f
 ) = animate(
     update = CameraUpdateFactory.newLatLngZoom(
         location,
-        15f
+        zoom
     ),
-    durationMs = 1500
+    durationMs = 1000
 )
