@@ -26,6 +26,8 @@ data class RentACarUIState(
     // Google Maps
     val startLocation: LatLng = LatLng(51.587959, 4.775130),
     var userLocation: LatLng? = null,
+    var zoomLevel: Float = 10f,
+    var cameraPosition: LatLng = startLocation,
 
     // Vehicle data
     var listOfVehicles: List<Vehicle> = emptyList(),

@@ -46,6 +46,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -116,7 +117,10 @@ fun RentACarScreen(
     // Set Maps and bottom sheets states
     val cameraState = rememberCameraPositionState {
         if (rentACarUiState.userLocation == null) {
-            position = CameraPosition.fromLatLngZoom(rentACarUiState.startLocation, 10f)
+            position = CameraPosition.fromLatLngZoom(
+                rentACarUiState.cameraPosition,
+                rentACarUiState.zoomLevel
+            )
         }
     }
     val detailsBottomSheet = rememberBottomSheetScaffoldState(
@@ -178,6 +182,14 @@ fun RentACarScreen(
 
             else -> {}
         }
+    }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { cameraState.isMoving }
+            .collect {
+                viewModel.onEvent(RentACarUIEvent.ZoomLevelChanged(cameraState.position.zoom))
+                viewModel.onEvent(RentACarUIEvent.CameraPositionChanged(cameraState.position.target))
+            }
     }
 
     // Start Rent A Car screen

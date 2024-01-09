@@ -58,6 +58,18 @@ class RentACarViewModel @Inject constructor(
         when (event) {
 
             // Map controls
+            is RentACarUIEvent.ZoomLevelChanged -> {
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    zoomLevel = event.zoom
+                )
+            }
+
+            is RentACarUIEvent.CameraPositionChanged -> {
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    cameraPosition = event.position
+                )
+            }
+
             is RentACarUIEvent.ShowListView -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
                     showVehicleList = event.show
