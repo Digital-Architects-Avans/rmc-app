@@ -537,7 +537,7 @@ fun RmcFilledButton(
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(color),
         modifier = modifier
-                .fillMaxWidth()
+            .fillMaxWidth()
     ) {
         icon?.let {
             Icon(
@@ -1107,20 +1107,20 @@ fun RmcVehicleDetails(
             )
         }
     }
-
-    Image(
-        modifier = Modifier
-            .fillMaxWidth()
-            .size(height = 160.dp, width = 20.dp)
-            .padding(
-                top = dimensionResource(R.dimen.padding_medium),
-                bottom = dimensionResource(R.dimen.padding_large)
-            ),
-        contentScale = ContentScale.Crop,
-        painter = painterResource(R.drawable.civic),
-        contentDescription = null
-    )
-
+    if (vehicle.imgLink != 1) {
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(height = 160.dp, width = 20.dp)
+                .padding(
+                    top = dimensionResource(R.dimen.padding_medium),
+                    bottom = dimensionResource(R.dimen.padding_large)
+                ),
+            contentScale = ContentScale.Crop,
+            painter = painterResource(vehicle.imgLink),
+            contentDescription = null
+        )
+    }
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
