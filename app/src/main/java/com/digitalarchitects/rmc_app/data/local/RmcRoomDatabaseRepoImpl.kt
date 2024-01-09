@@ -37,6 +37,9 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun getVehicleByIdFromLocalDb(vehicleId: String): LocalVehicle =
         vehicleDao.getVehicleById(vehicleId)
 
+    override suspend fun getVehiclesForUserFromLocalDb(userId: String): List<LocalVehicle>? =
+        vehicleDao.getVehiclesForUser(userId)
+
     override suspend fun addAllVehiclesToLocalDb(vehicles: List<LocalVehicle>) =
         vehicleDao.addAllVehicles(vehicles)
 
@@ -68,6 +71,13 @@ class RmcRoomDatabaseRepoImpl(
 
     override suspend fun getRentalsForVehicleFromLocalDb(vehicleId: String): List<LocalRental>? =
         rentalDao.getRentalsForVehicle(vehicleId)
+
+    override suspend fun getRentalDetailsFromLocalDb(rentalId: String): Triple<LocalRental, LocalVehicle, LocalUser> {
+        val rental = rentalDao.getRentalById(rentalId)
+        val vehicle = vehicleDao.getVehicleById(rental.vehicleId)
+        val user = userDao.getUserById(rental.userId)
+        return Triple(rental, vehicle, user)
+    }
 
     override suspend fun addAllRentalsToLocalDb(rentals: List<LocalRental>) =
         rentalDao.addAllRentals(rentals)
