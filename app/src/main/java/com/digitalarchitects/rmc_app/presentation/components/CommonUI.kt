@@ -305,6 +305,7 @@ fun RmcTextField(
     placeholder: String? = null,
     isPassword: Boolean = false,
     value: String,
+    enabled: Boolean = true,
     onValueChange: (String) -> Unit,
     // TODO: Add error handling
     keyboardOptions: KeyboardOptions = KeyboardOptions(
@@ -332,6 +333,7 @@ fun RmcTextField(
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         maxLines = 1,
         value = value,
+        enabled = enabled,
         onValueChange = onValueChange,
         leadingIcon = icon?.let {
             {
