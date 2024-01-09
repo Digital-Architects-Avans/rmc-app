@@ -1,31 +1,44 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
+import com.digitalarchitects.rmc_app.data.remote.ILocationService
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
 class RentACarViewModel @Inject constructor(
     private val vehicleRepository: VehicleRepository,
+    private val locationService: ILocationService,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
+    operator fun invoke(): Flow<LatLng?> = locationService.requestLocationUpdates()
 
     // Rent A Car UI state
-    private val _uiState = MutableStateFlow(RentACarUIState())
-    val uiState: StateFlow<RentACarUIState> get() = _uiState.asStateFlow()
+    private val _rentACarUiState = MutableStateFlow(RentACarUIState())
+    val rentACarUiState: StateFlow<RentACarUIState> get() = _rentACarUiState.asStateFlow()
+
+    // Location permissions UI state
+    private val _locationPermissionsUiState: MutableStateFlow<LocationPermissionsUIState> =
+        MutableStateFlow(LocationPermissionsUIState.Loading)
+    val locationPermissionsUiState: StateFlow<LocationPermissionsUIState> =
+        _locationPermissionsUiState.asStateFlow()
 
     // Fix me!
     // ☐ Get search settings from DataStore
@@ -36,15 +49,34 @@ class RentACarViewModel @Inject constructor(
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
             is RentACarUIEvent.ShowListView -> {
-                _uiState.value = _uiState.value.copy(
+                _rentACarUiState.value = _rentACarUiState.value.copy(
                     showVehicleList = event.show
                 )
             }
 
             is RentACarUIEvent.RmcMapVehicleItemClicked -> {
-                _uiState.value = _uiState.value.copy(
+                _rentACarUiState.value = _rentACarUiState.value.copy(
                     activeVehicleId = event.id,
                     showVehicleList = false,
+                )
+            }
+
+            is RentACarUIEvent.PermissionsGranted -> {
+                viewModelScope.launch {
+                    invoke().collect { location ->
+                        _locationPermissionsUiState.value =
+                            LocationPermissionsUIState.Success(location)
+                    }
+                }
+            }
+
+            is RentACarUIEvent.PermissionsRevoked -> {
+                _locationPermissionsUiState.value = LocationPermissionsUIState.RevokedPermissions
+            }
+
+            is RentACarUIEvent.ShowPermissionDialog -> {
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    showRationaleDialog = event.show
                 )
             }
         }
@@ -61,12 +93,12 @@ class RentACarViewModel @Inject constructor(
             }
             result.onSuccess { listOfVehicles ->
                 // Get all available vehicles
-                _uiState.value.listOfVehicles = listOfVehicles.filter { vehicle ->
+                _rentACarUiState.value.listOfVehicles = listOfVehicles.filter { vehicle ->
                     vehicle.availability
                 }
 
                 // Get vehicle map items
-                _uiState.value.vehicleMapItems = createVehicleMapItems()
+                _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
             }.onFailure { e ->
                 e.printStackTrace()
             }
@@ -76,7 +108,7 @@ class RentACarViewModel @Inject constructor(
     // Create vehicleMapItems for Google Maps composable
     private fun createVehicleMapItems(): SnapshotStateList<VehicleMapItem> {
         val mapItems = mutableStateListOf<VehicleMapItem>()
-        _uiState.value.listOfVehicles.forEach { vehicle ->
+        _rentACarUiState.value.listOfVehicles.forEach { vehicle ->
             mapItems.add(
                 VehicleMapItem(
                     vehicleId = vehicle.vehicleId,
