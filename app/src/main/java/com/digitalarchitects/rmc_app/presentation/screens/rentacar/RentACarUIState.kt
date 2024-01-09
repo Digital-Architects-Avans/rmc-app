@@ -12,5 +12,6 @@ data class RentACarUIState(
     var vehicleMapItems: List<VehicleMapItem> = emptyList(),
 
     var showVehicleList: Boolean = false,
-    var activeVehicleId: String? = null
+    var activeVehicleId: String? = null,
+    val isLoading: Boolean = false
 )
