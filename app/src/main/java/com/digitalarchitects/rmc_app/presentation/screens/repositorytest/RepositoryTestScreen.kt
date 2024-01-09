@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,9 +34,9 @@ fun RepositoryTestScreen(
     modifier: Modifier = Modifier
 ) {
     var showResult by remember { mutableStateOf(false) }
-    var userButtonText by remember { mutableStateOf("Retrieve Users") }
-    var vehicleButtonText by remember { mutableStateOf("Retrieve Vehicles") }
-    var rentalButtonText by remember { mutableStateOf("Retrieve Rentals") }
+    var userButtonText by remember { mutableIntStateOf(R.string.retrieve_users) }
+    var vehicleButtonText by remember { mutableIntStateOf(R.string.retrieve_vehicles) }
+    var rentalButtonText by remember { mutableIntStateOf(R.string.retrieve_rentals) }
 
     // Column containing the button and result screen
     Box(
@@ -69,11 +70,11 @@ fun RepositoryTestScreen(
 
             // Buttons to trigger the retrieval of data
             ButtonComponent(
-                value = userButtonText,
+                value = stringResource(id = userButtonText),
                 onButtonClicked = {
-                    userButtonText = "Update Users"
-                    vehicleButtonText = "Retrieve Vehicles"
-                    rentalButtonText = "Retrieve Rentals"
+                    userButtonText = R.string.retrieve_users
+                    vehicleButtonText = R.string.retrieve_vehicles
+                    rentalButtonText = R.string.retrieve_rentals
                     viewModel.getUsers()
                     showResult = true
                 },
@@ -81,11 +82,11 @@ fun RepositoryTestScreen(
             )
 
             ButtonComponent(
-                value = vehicleButtonText,
+                value = stringResource(id = vehicleButtonText),
                 onButtonClicked = {
-                    userButtonText = "Retrieve Users"
-                    vehicleButtonText = "Update Vehicles"
-                    rentalButtonText = "Retrieve Rentals"
+                    userButtonText = R.string.retrieve_users
+                    vehicleButtonText = R.string.retrieve_vehicles
+                    rentalButtonText = R.string.retrieve_rentals
                     viewModel.getVehicles()
                     showResult = true
                 },
@@ -93,11 +94,11 @@ fun RepositoryTestScreen(
             )
 
             ButtonComponent(
-                value = rentalButtonText,
+                value = stringResource(id = rentalButtonText),
                 onButtonClicked = {
-                    userButtonText = "Retrieve Users"
-                    vehicleButtonText = "Retrieve Vehicles"
-                    rentalButtonText = "Update Rentals"
+                    userButtonText = R.string.retrieve_users
+                    vehicleButtonText = R.string.retrieve_vehicles
+                    rentalButtonText = R.string.retrieve_rentals
                     viewModel.getRentals()
                     showResult = true
                 },
@@ -130,7 +131,10 @@ fun ErrorScreen(error: String, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
+            painter = painterResource(id = R.drawable.ic_connection_error),
+            contentDescription = stringResource(
+                id = R.string.toast_no_connection
+            )
         )
         Text(text = error, modifier = Modifier.padding(16.dp))
     }
