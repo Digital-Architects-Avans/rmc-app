@@ -17,7 +17,7 @@ interface RentalDao {
     suspend fun getRentalById(rentalId: String): LocalRental
 
     @Query("SELECT * FROM LocalRental WHERE userId = :userId")
-    suspend fun getRentalsForUser(userId: String): List<LocalRental>?
+    suspend fun getRentalsForRenter(userId: String): List<LocalRental>?
 
     @Query("SELECT * FROM LocalRental WHERE vehicleId = :vehicleId")
     suspend fun getRentalsForVehicle(vehicleId: String): List<LocalRental>?
