@@ -88,9 +88,7 @@ dependencies {
     implementation("com.google.maps.android:maps-compose-utils:4.3.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-
-    //Accompanist (Permission)
-    implementation("com.google.accompanist:accompanist-permissions:0.31.3-beta")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.3-beta") // Accompanist (Permission)
 
     // Room
     ksp("androidx.room:room-compiler:$roomVersion")
