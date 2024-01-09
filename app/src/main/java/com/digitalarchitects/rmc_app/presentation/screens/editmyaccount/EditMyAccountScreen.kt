@@ -60,7 +60,7 @@ fun EditMyAccountScreen(
                 title = R.string.screen_title_edit_account,
                 navigationIcon = Icons.Rounded.ArrowBack,
                 navigateUp = {
-                    navigateToScreen("MyAccount")
+                    navigateToScreen(RmcScreen.MyAccount.name)
                 }
             )
         }

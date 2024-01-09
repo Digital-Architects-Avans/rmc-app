@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Rent My Car</string>
+    <string name="app_name" translatable="false">Rent My Car</string>
     <string name="accept_rental">Accept Rental</string>
     <string name="reject_rental">Reject Rental</string>
     <string name="pending">Pending</string>
@@ -45,15 +46,15 @@
     <string name="date">Date</string>
     <string name="my_location">My location</string>
     <string name="engine_type">Engine type</string>
-    <string name="label_distance_km">%1$s km</string>
-    <string name="label_distance_miles">%1$s miles</string>
-    <string name="label_price_euro">€ %1$s</string>
-    <string name="label_price_dollar">$ %1$s</string>
-    <string name="label_any">Any</string>
-    <string name="engine_type_ice">ICE</string>
-    <string name="engine_type_bev">BEV</string>
-    <string name="engine_type_fcev">FCEV</string>
-    <string name="ok">Ok</string>
+    <string name="label_distance_km" translatable="false">%1$s km</string>
+    <string name="label_distance_miles" translatable="false">%1$s miles</string>
+    <string name="label_price_euro" translatable="false">€ %1$s</string>
+    <string name="label_price_dollar" translatable="false">$ %1$s</string>
+    <string name="label_any" translatable="false">Any</string>
+    <string name="engine_type_ice" translatable="false">ICE</string>
+    <string name="engine_type_bev" translatable="false">BEV</string>
+    <string name="engine_type_fcev" translatable="false">FCEV</string>
+    <string name="ok" translatable="false">Ok</string>
     <string name="apply">Apply</string>
     <string name="cancel">Cancel</string>
     <string name="clear">Clear</string>
@@ -67,9 +68,9 @@
     <string name="welcome">Welcome Back</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="back_button">Back</string>
-    <string name="view_list">View list</string>
-    <string name="tac_1">By accessing and using this mobile application, you agree to comply with and be bound by the following terms and conditions of use. If you do not agree with any part of these terms, please do not use our app.</string>
+    <string name="list_view">List view</string>
     <string name="tac_acceptance_of_terms_header">1. Acceptance of Terms</string>
+    <string name="tac_1">By accessing and using this mobile application, you agree to comply with and be bound by the following terms and conditions of use. If you do not agree with any part of these terms, please do not use our app.</string>
     <string name="tac_acceptance_of_terms_content">By downloading, installing, or using the Rent My Car application, you acknowledge that you have read, understood, and agree to be bound by these terms.</string>
     <string name="tac_use_header">2. Use of the App</string>
     <string name="tac_use_content">a. Rent My Car grants you a limited, non-exclusive, non-transferable, revocable license to use the app for personal, non-commercial purposes.\n\nb. You agree not to reproduce, duplicate, copy, sell, resell, or exploit any portion of the app without the express written permission of Rent My Car.</string>
@@ -124,4 +125,11 @@
     <string name="rejected">Rejected</string>
     <string name="cancelled">Cancelled</string>
     <string name="denied">Denied</string>
+    <string name="wrong_email_or_password_please_try_again">Wrong email or password. Please try again.</string>
+    <string name="no_connection_please_try_again_later">No connection. Please try again later.</string>
+    <string name="unknown_error_occurred_please_try_again_later">Unknown error occurred. Please try again later.</string>
+    <string name="you_re_not_authorized">Unauthorized</string>
+    <string name="retrieve_users">Retrieve Users</string>
+    <string name="retrieve_vehicles">Retrieve Vehicles</string>
+    <string name="retrieve_rentals">Retrieve Rentals</string>
 </resources>
