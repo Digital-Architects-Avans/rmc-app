@@ -482,8 +482,8 @@ fun HyperlinkTextComponent(
 @Composable
 fun ButtonComponent(
     value: String, onButtonClicked: () -> Unit,
-    isEnabled: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean = true
 ) {
     Button(
         modifier = Modifier
@@ -623,10 +623,12 @@ fun RmcFilledIconButton(
     icon: ImageVector,
     @StringRes label: Int,
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier
 ) {
     FilledIconButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
     ) {
         Icon(
@@ -641,13 +643,15 @@ fun RmcFilledTonalIconButton(
     icon: ImageVector,
     @StringRes label: Int,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     FilledTonalIconButton(
         onClick = onClick,
         colors = IconButtonDefaults.filledTonalIconButtonColors(
             contentColor = MaterialTheme.colorScheme.primary
         ),
+        enabled = enabled,
         modifier = modifier
     ) {
         Icon(
