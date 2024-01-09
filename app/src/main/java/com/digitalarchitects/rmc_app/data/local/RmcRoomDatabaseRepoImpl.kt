@@ -66,8 +66,8 @@ class RmcRoomDatabaseRepoImpl(
     override suspend fun getRentalByIdFromLocalDb(rentalId: String): LocalRental =
         rentalDao.getRentalById(rentalId)
 
-    override suspend fun getRentalsForUserFromLocalDb(userId: String): List<LocalRental>? =
-        rentalDao.getRentalsForUser(userId)
+    override suspend fun getRentalsForRenterFromLocalDb(userId: String): List<LocalRental>? =
+        rentalDao.getRentalsForRenter(userId)
 
     override suspend fun getRentalsForVehicleFromLocalDb(vehicleId: String): List<LocalRental>? =
         rentalDao.getRentalsForVehicle(vehicleId)

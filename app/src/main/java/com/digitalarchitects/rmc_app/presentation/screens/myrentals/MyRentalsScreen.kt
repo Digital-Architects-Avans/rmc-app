@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myrentals
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,55 +7,57 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddLocation
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.LocalOffer
-import androidx.compose.material.icons.filled.Toys
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.data.local.LocalRental
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.presentation.RmcScreen
+import com.digitalarchitects.rmc_app.presentation.components.MyRentalDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
-import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
+import com.digitalarchitects.rmc_app.presentation.components.RmcTextBadge
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyRentalsScreen(
     viewModel: MyRentalsViewModel,
     navigateToScreen: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    LaunchedEffect(Unit) {
-//      TODO
+
+    val rentalBottomSheet = rememberModalBottomSheetState()
+
+    LaunchedEffect(
+        uiState.myRentalsList
+    ) {
+        viewModel.onEvent(MyRentalsUIEvent.FetchMyRentals)
     }
 
     Scaffold(
@@ -65,7 +66,7 @@ fun MyRentalsScreen(
                 title = R.string.screen_title_my_rentals,
                 navigationIcon = Icons.Rounded.Close,
                 navigateUp = {
-                    navigateToScreen("RentACar")
+                    navigateToScreen(RmcScreen.RentACar.name)
                 },
             )
         }
@@ -87,42 +88,164 @@ fun MyRentalsScreen(
                     backgroundColor = colorResource(R.color.white),
                     contentColor = colorResource(R.color.purple_500)
                 ) {
-                    MyRentalTab.values().forEachIndexed { index, tab ->
+                    MyRentalTab.values().forEach { tab ->
                         Tab(
                             text = { Text(stringResource(id = tab.tabNameResourceId)) },
                             selected = uiState.selectedTab == tab,
-                            onClick = { uiState.selectedTab = tab },
+                            onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(tab)) },
                             modifier = Modifier.padding(8.dp)
                         )
                     }
                 }
+            }
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (!uiState.isLoading) {
+                    when (uiState.selectedTab) {
+                        MyRentalTab.OPEN -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 56.dp)
+                                    .padding(24.dp)
+                            ) {
+                                itemsIndexed(uiState.myOpenRentalsList) { index, rental ->
+                                    MyRentalListItem(
+                                        rental = rental.first,
+                                        vehicle = rental.second,
+                                        onItemClick = {
+                                            viewModel.onEvent(
+                                                MyRentalsUIEvent.ShowRentalDetails(
+                                                    tab = MyRentalTab.OPEN,
+                                                    index = index
+                                                )
+                                            )
+                                        }
+                                    )
 
-                RmcSpacer()
+                                    if (index < uiState.myOpenRentalsList.lastIndex)
+                                        Divider(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                            color = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.08f
+                                            ),
+                                            thickness = 1.dp
+                                        )
+                                }
+                            }
+                        }
 
-                LazyColumn {
-//                  TODO  val filteredList = getFilteredRentals(list, selectedTab)
-//                  TODO for each rental in filteredList
-//                  TODO MyRentalItem(rental)
+                        MyRentalTab.HISTORY -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 56.dp)
+                                    .padding(24.dp)
+                            ) {
+                                itemsIndexed(uiState.myHistoryRentalList) { index, rental ->
+                                    MyRentalListItem(
+                                        rental = rental.first,
+                                        vehicle = rental.second,
+                                        onItemClick = {
+                                            viewModel.onEvent(
+                                                MyRentalsUIEvent.ShowRentalDetails(
+                                                    tab = MyRentalTab.HISTORY,
+                                                    index = index
+                                                )
+                                            )
+                                        }
+                                    )
+
+                                    if (index < uiState.myHistoryRentalList.lastIndex)
+                                        Divider(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                            color = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.08f
+                                            ),
+                                            thickness = 1.dp
+                                        )
+                                }
+                            }
+
+                        }
+
+                    }
+                } else {
+                    // Show loading indicator or any other UI when isLoading is true
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.Center)
+                    )
                 }
             }
         }
+
+        // Display vehicle details in a modal bottom sheet when a vehicle is selected
+        uiState.selectedRentalItem?.let { details ->
+            MyRentalDetailsBottomSheet(
+                details = details,
+                sheetState = rentalBottomSheet,
+                showButtons = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
+                onCancelRentalClick = {
+                    viewModel.onEvent(MyRentalsUIEvent.CancelRental(details.first.rentalId))
+                    viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
+                },
+                onRouteClick = {
+                    viewModel.onEvent(MyRentalsUIEvent.RouteToRental(details.first.rentalId))
+                    viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
+                },
+                onCancel = {
+                    viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
+                }
+            )
+        }
+
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyRentalItem(rental : LocalRental) {
-    val sheetState = rememberModalBottomSheetState()
-    var isSheetOpen by rememberSaveable {
-        mutableStateOf(false)
+fun MyRentalDetailsBottomSheet(
+    details: Triple<Rental, Vehicle, User>,
+    sheetState: SheetState,
+    showButtons: Boolean,
+    onCancelRentalClick: () -> Unit,
+    onRouteClick: () -> Unit,
+    onCancel: () -> Unit
+) {
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = onCancel,
+    ) {
+        MyRentalDetails(
+            rental = details.first,
+            vehicle = details.second,
+            user = details.third,
+            showButtons = showButtons,
+            onCancelRentalClick = { onCancelRentalClick() },
+            onRouteClick = { onRouteClick() }
+        )
     }
+}
+
+@Composable
+fun MyRentalListItem(
+    rental: Rental,
+    vehicle: Vehicle,
+    onItemClick: () -> Unit,
+) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .clickable {
-                isSheetOpen = true
-            },
+            .clickable { onItemClick() },
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
         Row(
@@ -130,16 +253,8 @@ fun MyRentalItem(rental : LocalRental) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row {
-                Text(text = stringResource(id = R.string.vehicle))
-                Text(text = ": ${rental.vehicleId}")
-            }
-            Row {
                 Text(text = stringResource(id = R.string.date))
                 Text(text = ": ${rental.date}")
-            }
-            Row {
-                Text(text = stringResource(id = R.string.price))
-                Text(text = ": ${rental.price}")
             }
         }
         Row(
@@ -147,116 +262,43 @@ fun MyRentalItem(rental : LocalRental) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row {
-                Text(text = stringResource(id = R.string.km))
-                Text(text = ": ${rental.distanceTravelled}")
+                Text(text = stringResource(id = R.string.vehicle))
+                Text(text = ": ${vehicle.brand} ${vehicle.model}")
             }
-            Row {
-                Text(text = stringResource(id = R.string.points))
-                Text(text = ": ${rental.score}")
-            }
-        }
-    }
-    Divider(modifier = Modifier.padding(8.dp))
-    if (isSheetOpen) {
-        ModalBottomSheet(
-            modifier = Modifier.height(500.dp),
-            sheetState = sheetState,
-            onDismissRequest = { isSheetOpen = false },
-        ) {
-            Column(
-                modifier = Modifier
-                    .height(500.dp)
-                    .padding(16.dp, 0.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = "${rental.date}",
-                    color = Color.Red,
-                    fontSize = 24.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold
-                )
-                Row {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.AddLocation,"location"
-                        )
-                        Text(text = "Stad")
-                    }
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.LocalOffer,"price"
-                        )
-                        Text(text = "99,5")
-                    }
-                }
-                Row {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.Flag,"afstand"
-                        )
-                        Text(text = "0 km")
-                    }
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.Toys,"score"
-                        )
-                        Text(text = "+ 3")
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .height(24.dp)
-                            .background(
-                                color = Color.Red, shape = RoundedCornerShape(12.dp)
-                            )
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 18.dp),
-                            text = stringResource(id = R.string.status),
-                            color = Color.White,
-                        )
+            val (rentalStatus, labelTextColor, backgroundColor) = when (rental.status) {
+                RentalStatus.PENDING ->
+                    Triple(
+                        stringResource(R.string.pending),
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondaryContainer
+                    )
 
-                        Box(
-                            modifier = Modifier
-                                .height(24.dp)
-                                .background(
-                                    color = Color.Red, shape = RoundedCornerShape(12.dp)
-                                )
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = 18.dp),
-                                text = stringResource(id = R.string.cancel_rental),
-                                color = Color.White,
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .height(24.dp)
-                                .background(
-                                    color = Color.Magenta, shape = RoundedCornerShape(12.dp)
-                                )
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = 12.dp),
-                                text = stringResource(id = R.string.route_to_car),
-                                color = Color.White,
-                            )
-                        }
+                RentalStatus.APPROVED ->
+                    Triple(
+                        stringResource(R.string.approved),
+                        colorResource(id = R.color.primary_green_text),
+                        colorResource(id = R.color.primary_green_bg)
+                    )
 
-                    }
-                }
-                RmcSpacer()
-                Column {
-//                    VehicleListItem(vehicle = vehicle)
-                }
-                RmcSpacer()
-                RmcSpacer()
+                RentalStatus.DENIED ->
+                    Triple(
+                        stringResource(R.string.denied),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
+
+                RentalStatus.CANCELLED ->
+                    Triple(
+                        stringResource(R.string.cancelled),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
             }
+            RmcTextBadge(
+                label = rentalStatus,
+                labelTextColor = labelTextColor,
+                labelBackgroundColor = backgroundColor
+            )
         }
     }
 }
