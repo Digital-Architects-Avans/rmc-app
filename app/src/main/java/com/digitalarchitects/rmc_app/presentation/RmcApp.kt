@@ -15,8 +15,6 @@ import com.digitalarchitects.rmc_app.presentation.screens.editmyaccount.EditMyAc
 import com.digitalarchitects.rmc_app.presentation.screens.editmyaccount.EditMyAccountViewModel
 import com.digitalarchitects.rmc_app.presentation.screens.editmyvehicle.EditMyVehicleScreen
 import com.digitalarchitects.rmc_app.presentation.screens.editmyvehicle.EditMyVehicleViewModel
-import com.digitalarchitects.rmc_app.presentation.screens.locationtest.LocationTestScreen
-import com.digitalarchitects.rmc_app.presentation.screens.locationtest.LocationTestViewModel
 import com.digitalarchitects.rmc_app.presentation.screens.login.LoginScreen
 import com.digitalarchitects.rmc_app.presentation.screens.login.LoginViewModel
 import com.digitalarchitects.rmc_app.presentation.screens.myaccount.MyAccountScreen
@@ -68,7 +66,6 @@ fun RmcApp(
 ) {
 
     val repositoryTestViewModel: RepositoryTestViewModel = hiltViewModel()
-    val locationTestViewModel: LocationTestViewModel = hiltViewModel()
     val welcomeViewModel: WelcomeViewModel = hiltViewModel()
     val registerViewModel: RegisterViewModel = hiltViewModel()
     val termsAndConditionsViewModel: TermsAndConditionsViewModel = hiltViewModel()
@@ -178,12 +175,6 @@ fun RmcApp(
         composable(route = RmcScreen.RmcTestScreen.name) {
             RepositoryTestScreen(
                 viewModel = repositoryTestViewModel
-            )
-        }
-        composable(route = RmcScreen.RmcLocationTestScreen.name) {
-            LocationTestScreen(
-                viewModel = locationTestViewModel,
-                navigateToScreen = { route -> navController.navigate(route) }
             )
         }
     }
