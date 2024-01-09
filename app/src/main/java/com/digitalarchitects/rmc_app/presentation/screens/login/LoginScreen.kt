@@ -54,6 +54,7 @@ fun LoginScreen(
         viewModel.authResult.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
+                    viewModel.getDataFromRemoteSource()
                     navigateToScreen(RmcScreen.RentACar.name)
                 }
 

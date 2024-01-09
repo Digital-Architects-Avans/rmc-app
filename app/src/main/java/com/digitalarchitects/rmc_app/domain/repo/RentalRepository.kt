@@ -3,6 +3,9 @@ package com.digitalarchitects.rmc_app.domain.repo
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
 import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.User
+import com.digitalarchitects.rmc_app.domain.model.Vehicle
 
 /**
  * Repository retrieves Rental data from underlying data source (remote and local).
@@ -27,6 +30,12 @@ interface RentalRepository {
     /** Retrieves [Rental] for a specific vehicle from underlying data source */
     suspend fun getRentalsForVehicle(vehicleId: String): List<Rental>?
 
+    /** Retrieves [Rental] [Vehicle] and [User] for a specific rental from underlying data source */
+    suspend fun getRentalDetails(rentalId: String): Triple<Rental, Vehicle, User>
+
+    /** Retrieves a list of Triple containing rental details for a specific user from underlying data source */
+    suspend fun getListOfRentalDetailsForOwner(userId: String): List<Triple<Rental, Vehicle, User>>
+
     /** Adds [Rental] to the underlying data source */
     suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental)
 
@@ -38,5 +47,8 @@ interface RentalRepository {
 
     /** Retreives the rental date from the [Rental] */
     suspend fun getRentalDate(rentalId: String): String?
+
+    /** Set the rental status */
+    suspend fun setRentalStatus(rentalId: String, status: RentalStatus)
 
 }

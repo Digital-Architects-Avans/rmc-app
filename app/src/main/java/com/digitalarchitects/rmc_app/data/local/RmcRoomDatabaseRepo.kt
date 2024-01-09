@@ -15,6 +15,7 @@ interface RmcRoomDatabaseRepo {
     // Vehicle queries on the local Room database
     suspend fun getAllVehiclesFromLocalDb(): List<LocalVehicle>
     suspend fun getVehicleByIdFromLocalDb(vehicleId: String): LocalVehicle
+    suspend fun getVehiclesForUserFromLocalDb(userId: String): List<LocalVehicle>?
     suspend fun addAllVehiclesToLocalDb(vehicles: List<LocalVehicle>)
     suspend fun addVehicleToLocalDb(vehicle: LocalVehicle): Long
     suspend fun updateVehicleInLocalDb(vehicle: LocalVehicle)
@@ -28,6 +29,7 @@ interface RmcRoomDatabaseRepo {
     suspend fun getRentalByIdFromLocalDb(rentalId: String): LocalRental
     suspend fun getRentalsForUserFromLocalDb(userId: String): List<LocalRental>?
     suspend fun getRentalsForVehicleFromLocalDb(vehicleId: String): List<LocalRental>?
+    suspend fun getRentalDetailsFromLocalDb(rentalId: String): Triple<LocalRental, LocalVehicle, LocalUser>
     suspend fun addAllRentalsToLocalDb(rentals: List<LocalRental>)
     suspend fun addRentalToLocalDb(rental: LocalRental): Long
     suspend fun updateRentalInLocalDb(rental: LocalRental)

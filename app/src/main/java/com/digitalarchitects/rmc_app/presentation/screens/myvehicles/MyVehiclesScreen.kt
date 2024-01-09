@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Place
@@ -59,11 +58,7 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetailsOwner
 
-// BottomSheets and scaffolds, used resources below:
-// https://developer.android.com/reference/kotlin/androidx/compose/material/package-summary#BottomSheetScaffold(kotlin.Function1,androidx.compose.ui.Modifier,androidx.compose.material.BottomSheetScaffoldState,kotlin.Function0,kotlin.Function1,kotlin.Function0,androidx.compose.material.FabPosition,kotlin.Boolean,androidx.compose.ui.graphics.Shape,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,androidx.compose.ui.unit.Dp,androidx.compose.ui.graphics.Color,androidx.compose.ui.graphics.Color,kotlin.Function1)
-// https://developer.android.com/jetpack/compose/components/bottom-sheets
-// https://developer.android.com/jetpack/compose/components/scaffold
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyVehiclesScreen(
     viewModel: MyVehiclesViewModel,

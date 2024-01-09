@@ -21,6 +21,7 @@ class MyVehiclesViewModel @Inject constructor(
     private val userRepository: UserRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(MyVehiclesUIState())
     val uiState: StateFlow<MyVehiclesUIState> = _uiState.asStateFlow()
 

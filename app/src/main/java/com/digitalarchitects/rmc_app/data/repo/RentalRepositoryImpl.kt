@@ -7,10 +7,15 @@ import com.digitalarchitects.rmc_app.data.mapper.toLocalRental
 import com.digitalarchitects.rmc_app.data.mapper.toLocalRentalList
 import com.digitalarchitects.rmc_app.data.mapper.toRental
 import com.digitalarchitects.rmc_app.data.mapper.toRentalListFromLocal
+import com.digitalarchitects.rmc_app.data.mapper.toTripleFromLocal
+import com.digitalarchitects.rmc_app.data.mapper.toUser
+import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
 import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
 import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -73,7 +78,7 @@ class RentalRepositoryImpl(
         return empty
     }
 
-    override suspend fun getRentalById(rentalId: String): Rental? {
+    override suspend fun getRentalById(rentalId: String): Rental {
         return rmcRoomDatabase.getRentalByIdFromLocalDb(rentalId).toRental()
     }
 
@@ -84,6 +89,35 @@ class RentalRepositoryImpl(
     override suspend fun getRentalsForVehicle(vehicleId: String): List<Rental>? {
         return rmcRoomDatabase.getRentalsForVehicleFromLocalDb(vehicleId)?.toRentalListFromLocal()
     }
+
+    override suspend fun getRentalDetails(rentalId: String): Triple<Rental, Vehicle, User> {
+        return rmcRoomDatabase.getRentalDetailsFromLocalDb(rentalId).toTripleFromLocal()
+    }
+
+    override suspend fun getListOfRentalDetailsForOwner(userId: String): List<Triple<Rental, Vehicle, User>> {
+        getAllRentalsFromRemote()
+        // Get all vehicles for owner
+        val userVehicles = rmcRoomDatabase.getVehiclesForUserFromLocalDb(userId)?.toVehicleListFromLocal()
+
+        val listOfTriples = mutableListOf<Triple<Rental, Vehicle, User>>()
+
+        userVehicles?.forEach { vehicle ->
+            // Get all rentals for the current vehicle
+            val rentalsForVehicle = rmcRoomDatabase.getRentalsForVehicleFromLocalDb(vehicle.vehicleId)?.toRentalListFromLocal()
+
+            rentalsForVehicle?.forEach { rental ->
+                // Assuming you have a function to get user details based on userId
+                val user = rmcRoomDatabase.getUserByIdFromLocalDb(rental.userId).toUser()
+
+                // Create a triple and add it to the list
+                val triple = Triple(rental, vehicle, user)
+                listOfTriples.add(triple)
+            }
+        }
+
+        return listOfTriples
+    }
+
 
     override suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental) {
         rmcRoomDatabase.addRentalToLocalDb(rental.toLocalRental())
@@ -125,5 +159,10 @@ class RentalRepositoryImpl(
 
     override suspend fun getRentalDate(rentalId: String): String? {
         return rmcRoomDatabase.getRentalDate(rentalId)
+    }
+
+    override suspend fun setRentalStatus(rentalId: String, status: RentalStatus) {
+        rmcApiService.setRentalStatus(rentalId, status)
+        refreshRoomCache()
     }
 }
