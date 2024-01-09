@@ -92,6 +92,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
+import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
 
@@ -113,7 +116,7 @@ fun RmcLogoText() {
                 }
                 append(" CAR")
             }
-        }, style = MaterialTheme.typography.displayLarge, color = Color(0xFFC00000)
+        }, style = MaterialTheme.typography.displayLarge, color = colorResource(id = R.color.primary_red)
     )
 }
 
@@ -537,7 +540,7 @@ fun RmcFilledButton(
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(color),
         modifier = modifier
-                .fillMaxWidth()
+            .fillMaxWidth()
     ) {
         icon?.let {
             Icon(
@@ -971,7 +974,7 @@ fun RmcVehicleListItem(
             Text(
                 text = vehicle.licensePlate,
                 style = MaterialTheme.typography.displaySmall,
-                color = Color(0xFFC00000)
+                color = colorResource(id = R.color.primary_red)
             )
             Text(
                 modifier = Modifier
@@ -1062,7 +1065,7 @@ fun RmcVehicleDetails(
             Text(
                 text = vehicle.licensePlate,
                 style = MaterialTheme.typography.displayMedium,
-                color = Color(0xFFC00000)
+                color = colorResource(id = R.color.primary_red)
             )
             if (showAvailability) {
                 if (vehicle.availability) {
@@ -1169,20 +1172,25 @@ fun RmcVehicleDetailsOwner(
                 style = MaterialTheme.typography.displayMedium,
                 color = Color(0xFFC00000)
             )
+            val (labelText, labelTextColor, labelBackgroundColor) = when (vehicle.availability) {
+                true -> Triple(
+                    stringResource(R.string.available),
+                    colorResource(id = R.color.primary_green_text),
+                    colorResource(id = R.color.primary_green_bg)
+                )
+
+                false -> Triple(
+                    stringResource(R.string.unavailable),
+                    MaterialTheme.colorScheme.error,
+                    MaterialTheme.colorScheme.errorContainer
+                )
+            }
             if (showAvailability) {
-                if (vehicle.availability) {
-                    RmcTextBadge(
-                        label = stringResource(R.string.available),
-                        labelTextColor = MaterialTheme.colorScheme.primary,
-                        labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
-                } else {
-                    RmcTextBadge(
-                        label = stringResource(R.string.unavailable),
-                        labelTextColor = MaterialTheme.colorScheme.error,
-                        labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                }
+                RmcTextBadge(
+                    label = labelText,
+                    labelTextColor = labelTextColor,
+                    labelBackgroundColor = labelBackgroundColor
+                )
             }
         }
         Text(
@@ -1274,4 +1282,170 @@ fun RmcVehicleDetailsOwner(
             }
         }
     }
+}
+
+
+@Composable
+fun RmcRentalDetailsOwner(
+    rental: Rental,
+    vehicle: Vehicle,
+    user: User,
+    onRejectClick: () -> Unit,
+    onAcceptClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = rental.date.toString(),
+                style = MaterialTheme.typography.displayMedium,
+                color = colorResource(id = R.color.primary_red)
+            )
+            val (rentalStatus, labelTextColor, backgroundColor) = when (rental.status) {
+                RentalStatus.PENDING ->
+                    Triple(
+                        stringResource(R.string.pending),
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondaryContainer
+                    )
+
+                RentalStatus.APPROVED ->
+                    Triple(
+                        stringResource(R.string.approved),
+                        colorResource(id = R.color.primary_green_text),
+                        colorResource(id = R.color.primary_green_bg)
+                    )
+
+                RentalStatus.DENIED ->
+                    Triple(
+                        stringResource(R.string.denied),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
+                RentalStatus.CANCELLED ->
+                    Triple(
+                        stringResource(R.string.cancelled),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
+            }
+            RmcTextBadge(
+                label = rentalStatus,
+                labelTextColor = labelTextColor,
+                labelBackgroundColor = backgroundColor
+            )
+        }
+        Row {
+            RmcUserIcon(userIcon = R.drawable.usericon,
+                size = dimensionResource(R.dimen.image_size_medium),
+                onClick = {})
+            SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+    ) {
+        Column(Modifier.weight(1f)) {
+            RmcFilledTonalButton(
+                value = stringResource(id = R.string.reject_rental),
+                onClick = {
+                    onRejectClick()
+                }
+            )
+        }
+        Column(Modifier.weight(1f)) {
+            RmcFilledButton(
+                value = stringResource(id = R.string.accept_rental),
+                onClick = {
+                    onAcceptClick()
+                }
+            )
+        }
+    }
+
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 24.dp),
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+        thickness = 1.dp
+    )
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+        ) {
+            Text(
+                text = vehicle.licensePlate,
+                style = MaterialTheme.typography.displayMedium,
+                color = colorResource(id = R.color.primary_red)
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(bottom = dimensionResource(R.dimen.padding_small)),
+                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+    }
+
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(height = 240.dp, width = 20.dp)
+            .padding(
+                top = dimensionResource(R.dimen.padding_medium),
+                bottom = dimensionResource(R.dimen.padding_large)
+            ),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(R.drawable.civic),
+        contentDescription = null
+    )
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_extra_large)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = "Eindhoven",
+                icon = Icons.Rounded.LocationOn
+            )
+            RmcIconLabel(
+                label = vehicle.price.toInt().toString(),
+                icon = Icons.Rounded.PriceChange
+            )
+        }
+    }
+
 }
