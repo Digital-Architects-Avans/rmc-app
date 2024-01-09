@@ -85,6 +85,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MapsComposeExperimentalApi
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
@@ -245,6 +247,14 @@ fun RentACarScreen(
                             scope.launch { detailsBottomSheet.bottomSheetState.hide() }
                         }
                     ) {
+                        // Draw marker if user location is set
+                        if (rentACarUiState.userLocation != null) {
+                            Marker(
+                                state = MarkerState(position = rentACarUiState.userLocation!!),
+                                title = stringResource(R.string.your_location),
+                                draggable = false
+                            )
+                        }
                         // Set cluster manager and callback functions
                         val clusterManager = rememberClusterManager<VehicleMapItem>()
                         val renderer = rememberClusterRenderer(

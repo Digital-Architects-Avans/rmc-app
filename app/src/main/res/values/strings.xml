@@ -119,4 +119,5 @@
     <string name="location_permissions">Rent My Car needs location permissions to focus the map\'s camera position on you.</string>
     <string name="dismiss">Dismiss</string>
     <string name="approve">Approve</string>
+    <string name="your_location">Your location</string>
 </resources>
