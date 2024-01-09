@@ -61,7 +61,7 @@ fun LoginScreen(
                 is AuthResult.Unauthorized -> {
                     Toast.makeText(
                         context,
-                        "Wrong email or password. Please try again.",
+                        R.string.wrong_email_or_password_please_try_again,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -69,7 +69,7 @@ fun LoginScreen(
                 is AuthResult.NoConnectionError -> {
                     Toast.makeText(
                         context,
-                        "No connection. Please try again later.",
+                        R.string.no_connection_please_try_again_later,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -77,7 +77,7 @@ fun LoginScreen(
                 is AuthResult.UnknownError -> {
                     Toast.makeText(
                         context,
-                        "Unknown error occurred. Please try again later.",
+                        R.string.unknown_error_occurred_please_try_again_later,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
