@@ -306,10 +306,10 @@ fun RmcTextField(
     icon: ImageVector? = null,
     placeholder: String? = null,
     isPassword: Boolean = false,
-    value: String,
+    value: String? = null,
+    isError: Boolean = false,
     enabled: Boolean = true,
     onValueChange: (String) -> Unit,
-    // TODO: Add error handling
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.None
@@ -317,7 +317,14 @@ fun RmcTextField(
 ) {
     OutlinedTextField(
         shape = MaterialTheme.shapes.small,
-        label = { Text(text = label) },
+        label = {
+            Text(
+                text = label,
+                style = if (isError) MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.error
+                ) else MaterialTheme.typography.bodyLarge,
+            )
+        },
         textStyle = MaterialTheme.typography.bodyLarge,
         colors = OutlinedTextFieldDefaults.colors(
             cursorColor = MaterialTheme.colorScheme.primary,
@@ -334,7 +341,7 @@ fun RmcTextField(
         singleLine = true,
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         maxLines = 1,
-        value = value,
+        value = value ?: "", // Provide an empty string if value is null
         enabled = enabled,
         onValueChange = onValueChange,
         leadingIcon = icon?.let {
