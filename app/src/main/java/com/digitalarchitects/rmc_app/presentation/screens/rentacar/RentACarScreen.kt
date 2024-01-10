@@ -132,8 +132,10 @@ fun RentACarScreen(
     val listBottomSheet = rememberModalBottomSheetState()
 
     // Get vehicles and create map items in view model
+    // Get filter preference from datastore
     LaunchedEffect(Unit) {
         viewModel.setMapData()
+        viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
     }
 
     // Location permissions
@@ -166,7 +168,6 @@ fun RentACarScreen(
         !permissionState.allPermissionsGranted && !permissionState.shouldShowRationale -> {
             LaunchedEffect(Unit) {
                 viewModel.onEvent(RentACarUIEvent.PermissionsRevoked)
-                viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
             }
         }
     }
