@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +18,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -32,12 +33,18 @@ import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -45,21 +52,24 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.util.hasLocationPermission
+import com.digitalarchitects.rmc_app.domain.util.millisToLocalDateConverter
+import com.digitalarchitects.rmc_app.domain.util.validateDate
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
@@ -94,6 +104,7 @@ import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.S)
 @OptIn(
@@ -213,8 +224,7 @@ fun RentACarScreen(
                 }
                 RmcDivider()
                 RmcRentCarForm(
-                    value = rentACarUiState.date,
-                    enabled = !rentACarUiState.placingReservation,
+                    date = rentACarUiState.date,
                     onValueChange = { date ->
                         viewModel.onEvent(RentACarUIEvent.DateChanged(date))
                     },
@@ -510,11 +520,14 @@ fun RmcPermissionDialog(
 // Form to reserve a vehicle
 @Composable
 fun RmcRentCarForm(
-    value: String,
-    enabled: Boolean,
-    onValueChange: (String) -> Unit,
+    date: LocalDate?,
+    onValueChange: (LocalDate) -> Unit,
     onReserveButtonClicked: () -> Unit
 ) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    var textFieldValue by remember { mutableStateOf(date?.toString() ?: "") }
+    var isDateValid by remember { mutableStateOf(true) }
+
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
@@ -525,24 +538,107 @@ fun RmcRentCarForm(
             text = stringResource(R.string.rent_car),
             style = MaterialTheme.typography.titleMedium,
         )
-        RmcTextField(
-            label = stringResource(id = R.string.date),
-            icon = Icons.Filled.CalendarMonth,
-            value = value,
-            enabled = enabled,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Send
-            ),
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.CalendarMonth,
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = stringResource(R.string.date),
+                modifier = Modifier
+                    .padding(end = dimensionResource(R.dimen.padding_small))
+                    .height(dimensionResource(R.dimen.icon_size_large))
+                    .width(dimensionResource(R.dimen.icon_size_large))
+                    .clickable { showDatePicker = true }
+            )
+            RmcTextField(
+                label = stringResource(R.string.date),
+                value = textFieldValue.ifEmpty { null },
+                onValueChange = {
+                    textFieldValue = it
+                    isDateValid = validateDate(it)
+                },
+                isError = !isDateValid, // Set isError based on date validation
+                enabled = true,
+                placeholder = stringResource(id = R.string.date_placeholder), // Placeholder text
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = dimensionResource(R.dimen.padding_small))
+            )
+        }
+        // Show an error message if the date is not valid
+        if (!isDateValid) {
+            Text(
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(R.dimen.padding_small))
+                    .padding(start = dimensionResource(R.dimen.padding_small)),
+                text = stringResource(R.string.invalid_date),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
         RmcSpacer(16)
         RmcFilledButton(
             value = stringResource(id = R.string.reserve),
             icon = Icons.Filled.Key,
-            isEnabled = enabled,
+            isEnabled = isDateValid, // Enable the button only if the date is valid
             onClick = { onReserveButtonClicked() }
+        )
+        // Show DatePickerDialog if the state is true
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDateSelected = {
+                    onValueChange(it)
+                    textFieldValue = it.toString()
+                    showDatePicker = false
+                    isDateValid = true // Reset validation on new date selection
+                },
+                onDismiss = {
+                    showDatePicker = false
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerDialog(
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return utcTimeMillis >= System.currentTimeMillis()
+        }
+    })
+
+    val selectedDate = datePickerState.selectedDateMillis?.let {
+        millisToLocalDateConverter(it)
+    } ?: LocalDate(2024, 1, 1)
+
+    DatePickerDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            Button(onClick = {
+                onDateSelected(selectedDate)
+                onDismiss()
+            }
+
+            ) {
+                Text(text = "OK")
+            }
+        },
+        dismissButton = {
+            Button(onClick = {
+                onDismiss()
+            }) {
+                Text(text = "Cancel")
+            }
+        }
+    ) {
+        DatePicker(
+            state = datePickerState
         )
     }
 }
