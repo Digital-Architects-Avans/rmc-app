@@ -54,7 +54,7 @@ fun SearchScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-// TODO Default state values
+        viewModel.onEvent(SearchUIEvent.FetchFilterPreference)
     }
 
     Scaffold(
@@ -85,13 +85,13 @@ fun SearchScreen(
                     RmcTextField(
                         label = stringResource(id = R.string.date),
                         icon = Icons.Filled.CalendarMonth,
-                        value = "searchUiState.date ?: ",
+                        value = uiState.date,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
                         ),
-                        onValueChange = {
-                            // TODO searchViewModel.onEvent(SearchUIEvent.DateChanged(it))
+                        onValueChange = { date ->
+                            viewModel.onEvent(SearchUIEvent.DateChanged(date))
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -101,13 +101,13 @@ fun SearchScreen(
                     RmcTextField(
                         label = stringResource(id = R.string.location),
                         icon = Icons.Filled.LocationOn,
-                        value = "searchUiState.location ?: ",
+                        value = uiState.location,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.None
+                            imeAction = ImeAction.Next
                         ),
-                        onValueChange = {
-                            // TODO searchViewModel.onEvent(SearchUIEvent.LocationChanged(it))
+                        onValueChange = { location ->
+                            viewModel.onEvent(SearchUIEvent.LocationChanged(location))
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -117,10 +117,10 @@ fun SearchScreen(
                     RmcSlider(
                         label = stringResource(id = R.string.price),
                         icon = Icons.Filled.PriceChange,
-                        sliderPosition = /*searchUiState.price?.toFloat() ?:*/ 0.0F,
+                        sliderPosition = uiState.price.toFloat(),
                         maxValue = 250.0F,
-                        onValueChange = {
-                            //TODO     searchViewModel.onEvent(SearchUIEvent.PriceChanged(it))
+                        onValueChange = { price ->
+                            viewModel.onEvent(SearchUIEvent.PriceChanged(price))
                         }
                     )
 
@@ -129,10 +129,10 @@ fun SearchScreen(
                     RmcSlider(
                         label = stringResource(id = R.string.distance),
                         icon = Icons.Filled.LocationOn,
-                        sliderPosition = /*searchUiState.distance?.toFloat() ?:*/ 0.0F,
+                        sliderPosition = uiState.distance.toFloat(),
                         maxValue = 250.0F,
-                        onValueChange = {
-                            //TODO  searchViewModel.onEvent(SearchUIEvent.DistanceChanged(it))
+                        onValueChange = { distance ->
+                            viewModel.onEvent(SearchUIEvent.DistanceChanged(distance))
                         }
                     )
 
@@ -148,8 +148,8 @@ fun SearchScreen(
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_ice),
                                 selected = uiState.engineTypeIce,
-                                onClick = {
-                                    //TODO
+                                onClick = { ice ->
+                                    viewModel.onEvent(SearchUIEvent.EngineTypeIceChanged(ice))
                                 }
                             )
                         }
@@ -157,8 +157,8 @@ fun SearchScreen(
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_bev),
                                 selected = uiState.engineTypeBev,
-                                onClick = {
-                                    //   TODO
+                                onClick = { bev ->
+                                    viewModel.onEvent(SearchUIEvent.EngineTypeBevChanged(bev))
                                 }
                             )
                         }
@@ -166,8 +166,8 @@ fun SearchScreen(
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_fcev),
                                 selected = uiState.engineTypeFcev,
-                                onClick = {
-                                    // TODO
+                                onClick = { fcev ->
+                                    viewModel.onEvent(SearchUIEvent.EngineTypeFcevChanged(fcev))
                                 }
                             )
                         }
@@ -183,7 +183,7 @@ fun SearchScreen(
                         RmcOutlinedButton(
                             value = stringResource(id = R.string.clear),
                             onClick = {
-                                // TODO: clearFilters
+                                viewModel.onEvent(SearchUIEvent.ClearFiltersButtonClicked)
                             }
                         )
                     }
@@ -191,7 +191,7 @@ fun SearchScreen(
                         RmcFilledButton(
                             value = stringResource(id = R.string.apply),
                             onClick = {
-                                // TODO: applyFilters
+                                viewModel.onEvent(SearchUIEvent.ApplyFiltersButtonClicked)
                                 navigateToScreen(RmcScreen.RentACar.name)
                             }
                         )
