@@ -166,6 +166,7 @@ fun RentACarScreen(
         !permissionState.allPermissionsGranted && !permissionState.shouldShowRationale -> {
             LaunchedEffect(Unit) {
                 viewModel.onEvent(RentACarUIEvent.PermissionsRevoked)
+                viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
             }
         }
     }
