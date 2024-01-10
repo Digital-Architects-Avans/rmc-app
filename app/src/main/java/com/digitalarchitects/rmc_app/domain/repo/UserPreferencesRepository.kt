@@ -2,8 +2,6 @@ package com.digitalarchitects.rmc_app.domain.repo
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
@@ -15,14 +13,13 @@ class UserPreferencesRepository @Inject constructor(
     private companion object {
         val JWT_TOKEN = stringPreferencesKey("jwt_token")
         val USER_ID = stringPreferencesKey("user_id")
-        val DATE = stringPreferencesKey("Date!")
-        val LOCATION = stringPreferencesKey("Location!")
-        val PRICE = doublePreferencesKey(55.0.toString())
-        val DISTANCE = doublePreferencesKey(55.0.toString())
-        val ENGINETYPEICE = booleanPreferencesKey(true.toString())
-        val ENGINETYPEBEV = booleanPreferencesKey(true.toString())
-        val ENGINETYPEFCEV = booleanPreferencesKey(true.toString())
-
+        val DATE = stringPreferencesKey("")
+        val LOCATION = stringPreferencesKey("")
+        val PRICE = stringPreferencesKey("")
+        val DISTANCE = stringPreferencesKey("")
+        val ENGINETYPEICE = stringPreferencesKey("")
+        val ENGINETYPEBEV = stringPreferencesKey("")
+        val ENGINETYPEFCEV = stringPreferencesKey("")
     }
 
     suspend fun saveJwt(token: String) {
@@ -62,25 +59,25 @@ class UserPreferencesRepository @Inject constructor(
         dataStore.edit { preferences ->
             preferences[DATE] = date
             preferences[LOCATION] = location
-            preferences[PRICE] = price
-            preferences[DISTANCE] = distance
-            preferences[ENGINETYPEICE] = engineTypeICE
-            preferences[ENGINETYPEBEV] = engineTypeBEV
-            preferences[ENGINETYPEFCEV] = engineTypeFCEV
+            preferences[PRICE] = price.toString()
+            preferences[DISTANCE] = distance.toString()
+            preferences[ENGINETYPEICE] = engineTypeICE.toString()
+            preferences[ENGINETYPEBEV] = engineTypeBEV.toString()
+            preferences[ENGINETYPEFCEV] = engineTypeFCEV.toString()
         }
     }
 
     // get filter preference from user from datastore
-    suspend fun getFilterStates(): FilterStates {
+    suspend fun getFilterPreference(): FilterStates {
         val preferences = dataStore.data.first()
         return FilterStates(
-            date = preferences[DATE] ?: "",
-            location = preferences[LOCATION] ?: "",
-            price = preferences[PRICE] ?: 0.0,
-            distance = preferences[DISTANCE] ?: 0.0,
-            engineTypeICE = preferences[ENGINETYPEICE] ?: true,
-            engineTypeBEV = preferences[ENGINETYPEBEV] ?: true,
-            engineTypeFCEV = preferences[ENGINETYPEFCEV] ?: true
+            date = preferences[DATE] ?: "Date",
+            location = preferences[LOCATION] ?: "Location",
+            price = preferences[PRICE]?.toDouble() ?: 55.0,
+            distance = preferences[DISTANCE]?.toDouble() ?: 4.1,
+            engineTypeICE = preferences[ENGINETYPEICE]?.toBoolean() ?: true,
+            engineTypeBEV = preferences[ENGINETYPEBEV]?.toBoolean() ?: true,
+            engineTypeFCEV = preferences[ENGINETYPEFCEV]?.toBoolean() ?: true
         )
     }
 

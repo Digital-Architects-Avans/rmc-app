@@ -2,7 +2,7 @@ package com.digitalarchitects.rmc_app.presentation.screens.search
 
 
 sealed class SearchUIEvent {
-    object FetchFilterPreference: SearchUIEvent()
+    object FetchFilterPreference : SearchUIEvent()
     data class DateChanged(val date: String) : SearchUIEvent()
     data class LocationChanged(val location: String) : SearchUIEvent()
     data class PriceChanged(val price: Float) : SearchUIEvent()
