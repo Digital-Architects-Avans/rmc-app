@@ -38,7 +38,7 @@ data class RentACarUIState(
     var activeVehicleId: String? = null,
     var date: String = LocalDate.now().plusDays(1).toString(),
     var userId: String = "",
-    var placingReservation: Boolean = false
+    var placingReservation: Boolean = false,
 
     // Filter preference
     val datePreference: String = "", // TODO: Make LocalDate, maybe with LocalDate.now()

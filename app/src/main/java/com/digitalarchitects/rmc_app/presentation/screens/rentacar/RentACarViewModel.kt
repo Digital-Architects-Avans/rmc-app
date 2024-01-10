@@ -166,6 +166,26 @@ class RentACarViewModel @Inject constructor(
                     showRationaleDialog = event.show
                 )
             }
+
+            is RentACarUIEvent.FetchFilterPreference ->{
+                viewModelScope.launch {
+                    try {
+                        val filterPreferences = userPreferencesRepository.getFilterPreference()
+
+                        _rentACarUiState.value = _rentACarUiState.value.copy(
+                            date = filterPreferences.date,
+                            location = filterPreferences.location,
+                            price = filterPreferences.price,
+                            distance = filterPreferences.distance,
+                            engineTypeIce = filterPreferences.engineTypeICE,
+                            engineTypeBev = filterPreferences.engineTypeBEV,
+                            engineTypeFcev = filterPreferences.engineTypeFCEV
+                        )
+                    } catch (e: Exception) {
+                        Log.d("SearchViewModel", "Error fetching filter preference: $e")
+                    }
+                }
+            }
         }
     }
 
