@@ -71,10 +71,10 @@ class UserPreferencesRepository @Inject constructor(
     suspend fun getFilterPreference(): FilterStates {
         val preferences = dataStore.data.first()
         return FilterStates(
-            date = preferences[DATE] ?: "Date",
-            location = preferences[LOCATION] ?: "Location",
-            price = preferences[PRICE]?.toDouble() ?: 55.0,
-            distance = preferences[DISTANCE]?.toDouble() ?: 4.1,
+            date = preferences[DATE] ?: "",
+            location = preferences[LOCATION] ?: "",
+            price = preferences[PRICE]?.toDouble() ?: 0.0,
+            distance = preferences[DISTANCE]?.toDouble() ?: 0.0,
             engineTypeICE = preferences[ENGINETYPEICE]?.toBoolean() ?: true,
             engineTypeBEV = preferences[ENGINETYPEBEV]?.toBoolean() ?: true,
             engineTypeFCEV = preferences[ENGINETYPEFCEV]?.toBoolean() ?: true
