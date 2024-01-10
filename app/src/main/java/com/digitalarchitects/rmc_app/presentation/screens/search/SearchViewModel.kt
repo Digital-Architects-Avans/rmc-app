@@ -19,19 +19,6 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SearchUIState())
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
 
-    // TODO: Initialize search options based on current settings, passed in by the NavHost
-//    init {
-//        _uiState.value = _uiState.value.copy(
-//            date = LocalDate.now().plusDays(1).toString(),
-//            location = "Breda",
-//            price = 0.0,
-//            distance = 0,
-//            engineTypeIce = true,
-//            engineTypeBev = false,
-//            engineTypeFcev = true
-//        )
-//    }
-
     fun onEvent(event: SearchUIEvent) {
         when (event) {
             is SearchUIEvent.DateChanged -> {
