@@ -51,6 +51,8 @@ To run the app locally, follow these steps:
 ```bash
 git clone https://github.com/your-username/vehicle-rental-app.git
 ```
+2. Make sure you have an instance of the [RMC API 2](https://github.com/Digital-Architects-Avans/rmc-api-2) running locally.
+   The Android APP uses this API as the backend and will connect with the API running on localhost (10.0.0.2/8080 or 10.0.0.2:8443)
 
 2. Open the project in Android Studio.
 
