@@ -75,10 +75,14 @@ class UserPreferencesRepository @Inject constructor(
             location = preferences[LOCATION] ?: "",
             price = preferences[PRICE]?.toDouble() ?: 0.0,
             distance = preferences[DISTANCE]?.toDouble() ?: 0.0,
-            engineTypeICE = preferences[ENGINETYPEICE]?.toBoolean() ?: true,
-            engineTypeBEV = preferences[ENGINETYPEBEV]?.toBoolean() ?: true,
-            engineTypeFCEV = preferences[ENGINETYPEFCEV]?.toBoolean() ?: true
+            engineTypeICE = preferences[ENGINETYPEICE].toBoolean(),
+            engineTypeBEV = preferences[ENGINETYPEBEV].toBoolean(),
+            engineTypeFCEV = preferences[ENGINETYPEFCEV].toBoolean()
         )
+    }
+
+    private fun parseBoolean(value: String?): Boolean {
+        return value?.toBoolean() ?: false
     }
 
     // data class to hold and handle filter preference data

@@ -134,8 +134,8 @@ fun RentACarScreen(
     // Get vehicles and create map items in view model
     // Get filter preference from datastore
     LaunchedEffect(Unit) {
-        viewModel.setMapData()
         viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
+        viewModel.setMapData()
     }
 
     // Location permissions

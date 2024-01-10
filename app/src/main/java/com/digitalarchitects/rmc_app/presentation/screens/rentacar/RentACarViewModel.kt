@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.remote.ILocationService
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
@@ -168,21 +169,25 @@ class RentACarViewModel @Inject constructor(
             }
 
             is RentACarUIEvent.FetchFilterPreference ->{
-                viewModelScope.launch {
-                    try {
-                        val filterPreferences = userPreferencesRepository.getFilterPreference()
+                viewModelScope.launch() {
+                    try{
+                        withContext(Dispatchers.IO) {
+                            val filterPreferences = userPreferencesRepository.getFilterPreference()
 
-                        _rentACarUiState.value = _rentACarUiState.value.copy(
-                            date = filterPreferences.date,
-                            location = filterPreferences.location,
-                            price = filterPreferences.price,
-                            distance = filterPreferences.distance,
-                            engineTypeIce = filterPreferences.engineTypeICE,
-                            engineTypeBev = filterPreferences.engineTypeBEV,
-                            engineTypeFcev = filterPreferences.engineTypeFCEV
-                        )
-                    } catch (e: Exception) {
-                        Log.d("SearchViewModel", "Error fetching filter preference: $e")
+                            _rentACarUiState.value = _rentACarUiState.value.copy(
+                                datePreference = filterPreferences.date,
+                                location = filterPreferences.location,
+                                price = filterPreferences.price,
+                                distance = filterPreferences.distance,
+                                engineTypeIce = filterPreferences.engineTypeICE,
+                                engineTypeBev = filterPreferences.engineTypeBEV,
+                                engineTypeFcev = filterPreferences.engineTypeFCEV
+                            )
+                        }
+                        Log.d("RentACar", "Fetched preferences successfully")
+
+                    } catch (e: Exception){
+                        Log.d("RentACar", "Error fetching filter preference: $e")
                     }
                 }
             }
@@ -194,22 +199,44 @@ class RentACarViewModel @Inject constructor(
     }
 
     private fun getVehicles() {
-        viewModelScope.launch(dispatcher) {
-            val result: Result<List<Vehicle>> = runCatching {
-                vehicleRepository.getAllVehicles()
-            }
-            result.onSuccess { listOfVehicles ->
-                // Get all available vehicles
-                _rentACarUiState.value.listOfVehicles = listOfVehicles.filter { vehicle ->
-                    vehicle.availability
+        try {
+            viewModelScope.launch(dispatcher) {
+                val filterPreferences = _rentACarUiState.value
+                // Get all vehicles
+                val result: Result<List<Vehicle>> = runCatching {
+                    vehicleRepository.getAllVehicles()
                 }
+                result.onSuccess { listOfVehicles ->
+                    // filter on availability and according to preferences
+                    val filteredVehicles = listOfVehicles.filter { vehicle ->
+                        vehicle.availability
+                                &&
+                        vehicle.price <= filterPreferences.price
 
-                // Get vehicle map items
-                _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
-            }.onFailure { e ->
-                e.printStackTrace()
+    //                    vehicle.date == filterPreferences.datePreference &&
+    //                    vehicle.location == filterPreferences.location &&
+    //                    vehicle.distance <= filterPreferences.distance &&
+    //                    checkEngineType(vehicle, filterPreferences)
+
+                    }
+                    _rentACarUiState.value.listOfVehicles = filteredVehicles
+
+                    // Get vehicle map items
+                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                }.onFailure { e ->
+                    e.printStackTrace()
+                }
             }
+        }catch (e:Exception){
+
         }
+    }
+
+    // helper function to check enginetype
+    private fun checkEngineType(vehicle: Vehicle, filterPreferences: RentACarUIState): Boolean {
+        return (filterPreferences.engineTypeIce && vehicle.engineType == EngineType.ICE) ||
+                (filterPreferences.engineTypeBev && vehicle.engineType == EngineType.BEV) ||
+                (filterPreferences.engineTypeFcev && vehicle.engineType == EngineType.FCEV)
     }
 
     // Create vehicleMapItems for Google Maps composable
