@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -77,7 +76,7 @@ class SearchViewModel @Inject constructor(
             }
 
             is SearchUIEvent.FetchFilterPreference -> {
-                viewModelScope.launch() {
+                viewModelScope.launch(dispatcher) {
                     try{
                         withContext(Dispatchers.IO) {
                             val filterPreferences = userPreferencesRepository.getFilterPreference()
