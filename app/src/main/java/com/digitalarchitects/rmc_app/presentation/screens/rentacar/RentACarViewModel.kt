@@ -134,11 +134,11 @@ class RentACarViewModel @Inject constructor(
                                 setReserveVehicleUiState(false)
                             }
                         }
-                        Log.d("RegisterRentalViewModel", "Created reservation successfully")
+                        Log.d("RentACarViewModel", "Created reservation successfully")
 
                     } catch (e: Exception) {
                         // Re-enable reserve button
-                        Log.d("RegisterRentalViewModel", "Error creating reservation: $e")
+                        Log.d("RentACarViewModel", "Error creating reservation: $e")
                     }
                 }
             }
@@ -168,9 +168,9 @@ class RentACarViewModel @Inject constructor(
                 )
             }
 
-            is RentACarUIEvent.FetchFilterPreference ->{
+            is RentACarUIEvent.FetchFilterPreference -> {
                 viewModelScope.launch() {
-                    try{
+                    try {
                         withContext(Dispatchers.IO) {
                             val filterPreferences = userPreferencesRepository.getFilterPreference()
 
@@ -184,10 +184,10 @@ class RentACarViewModel @Inject constructor(
                                 engineTypeFcev = filterPreferences.engineTypeFCEV
                             )
                         }
-                        Log.d("RentACar", "Fetched preferences successfully")
+                        Log.d("RentACarViewModel", "Fetched preferences successfully")
 
-                    } catch (e: Exception){
-                        Log.d("RentACar", "Error fetching filter preference: $e")
+                    } catch (e: Exception) {
+                        Log.d("RentACarViewModel", "Error fetching filter preference: $e")
                     }
                 }
             }
@@ -199,44 +199,34 @@ class RentACarViewModel @Inject constructor(
     }
 
     private fun getVehicles() {
-        try {
-            viewModelScope.launch(dispatcher) {
-                val filterPreferences = _rentACarUiState.value
-                // Get all vehicles
-                val result: Result<List<Vehicle>> = runCatching {
-                    vehicleRepository.getAllVehicles()
-                }
-                result.onSuccess { listOfVehicles ->
-                    // filter on availability and according to preferences
-                    val filteredVehicles = listOfVehicles.filter { vehicle ->
-                        vehicle.availability
-                                &&
-                        vehicle.price <= filterPreferences.price
-
-    //                    vehicle.date == filterPreferences.datePreference &&
-    //                    vehicle.location == filterPreferences.location &&
-    //                    vehicle.distance <= filterPreferences.distance &&
-    //                    checkEngineType(vehicle, filterPreferences)
-
-                    }
-                    _rentACarUiState.value.listOfVehicles = filteredVehicles
-
-                    // Get vehicle map items
-                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
-                }.onFailure { e ->
-                    e.printStackTrace()
-                }
+        viewModelScope.launch(dispatcher) {
+            val filterPreferences = _rentACarUiState.value
+            // Get all vehicles
+            val result: Result<List<Vehicle>> = runCatching {
+                vehicleRepository.getAllVehicles()
             }
-        }catch (e:Exception){
+            result.onSuccess { listOfVehicles ->
+                // filter on availability and according to preferences
+                val filteredVehicles = listOfVehicles.filter { vehicle ->
+                    vehicle.availability &&
+                    (filterPreferences.price <= 0 || vehicle.price <= filterPreferences.price)&&
+//                        vehicle.date == filterPreferences.datePreference &&
+//                        vehicle.location == filterPreferences.location &&
+//                        vehicle.distance <= filterPreferences.distance &&
+                    (filterPreferences.engineTypeIce && vehicle.engineType == EngineType.ICE ||
+                    filterPreferences.engineTypeBev && vehicle.engineType == EngineType.BEV ||
+                    filterPreferences.engineTypeFcev && vehicle.engineType == EngineType.FCEV)
+                }
+                _rentACarUiState.value.listOfVehicles = filteredVehicles
 
+                // Get vehicle map items
+                if (filteredVehicles.isNotEmpty()) {
+                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                }
+            }.onFailure { e ->
+                e.printStackTrace()
+            }
         }
-    }
-
-    // helper function to check enginetype
-    private fun checkEngineType(vehicle: Vehicle, filterPreferences: RentACarUIState): Boolean {
-        return (filterPreferences.engineTypeIce && vehicle.engineType == EngineType.ICE) ||
-                (filterPreferences.engineTypeBev && vehicle.engineType == EngineType.BEV) ||
-                (filterPreferences.engineTypeFcev && vehicle.engineType == EngineType.FCEV)
     }
 
     // Create vehicleMapItems for Google Maps composable
@@ -267,7 +257,7 @@ class RentACarViewModel @Inject constructor(
                     _rentACarUiState.value.userId = userId!!
                 }
             } catch (e: Exception) {
-                Log.d("MyAccountViewModel", "error: $e")
+                Log.d("RentACarViewModel", "error: $e")
             }
         }
     }
