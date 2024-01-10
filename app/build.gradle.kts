@@ -96,7 +96,8 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
 
     // Material3
-    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material3:material3:1.2.0-beta01")
+
 
     // Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
