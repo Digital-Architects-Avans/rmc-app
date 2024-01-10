@@ -54,7 +54,7 @@ fun SearchScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-// TODO Default state values
+        viewModel.onEvent(SearchUIEvent.FetchFilterPreference)
     }
 
     Scaffold(

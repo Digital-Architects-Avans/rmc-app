@@ -80,6 +80,10 @@ class SearchViewModel @Inject constructor(
             is SearchUIEvent.ApplyFiltersButtonClicked -> {
                 applyFilters()
             }
+
+            is SearchUIEvent.FetchFilterPreference -> {
+
+            }
         }
     }
 
