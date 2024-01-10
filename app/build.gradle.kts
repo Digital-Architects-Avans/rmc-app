@@ -98,7 +98,6 @@ dependencies {
     // Material3
     implementation("androidx.compose.material3:material3:1.2.0-beta01")
 
-
     // Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.0")
