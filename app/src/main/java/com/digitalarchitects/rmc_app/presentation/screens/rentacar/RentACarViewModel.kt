@@ -13,6 +13,7 @@ import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
+import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.google.android.gms.maps.model.LatLng
@@ -37,6 +38,7 @@ class RentACarViewModel @Inject constructor(
     private val rentalRepository: RentalRepository,
     private var userRepository: UserRepository,
     private val locationService: ILocationService,
+    private val userPreferencesRepository: UserPreferencesRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     // Rent A Car UI state
