@@ -3,10 +3,16 @@ package com.digitalarchitects.rmc_app.presentation.screens.editmyvehicle
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
+import com.digitalarchitects.rmc_app.domain.model.AddressItem
 import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.domain.model.PlaceItem
+import com.digitalarchitects.rmc_app.domain.repo.PlacesRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
+import com.digitalarchitects.rmc_app.domain.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,14 +24,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditMyVehicleViewModel @Inject constructor(
-    private val vehicleRepository: VehicleRepository
+    private val vehicleRepository: VehicleRepository,
+    private val placesRepository: PlacesRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditMyVehicleUIState())
     val uiState: StateFlow<EditMyVehicleUIState> get() = _uiState.asStateFlow()
 
-    private val _vehicleUpdated = MutableStateFlow(false)
-    val vehicleUpdated: StateFlow<Boolean> = _vehicleUpdated.asStateFlow()
+    private val _address: MutableStateFlow<AddressItem> = MutableStateFlow(AddressItem())
+    val address = _address.asStateFlow()
+
+    private val _placePredictions: MutableStateFlow<List<PlaceItem>> = MutableStateFlow(arrayListOf())
+    val placePredictions = _placePredictions.asStateFlow()
 
     fun fetchVehicleDetails(vehicleId: String) {
         viewModelScope.launch {
@@ -45,6 +56,8 @@ class EditMyVehicleViewModel @Inject constructor(
                             engineType = vehicle.engineType,
                             licensePlate = vehicle.licensePlate,
                             imgLink = vehicle.imgLink,
+                            description = vehicle.description,
+                            address = vehicle.address,
                             latitude = vehicle.latitude,
                             longitude = vehicle.longitude,
                             price = vehicle.price,
@@ -56,6 +69,88 @@ class EditMyVehicleViewModel @Inject constructor(
                 Log.d("EditMyVehicleViewModel", "error: $e")
             }
         }
+    }
+
+    private fun getPlacePredictions(query: String) {
+        Log.d("RegisterVehicleViewModel", "streetAddress: ${address.value.streetAddress}")
+        viewModelScope.launch(dispatcher) {
+
+            when (val placePredictionsResult = placesRepository.getPlacePredictions(query)) {
+                is Result.Success -> {
+                    val placePredictions = placePredictionsResult.data
+
+                    _placePredictions.value = placePredictions
+                    Log.d("RegisterVehicleViewModel", "placePredictions: $placePredictions")
+                }
+
+                is Result.Error -> {
+                    Log.e(
+                        "RegisterVehicleViewModel",
+                        "An error occurred when retrieving the predictions for $query",
+                        placePredictionsResult.exception
+                    )
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private suspend fun setLocationPrediction(placeItem: PlaceItem) {
+        Log.d("RegisterVehicleViewModel", "placeItem: $placeItem")
+
+        viewModelScope.launch(dispatcher) {
+            when (val addressResult = placesRepository.getLocationFromPlace(placeItem.id!!)) {
+
+                is Result.Success -> {
+                    val addressFromPlace = addressResult.data
+                    if (addressFromPlace != null) {
+                        _address.value = addressFromPlace
+                        _uiState.update {
+                            it.copy(
+                                latitude = addressFromPlace.latitude.toFloat()
+                            )
+                        }
+                        _uiState.update {
+                            it.copy(
+                                longitude = addressFromPlace.longitude.toFloat()
+                            )
+                        }
+                        _uiState.update {
+                            it.copy(
+                                address = addressFromPlace.address
+                            )
+                        }
+                    }
+                    Log.d("RegisterVehicleViewModel", "addressFromPlace: $addressFromPlace")
+                    Log.d("RegisterVehicleViewModel", "address: ${addressFromPlace?.address}")
+                    Log.d("RegisterVehicleViewModel", "streetAddress: ${addressFromPlace?.streetAddress}")
+                    clearPredictions()
+                }
+
+                is Result.Error -> {
+                    Log.e(
+                        "RegisterVehicleViewModel",
+                        "An error occurred when retrieving the address from Place  ${placeItem.id}",
+                        addressResult.exception
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun onLocationAutoCompleteClear() {
+        Log.d("RegisterVehicleViewModel", "onLocationAutoCompleteClear")
+        viewModelScope.launch {
+            _address.value = AddressItem()
+            clearPredictions()
+        }
+    }
+
+
+    private fun clearPredictions() {
+        _placePredictions.value = mutableListOf()
     }
 
     fun onEvent(event: EditMyVehicleUIEvent) {
@@ -196,6 +291,14 @@ class EditMyVehicleViewModel @Inject constructor(
                 }
             }
 
+            is EditMyVehicleUIEvent.SetDescription -> {
+                _uiState.update {
+                    it.copy(
+                        description = event.description
+                    )
+                }
+            }
+
             is EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked -> {
                 val userId = _uiState.value.userId
                 val brand = _uiState.value.brand
@@ -205,6 +308,8 @@ class EditMyVehicleViewModel @Inject constructor(
                 val engineType = _uiState.value.engineType
                 val licensePlate = _uiState.value.licensePlate
                 val imgLink = _uiState.value.imgLink
+                val description = _uiState.value.description
+                val address = _uiState.value.address
                 val latitude = _uiState.value.latitude
                 val longitude = _uiState.value.longitude
                 val price = _uiState.value.price
@@ -219,6 +324,8 @@ class EditMyVehicleViewModel @Inject constructor(
                     engineType = engineType,
                     licensePlate = licensePlate,
                     imgLink = imgLink,
+                    description = description,
+                    address = address,
                     latitude = latitude,
                     longitude = longitude,
                     price = price,
@@ -231,21 +338,69 @@ class EditMyVehicleViewModel @Inject constructor(
                             vehicleRepository.updateVehicle(uiState.value.vehicleId, updatedVehicle)
 
                             withContext(Dispatchers.Main) {
-                                _vehicleUpdated.value = true
+                                _uiState.value.vehicleUpdated = true
+                                resetUpdateVehicleUiState()
                             }
                         }
                         Log.d("RegisterVehicleViewModel", "Created vehicle successfully")
 
                     } catch (e: Exception) {
-                        _vehicleUpdated.value = false
+                        _uiState.value.vehicleUpdated = false
                         Log.d("RegisterVehicleViewModel", "Error creating vehicle: $e")
                     }
                 }
             }
             is EditMyVehicleUIEvent.ResetVehicleUpdated -> {
-                _vehicleUpdated.value = false
+                _uiState.value.vehicleUpdated = false
             }
 
+            EditMyVehicleUIEvent.OnAddressAutoCompleteClear -> {
+                viewModelScope.launch {
+                    onLocationAutoCompleteClear()
+                }
+            }
+
+            is EditMyVehicleUIEvent.OnAddressChange -> {
+                viewModelScope.launch {
+
+                    _address.update {
+                        it.copy(
+                            streetAddress = event.address
+                        )
+                    }
+                    getPlacePredictions(event.address)
+                }
+            }
+
+            is EditMyVehicleUIEvent.OnAddressSelected -> {
+                viewModelScope.launch {
+                    setLocationPrediction(event.selectedPlaceItem)
+                }
+            }
+        }
+    }
+    private fun resetUpdateVehicleUiState() {
+        _uiState.update {
+            it.copy(
+                brand = "",
+                model = "",
+                year = 1999,
+                vehicleClass = "",
+                engineType = EngineType.ICE,
+                licensePlate = "",
+                imgLink = 0,
+                description = "",
+                address = "",
+                latitude = 0.0F,
+                longitude = 0.0F,
+                price = 0.00,
+                availability = false
+            )
+        }
+        _address.update {
+            it.copy(
+                streetAddress = ""
+            )
         }
     }
 }

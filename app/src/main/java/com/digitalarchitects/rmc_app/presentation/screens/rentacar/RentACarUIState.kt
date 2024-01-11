@@ -2,7 +2,8 @@ package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.google.android.gms.maps.model.LatLng
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
+
 
 enum class PermissionsStatus(val status: String) {
     PENDING(status = "PENDING"),
@@ -19,6 +20,7 @@ sealed interface LocationPermissionsUIState {
 
 // Rent A Car UI state
 data class RentACarUIState(
+
     // Permissions
     var permissionStatus: PermissionsStatus = PermissionsStatus.PENDING,
     var showRationaleDialog: Boolean = true,

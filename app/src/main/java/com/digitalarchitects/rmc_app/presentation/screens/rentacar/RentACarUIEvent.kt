@@ -2,6 +2,7 @@ package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
 import com.digitalarchitects.rmc_app.presentation.screens.search.SearchUIEvent
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.datetime.LocalDate
 
 sealed interface RentACarUIEvent {
 
@@ -12,7 +13,7 @@ sealed interface RentACarUIEvent {
     class RmcMapVehicleItemClicked(val id: String) : RentACarUIEvent
 
     // Rental
-    data class DateChanged(val date: String) : RentACarUIEvent
+    data class DateChanged(val date: LocalDate) : RentACarUIEvent
     object ReserveVehicleButtonClicked : RentACarUIEvent
 
     // Permissions

@@ -132,4 +132,9 @@
     <string name="retrieve_users">Retrieve Users</string>
     <string name="retrieve_vehicles">Retrieve Vehicles</string>
     <string name="retrieve_rentals">Retrieve Rentals</string>
+    <string name="invalid_date">Invalid date</string>
+    <string name="date_placeholder" translatable="false">YYYY-MM-DD</string>
+    <string name="vehicle_location">Vehicle Location</string>
+    <string name="vehicle_description">Vehicle description</string>
+
 </resources>

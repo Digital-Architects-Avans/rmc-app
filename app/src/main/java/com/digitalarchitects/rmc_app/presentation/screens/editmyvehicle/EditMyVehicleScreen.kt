@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
+import com.digitalarchitects.rmc_app.presentation.components.AddressEdit
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
@@ -52,7 +55,11 @@ fun EditMyVehicleScreen(
     vehicleId: String?
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val vehicleUpdated by viewModel.vehicleUpdated.collectAsState()
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val address by viewModel.address.collectAsState()
+    val placesPredictions by viewModel.placePredictions.collectAsState()
 
     LaunchedEffect(vehicleId) {
         if (vehicleId != null) {
@@ -278,65 +285,87 @@ fun EditMyVehicleScreen(
                     RmcSpacer(8)
 
 
-                    Row(
+                    // Add the larger RmcTextField for the vehicle description
+                    RmcTextField(
+                        label = stringResource(id = R.string.vehicle_description),
+                        value = uiState.description,
+                        maxLines = 5,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        onValueChange = {
+                            viewModel.onEvent(EditMyVehicleUIEvent.SetDescription(it))
+                        },
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large))
-                    ) {
-                        RmcTextField(
-                            label = stringResource(id = R.string.location),
-//                            icon = Icons.Filled.Person,
-                            value = uiState.latitude.toString(),
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done
-                            ),
-                            onValueChange = {
-                                viewModel.onEvent(EditMyVehicleUIEvent.SetLatitude(it.toFloat()))
-                            },
-                            modifier = Modifier.weight(1f)
+                            .fillMaxWidth()
+                            .height(120.dp) // Adjust the height as needed
+                    )
+
+                    AddressEdit(
+                        addressItem = address,
+                        modifier = Modifier,
+                        addressPlaceItemPredictions = placesPredictions,
+                        onQueryChanged = { query ->
+                            viewModel.onEvent(EditMyVehicleUIEvent.OnAddressChange(query))
+                        },
+                        onClearClick = {
+                            viewModel.onEvent(EditMyVehicleUIEvent.OnAddressAutoCompleteClear)
+                        },
+                        onDoneClick = if (placesPredictions.isNotEmpty()) {
+                            {
+                                viewModel.onEvent(
+                                    EditMyVehicleUIEvent.OnAddressSelected(
+                                        placesPredictions.first()
+                                    )
+                                )
+                            }
+                        } else {
+                            { keyboardController?.hide() }
+                        },
+                        onItemClick = { placeItem ->
+                            viewModel.onEvent(EditMyVehicleUIEvent.OnAddressSelected(placeItem))
+                        }
+                    )
+                }
+
+                RmcSpacer(32)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        RmcFilledButton(
+                            value = stringResource(id = R.string.apply),
+                            onClick = {
+                                viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
+                            }
                         )
                     }
-
-                    RmcSpacer(32)
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
-                    ) {
-                        Column(Modifier.weight(1f)) {
-                            RmcOutlinedButton(
-                                value = stringResource(id = R.string.cancel),
-                                onClick = {
-                                    navigateToScreen(RmcScreen.MyVehicles.name)
-                                }
-                            )
-                        }
-                        Column(Modifier.weight(1f)) {
-                            RmcFilledButton(
-                                value = stringResource(id = R.string.apply),
-                                onClick = {
-                                    viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
-                                }
-                            )
-                        }
+                    Column(Modifier.weight(1f)) {
+                        RmcOutlinedButton(
+                            value = stringResource(id = R.string.cancel),
+                            onClick = {
+                                navigateToScreen(RmcScreen.MyVehicles.name)
+                            }
+                        )
                     }
+                }
 
-                    val context = LocalContext.current
-                    val toastMessage = if (vehicleUpdated) {
-                        stringResource(R.string.vehicle_updated_successfully)
-                    } else {
-                        stringResource(R.string.unable_to_update_vehicle)
-                    }
-                    if (vehicleUpdated) {
-                        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
-                        navigateToScreen(RmcScreen.MyVehicles.name)
-                        viewModel.onEvent(EditMyVehicleUIEvent.ResetVehicleUpdated)
-                    }
+                val context = LocalContext.current
+                val toastMessage = if (uiState.vehicleUpdated) {
+                    stringResource(R.string.vehicle_updated_successfully)
+                } else {
+                    stringResource(R.string.unable_to_update_vehicle)
+                }
+                if (uiState.vehicleUpdated) {
+                    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+                    navigateToScreen(RmcScreen.MyVehicles.name)
+                    viewModel.onEvent(EditMyVehicleUIEvent.ResetVehicleUpdated)
                 }
             }
         }
     }
 }
-

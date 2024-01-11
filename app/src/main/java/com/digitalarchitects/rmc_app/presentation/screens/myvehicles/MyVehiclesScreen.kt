@@ -20,11 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.PriceChange
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -109,20 +109,26 @@ fun MyVehiclesScreen(
                             .padding(24.dp)
                     ) {
                         itemsIndexed(uiState.listOfVehicles) { index, vehicle ->
+
+                            // Format the address to drop the country and postal code
+                            val addressAsList = vehicle.address.split(",")
+                            val streetAndCity = addressAsList[0] + ", " + addressAsList[1].drop(8)
+
                             VehicleListItem(
                                 vehicle = vehicle,
+                                location = streetAndCity,
                                 onItemClick = {
                                     viewModel.onEvent(MyVehiclesUIEvent.ShowVehicleDetails(vehicle.vehicleId))
                                 }
                             )
 
                             if (index < uiState.listOfVehicles.lastIndex)
-                                Divider(
+                                HorizontalDivider(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 16.dp),
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-                                    thickness = 1.dp
+                                    thickness = 1.dp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
                                 )
                         }
                     }
@@ -137,8 +143,14 @@ fun MyVehiclesScreen(
 
                 // Display vehicle details in a modal bottom sheet when a vehicle is selected
                 uiState.selectedVehicle?.let { vehicle ->
+
+                    // Format the address to drop the country
+                    val addressAsList = vehicle.address.split(",")
+                    val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
+
                     VehicleDetailsBottomSheet(
                         vehicle = vehicle,
+                        location = detailedAddress,
                         sheetState = vehicleBottomSheet,
                         onDeleteClick = {
                             viewModel.onEvent(MyVehiclesUIEvent.DeleteVehicle(vehicle.vehicleId))
@@ -162,6 +174,7 @@ fun MyVehiclesScreen(
 @Composable
 fun VehicleDetailsBottomSheet(
     vehicle: Vehicle,
+    location: String,
     sheetState: SheetState,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -173,6 +186,7 @@ fun VehicleDetailsBottomSheet(
     ) {
         RmcVehicleDetailsOwner(
             vehicle = vehicle,
+            location = location,
             showAvailability = true,
             onDeleteClick = { onDeleteClick() },
             onEditClick = { onEditClick() }
@@ -183,6 +197,7 @@ fun VehicleDetailsBottomSheet(
 @Composable
 fun VehicleListItem(
     vehicle: Vehicle,
+    location: String,
     onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -274,21 +289,21 @@ fun VehicleListItem(
                             imageVector = Icons.Default.Place,
                             contentDescription = stringResource(R.string.location)
                         )
-                        Text(text = vehicle.latitude.toString())
+                        Text(text = location, style = MaterialTheme.typography.bodySmall)
                     }
                     Row {
                         Icon(
-                            imageVector = Icons.Default.ShoppingCart,
+                            imageVector = Icons.Default.PriceChange,
                             contentDescription = stringResource(R.string.price)
                         )
                         Text(
                             text = vehicle.price.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier
-                                .padding(end = 24.dp)
-                                .width(54.dp)
+                                .padding(end = 8.dp)
+                                .width(42.dp)
                         )
                     }
-
                 }
             }
         }

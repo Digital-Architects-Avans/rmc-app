@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.presentation.screens.editmyvehicle
 
 import com.digitalarchitects.rmc_app.domain.model.EngineType
+import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 
 sealed interface EditMyVehicleUIEvent {
 
@@ -18,9 +19,13 @@ sealed interface EditMyVehicleUIEvent {
     data class SetEngineType(val engineType: EngineType) : EditMyVehicleUIEvent
     data class SetLicensePlate(val licensePlate: String) : EditMyVehicleUIEvent
     data class SetImgLink(val imgLink: Int) : EditMyVehicleUIEvent
+    data class SetDescription(val description: String) : EditMyVehicleUIEvent
     data class SetLatitude(val latitude: Float) : EditMyVehicleUIEvent
     data class SetLongitude(val longitude: Float) : EditMyVehicleUIEvent
     data class SetPrice(val price: Double) : EditMyVehicleUIEvent
     data class SetAvailability(val availability: Boolean) : EditMyVehicleUIEvent
     object ResetVehicleUpdated: EditMyVehicleUIEvent
+    object OnAddressAutoCompleteClear : EditMyVehicleUIEvent
+    data class OnAddressChange(val address: String) : EditMyVehicleUIEvent
+    data class OnAddressSelected(val selectedPlaceItem: PlaceItem) : EditMyVehicleUIEvent
 }
