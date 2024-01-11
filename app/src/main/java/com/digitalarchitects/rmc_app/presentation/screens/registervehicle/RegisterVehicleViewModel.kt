@@ -97,6 +97,17 @@ class RegisterVehicleViewModel @Inject constructor(
                     val addressFromPlace = addressResult.data
                     if (addressFromPlace != null) {
                         _address.value = addressFromPlace
+                        _uiState.update {
+                            it.copy(
+                                latitude = addressFromPlace.latitude.toFloat()
+                            )
+                        }
+                        _uiState.update {
+                            it.copy(
+                                longitude = addressFromPlace.longitude.toFloat()
+                            )
+                        }
+
                     }
                     Log.d("RegisterVehicleViewModel", "addressFromPlace: $addressFromPlace")
                     clearPredictions()
@@ -114,7 +125,7 @@ class RegisterVehicleViewModel @Inject constructor(
         }
     }
 
-    fun onLocationAutoCompleteClear() {
+    private fun onLocationAutoCompleteClear() {
         Log.d("RegisterVehicleViewModel", "onLocationAutoCompleteClear")
         viewModelScope.launch {
             _address.value = AddressItem()
