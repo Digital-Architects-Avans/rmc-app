@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,6 +55,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -102,6 +104,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.domain.model.AddressItem
+import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
@@ -316,6 +320,7 @@ fun RmcTextField(
     icon: ImageVector? = null,
     placeholder: String? = null,
     isPassword: Boolean = false,
+    maxLines: Int = 1,
     value: String? = null,
     isError: Boolean = false,
     enabled: Boolean = true,
@@ -348,9 +353,9 @@ fun RmcTextField(
         ),
         keyboardOptions = keyboardOptions,
         modifier = modifier.fillMaxWidth(),
-        singleLine = true,
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        maxLines = 1,
+        maxLines = maxLines,
+        singleLine = maxLines == 1,
         value = value ?: "", // Provide an empty string if value is null
         enabled = enabled,
         onValueChange = onValueChange,
@@ -1076,6 +1081,7 @@ fun RmcIconLabel(
 @Composable
 fun RmcVehicleDetails(
     vehicle: Vehicle,
+    location: String,
     showAvailability: Boolean
 ) {
     Column(
@@ -1122,7 +1128,7 @@ fun RmcVehicleDetails(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RmcIconLabel(
-                label = "Eindhoven",
+                label = location,
                 icon = Icons.Rounded.LocationOn
             )
             RmcIconLabel(
@@ -1276,12 +1282,23 @@ fun RmcVehicleDetailsOwner(
             )
         }
 
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
+        )
+
+        Text(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+                    append("\"${vehicle.description}\"")
+                }
+            },
+            modifier = Modifier
+                .padding(bottom = 8.dp),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
 
         Row(
@@ -1797,5 +1814,132 @@ fun QuerySearch(
             colors = colors ?: TextFieldDefaults.colors(
             )
         )
+    }
+}
+
+
+@Composable
+fun AddressEdit(
+    addressItem: AddressItem,
+    modifier: Modifier,
+    addressPlaceItemPredictions: List<PlaceItem>,
+    onQueryChanged: (String) -> Unit,
+    onClearClick: () -> Unit,
+    onDoneClick: () -> Unit,
+    onItemClick: (PlaceItem) -> Unit
+) {
+
+    Column(
+        modifier = modifier.padding(top = 8.dp, bottom = 8.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        AutoCompleteUI(
+            modifier = Modifier.fillMaxWidth(),
+            query = addressItem.streetAddress,
+            queryLabel = stringResource(id = R.string.vehicle_location),
+            useOutlined = true,
+            onQueryChanged = onQueryChanged,
+            predictions = addressPlaceItemPredictions,
+            onClearClick = onClearClick,
+            onDoneActionClick = onDoneClick,
+            onItemClick = onItemClick
+        ) {
+            Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
+        }
+
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+
+            Row(modifier = modifier.height(IntrinsicSize.Min)) {
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("City", fontWeight = FontWeight.Bold)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        addressItem.city,
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("State", fontWeight = FontWeight.Bold)
+
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        addressItem.state,
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(modifier = modifier.height(IntrinsicSize.Min)) {
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Postal Code", fontWeight = FontWeight.Bold)
+
+                    Text(
+                        addressItem.postalCode,
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Country", fontWeight = FontWeight.Bold)
+
+                    Text(
+                        addressItem.country,
+                        modifier = Modifier.weight(1.0f)
+                    )
+
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(modifier = modifier.height(IntrinsicSize.Min)) {
+
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("Latitude", fontWeight = FontWeight.Bold)
+
+
+
+                    Text(
+                        addressItem.latitude.toString(),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("Longitude", fontWeight = FontWeight.Bold)
+
+                    Text(
+                        addressItem.longitude.toString(),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+            }
+
+        }
     }
 }
