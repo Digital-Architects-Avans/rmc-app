@@ -109,9 +109,14 @@ fun MyVehiclesScreen(
                             .padding(24.dp)
                     ) {
                         itemsIndexed(uiState.listOfVehicles) { index, vehicle ->
+
+                            // Format the address to drop the country and postal code
+                            val addressAsList = vehicle.address.split(",")
+                            val streetAndCity = addressAsList[0] + ", " + addressAsList[1].drop(8)
+
                             VehicleListItem(
                                 vehicle = vehicle,
-                                location = uiState.listOfLocations[index],
+                                location = streetAndCity,
                                 onItemClick = {
                                     viewModel.onEvent(MyVehiclesUIEvent.ShowVehicleDetails(vehicle.vehicleId))
                                 }
@@ -138,9 +143,14 @@ fun MyVehiclesScreen(
 
                 // Display vehicle details in a modal bottom sheet when a vehicle is selected
                 uiState.selectedVehicle?.let { vehicle ->
+
+                    // Format the address to drop the country
+                    val addressAsList = vehicle.address.split(",")
+                    val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
+
                     VehicleDetailsBottomSheet(
                         vehicle = vehicle,
-                        location = uiState.listOfLocationsDetailed[uiState.listOfVehicles.indexOf(vehicle)],
+                        location = detailedAddress,
                         sheetState = vehicleBottomSheet,
                         onDeleteClick = {
                             viewModel.onEvent(MyVehiclesUIEvent.DeleteVehicle(vehicle.vehicleId))
