@@ -34,17 +34,11 @@ class RegisterVehicleViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RegisterVehicleUIState())
     val uiState: StateFlow<RegisterVehicleUIState> get() = _uiState.asStateFlow()
 
-    private val _vehicleUpdated = MutableStateFlow(false)
-    val vehicleUpdated: StateFlow<Boolean> = _vehicleUpdated.asStateFlow()
-
     private val _address: MutableStateFlow<AddressItem> = MutableStateFlow(AddressItem())
     val address = _address.asStateFlow()
 
     private val _placePredictions: MutableStateFlow<List<PlaceItem>> = MutableStateFlow(arrayListOf())
     val placePredictions = _placePredictions.asStateFlow()
-
-    private val _showProgressBar: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val showProgressBar = _showProgressBar.asStateFlow()
 
     init {
         getUserId()
@@ -263,14 +257,14 @@ class RegisterVehicleViewModel @Inject constructor(
                             vehicleRepository.addVehicle(newVehicle)
 
                             withContext(Dispatchers.Main) {
-                                _vehicleUpdated.value = true
+                                _uiState.value.vehicleUpdated = true
                                 resetRegisterVehicleUiState()
                             }
                         }
                         Log.d("RegisterVehicleViewModel", "Created vehicle successfully")
 
                     } catch (e: Exception) {
-                        _vehicleUpdated.value = false
+                        _uiState.value.vehicleUpdated = false
                         Log.d("RegisterVehicleViewModel", "Error creating vehicle: $e")
                     }
                 }
@@ -281,7 +275,7 @@ class RegisterVehicleViewModel @Inject constructor(
             }
 
             is RegisterVehicleUIEvent.ResetVehicleUpdated -> {
-                _vehicleUpdated.value = false
+                _uiState.value.vehicleUpdated = false
             }
 
             RegisterVehicleUIEvent.OnAddressAutoCompleteClear -> {
