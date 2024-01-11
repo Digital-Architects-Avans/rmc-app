@@ -10,9 +10,11 @@ import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.remote.ILocationService
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
+import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
+import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.google.android.gms.maps.model.LatLng
@@ -37,6 +39,7 @@ class RentACarViewModel @Inject constructor(
     private val rentalRepository: RentalRepository,
     private var userRepository: UserRepository,
     private val locationService: ILocationService,
+    private val userPreferencesRepository: UserPreferencesRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     // Rent A Car UI state
@@ -163,6 +166,30 @@ class RentACarViewModel @Inject constructor(
                     showRationaleDialog = event.show
                 )
             }
+
+            is RentACarUIEvent.FetchFilterPreference -> {
+                viewModelScope.launch() {
+                    try {
+                        withContext(Dispatchers.IO) {
+                            val filterPreferences = userPreferencesRepository.getFilterPreference()
+
+                            _rentACarUiState.value = _rentACarUiState.value.copy(
+                                datePreference = filterPreferences.date,
+                                location = filterPreferences.location,
+                                price = filterPreferences.price,
+                                distance = filterPreferences.distance,
+                                engineTypeIce = filterPreferences.engineTypeICE,
+                                engineTypeBev = filterPreferences.engineTypeBEV,
+                                engineTypeFcev = filterPreferences.engineTypeFCEV
+                            )
+                        }
+                        Log.d("RentACarViewModel", "Fetched preferences successfully")
+
+                    } catch (e: Exception) {
+                        Log.d("RentACarViewModel", "Error fetching filter preference: $e")
+                    }
+                }
+            }
         }
     }
 
@@ -172,17 +199,29 @@ class RentACarViewModel @Inject constructor(
 
     private fun getVehicles() {
         viewModelScope.launch(dispatcher) {
+            val filterPreferences = _rentACarUiState.value
+            // Get all vehicles
             val result: Result<List<Vehicle>> = runCatching {
                 vehicleRepository.getAllVehicles()
             }
             result.onSuccess { listOfVehicles ->
-                // Get all available vehicles
-                _rentACarUiState.value.listOfVehicles = listOfVehicles.filter { vehicle ->
-                    vehicle.availability
+                // filter on availability and according to preferences
+                val filteredVehicles = listOfVehicles.filter { vehicle ->
+                    vehicle.availability &&
+                    (filterPreferences.price <= 0 || vehicle.price <= filterPreferences.price)&&
+//                        vehicle.date == filterPreferences.datePreference &&
+//                        vehicle.location == filterPreferences.location &&
+//                        vehicle.distance <= filterPreferences.distance &&
+                    (filterPreferences.engineTypeIce && vehicle.engineType == EngineType.ICE ||
+                    filterPreferences.engineTypeBev && vehicle.engineType == EngineType.BEV ||
+                    filterPreferences.engineTypeFcev && vehicle.engineType == EngineType.FCEV)
                 }
+                _rentACarUiState.value.listOfVehicles = filteredVehicles
 
                 // Get vehicle map items
-                _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                if (filteredVehicles.isNotEmpty()) {
+                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                }
             }.onFailure { e ->
                 e.printStackTrace()
             }
@@ -217,7 +256,7 @@ class RentACarViewModel @Inject constructor(
                     _rentACarUiState.value.userId = userId!!
                 }
             } catch (e: Exception) {
-                Log.d("MyAccountViewModel", "error: $e")
+                Log.d("RentACarViewModel", "error: $e")
             }
         }
     }

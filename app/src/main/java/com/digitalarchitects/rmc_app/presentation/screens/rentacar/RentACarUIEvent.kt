@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
+import com.digitalarchitects.rmc_app.presentation.screens.search.SearchUIEvent
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.datetime.LocalDate
 
@@ -19,4 +20,7 @@ sealed interface RentACarUIEvent {
     object PermissionsGranted : RentACarUIEvent
     object PermissionsRevoked : RentACarUIEvent
     class ShowPermissionDialog(val show: Boolean) : RentACarUIEvent
+
+    // Filter preference
+    object FetchFilterPreference : RentACarUIEvent
 }

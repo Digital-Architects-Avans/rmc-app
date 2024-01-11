@@ -143,7 +143,9 @@ fun RentACarScreen(
     val listBottomSheet = rememberModalBottomSheetState()
 
     // Get vehicles and create map items in view model
+    // Get filter preference from datastore
     LaunchedEffect(Unit) {
+        viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         viewModel.setMapData()
     }
 
