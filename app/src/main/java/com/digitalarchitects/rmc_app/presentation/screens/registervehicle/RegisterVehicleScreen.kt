@@ -4,16 +4,13 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -41,11 +38,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.domain.model.AddressItem
 import com.digitalarchitects.rmc_app.domain.model.EngineType
-import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
-import com.digitalarchitects.rmc_app.presentation.components.AutoCompleteUI
+import com.digitalarchitects.rmc_app.presentation.components.AddressEdit
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
@@ -290,6 +285,23 @@ fun RegisterVehicleScreen(
 
                     RmcSpacer(8)
 
+                    // Add the larger RmcTextField for the vehicle description
+                    RmcTextField(
+                        label = stringResource(id = R.string.vehicle_description),
+                        value = uiState.description,
+                        maxLines = 5,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        onValueChange = {
+                            viewModel.onEvent(RegisterVehicleUIEvent.SetDescription(it))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp) // Adjust the height as needed
+                    )
+
                     AddressEdit(
                         addressItem = address,
                         modifier = Modifier,
@@ -356,131 +368,4 @@ fun RegisterVehicleScreen(
             }
         }
     }
-}
-
-@Composable
-fun AddressEdit(
-    addressItem: AddressItem,
-    modifier: Modifier,
-    addressPlaceItemPredictions: List<PlaceItem>,
-    onQueryChanged: (String) -> Unit,
-    onClearClick: () -> Unit,
-    onDoneClick: () -> Unit,
-    onItemClick: (PlaceItem) -> Unit
-) {
-
-    Column(
-        modifier = modifier.padding(top = 8.dp, bottom = 8.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-
-        AutoCompleteUI(
-            modifier = Modifier.fillMaxWidth(),
-            query = addressItem.streetAddress,
-            queryLabel = stringResource(id = R.string.vehicle_location),
-            useOutlined = true,
-            onQueryChanged = onQueryChanged,
-            predictions = addressPlaceItemPredictions,
-            onClearClick = onClearClick,
-            onDoneActionClick = onDoneClick,
-            onItemClick = onItemClick
-        ) {
-            Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
-        }
-
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("City", fontWeight = FontWeight.Bold)
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        addressItem.city,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("State", fontWeight = FontWeight.Bold)
-
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        addressItem.state,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Postal Code", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.postalCode,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Country", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.country,
-                        modifier = Modifier.weight(1.0f)
-                    )
-
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("Latitude", fontWeight = FontWeight.Bold)
-
-
-
-                    Text(
-                        addressItem.latitude.toString(),
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("Longitude", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.longitude.toString(),
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-            }
-
-        }
-    }
-
 }
