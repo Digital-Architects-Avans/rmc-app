@@ -306,18 +306,18 @@ fun EditMyVehicleScreen(
                         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
                     ) {
                         Column(Modifier.weight(1f)) {
-                            RmcOutlinedButton(
-                                value = stringResource(id = R.string.cancel),
-                                onClick = {
-                                    navigateToScreen(RmcScreen.MyVehicles.name)
-                                }
-                            )
-                        }
-                        Column(Modifier.weight(1f)) {
                             RmcFilledButton(
                                 value = stringResource(id = R.string.apply),
                                 onClick = {
                                     viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
+                                }
+                            )
+                        }
+                        Column(Modifier.weight(1f)) {
+                            RmcOutlinedButton(
+                                value = stringResource(id = R.string.cancel),
+                                onClick = {
+                                    navigateToScreen(RmcScreen.MyVehicles.name)
                                 }
                             )
                         }
