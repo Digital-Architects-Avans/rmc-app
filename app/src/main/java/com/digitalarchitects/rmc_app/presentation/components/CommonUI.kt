@@ -1178,6 +1178,7 @@ fun RmcVehicleDetails(
 @Composable
 fun RmcVehicleDetailsOwner(
     vehicle: Vehicle,
+    location: String,
     showAvailability: Boolean,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit
@@ -1232,7 +1233,7 @@ fun RmcVehicleDetailsOwner(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RmcIconLabel(
-                label = "Eindhoven",
+                label = location,
                 icon = Icons.Rounded.LocationOn
             )
             RmcIconLabel(
