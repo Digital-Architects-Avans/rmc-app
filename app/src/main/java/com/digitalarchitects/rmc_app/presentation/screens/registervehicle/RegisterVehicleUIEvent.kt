@@ -16,9 +16,9 @@ sealed interface RegisterVehicleUIEvent {
     data class SetVehicleClass(val vehicleClass: String) : RegisterVehicleUIEvent
     data class SetLicensePlate(val licensePlate: String) : RegisterVehicleUIEvent
     data class SetImgLink(val imgLink: Int) : RegisterVehicleUIEvent
+    data class SetDescription(val description: String) : RegisterVehicleUIEvent
     data class SetPrice(val price: Double) : RegisterVehicleUIEvent
     object ResetVehicleUpdated: RegisterVehicleUIEvent
-
     object OnAddressAutoCompleteClear : RegisterVehicleUIEvent
     data class OnAddressChange(val address: String) : RegisterVehicleUIEvent
     data class OnAddressSelected(val selectedPlaceItem: PlaceItem) : RegisterVehicleUIEvent
