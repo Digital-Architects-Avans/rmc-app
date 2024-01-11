@@ -134,5 +134,6 @@
     <string name="retrieve_rentals">Retrieve Rentals</string>
     <string name="invalid_date">Invalid date</string>
     <string name="date_placeholder" translatable="false">YYYY-MM-DD</string>
+    <string name="vehicle_location">Vehicle Location</string>
 
 </resources>
