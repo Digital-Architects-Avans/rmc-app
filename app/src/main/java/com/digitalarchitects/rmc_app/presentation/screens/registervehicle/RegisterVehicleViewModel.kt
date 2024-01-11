@@ -63,7 +63,6 @@ class RegisterVehicleViewModel @Inject constructor(
     }
 
     private fun getPlacePredictions(query: String) {
-        Log.d("RegisterVehicleViewModel", "streetAddress: ${address.value.streetAddress}")
         viewModelScope.launch(dispatcher) {
 
             when (val placePredictionsResult = placesRepository.getPlacePredictions(query)) {
@@ -71,7 +70,6 @@ class RegisterVehicleViewModel @Inject constructor(
                     val placePredictions = placePredictionsResult.data
 
                     _placePredictions.value = placePredictions
-                    Log.d("RegisterVehicleViewModel", "placePredictions: $placePredictions")
                 }
 
                 is Result.Error -> {
@@ -107,9 +105,12 @@ class RegisterVehicleViewModel @Inject constructor(
                                 longitude = addressFromPlace.longitude.toFloat()
                             )
                         }
-
+                        _uiState.update {
+                            it.copy(
+                                address = addressFromPlace.address
+                            )
+                        }
                     }
-                    Log.d("RegisterVehicleViewModel", "addressFromPlace: $addressFromPlace")
                     clearPredictions()
                 }
 
@@ -126,7 +127,6 @@ class RegisterVehicleViewModel @Inject constructor(
     }
 
     private fun onLocationAutoCompleteClear() {
-        Log.d("RegisterVehicleViewModel", "onLocationAutoCompleteClear")
         viewModelScope.launch {
             _address.value = AddressItem()
             clearPredictions()
@@ -233,6 +233,14 @@ class RegisterVehicleViewModel @Inject constructor(
                 }
             }
 
+            is RegisterVehicleUIEvent.SetDescription -> {
+                _uiState.update {
+                    it.copy(
+                        description = event.description
+                    )
+                }
+            }
+
             is RegisterVehicleUIEvent.ConfirmRegisterVehicleButtonClicked -> {
                 val userId = _uiState.value.userId
                 val brand = _uiState.value.brand
@@ -242,6 +250,8 @@ class RegisterVehicleViewModel @Inject constructor(
                 val engineType = _uiState.value.engineType
                 val licensePlate = _uiState.value.licensePlate
                 val imgLink = _uiState.value.imgLink
+                val description = _uiState.value.description
+                val address = _uiState.value.address
                 val latitude = _uiState.value.latitude
                 val longitude = _uiState.value.longitude
                 val price = _uiState.value.price
@@ -256,6 +266,8 @@ class RegisterVehicleViewModel @Inject constructor(
                     engineType = engineType,
                     licensePlate = licensePlate,
                     imgLink = imgLink,
+                    description = description,
+                    address = address,
                     latitude = latitude,
                     longitude = longitude,
                     price = price,
@@ -325,6 +337,8 @@ class RegisterVehicleViewModel @Inject constructor(
                 engineType = EngineType.ICE,
                 licensePlate = "",
                 imgLink = 0,
+                description = "",
+                address = "",
                 latitude = 0.0F,
                 longitude = 0.0F,
                 price = 0.00,
