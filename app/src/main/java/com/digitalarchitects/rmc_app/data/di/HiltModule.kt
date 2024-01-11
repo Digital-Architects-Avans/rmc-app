@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.data.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.digitalarchitects.rmc_app.data.auth.AuthInterceptor
@@ -15,6 +16,7 @@ import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.domain.util.LocalDateAdapter
+import com.google.android.libraries.places.api.Places
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -33,6 +35,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object HiltModule {
+
+    @Provides
+    @Singleton
+    fun providePlacesClient(application: Application) =
+        Places.createClient(application.applicationContext)
 
     @Provides
     fun providesRetrofitApi(retrofit: Retrofit): RmcApiService {

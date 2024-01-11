@@ -124,4 +124,5 @@
     <string name="retrieve_vehicles">Voertuigen ophalen</string>
     <string name="retrieve_rentals">Verhuringen ophalen</string>
     <string name="invalid_date">Datum ongeldig</string>
+    <string name="vehicle_location">Voertuig Locatie</string>
 </resources>
