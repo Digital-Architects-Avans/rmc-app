@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -61,13 +60,11 @@ fun RegisterVehicleScreen(
     navigateToScreen: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val vehicleUpdated by viewModel.vehicleUpdated.collectAsState()
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val address by viewModel.address.collectAsState()
     val placesPredictions by viewModel.placePredictions.collectAsState()
-    val showProgressbar by viewModel.showProgressBar.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(RegisterVehicleUIEvent.FetchUserId)
@@ -320,14 +317,6 @@ fun RegisterVehicleScreen(
                     )
                 }
 
-                if (showProgressbar) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                }
-
                 RmcSpacer(32)
 
                 Row(
@@ -354,12 +343,12 @@ fun RegisterVehicleScreen(
                     }
                 }
                 val context = LocalContext.current
-                val toastMessage = if (vehicleUpdated) {
+                val toastMessage = if (uiState.vehicleUpdated) {
                     stringResource(R.string.vehicle_registered_successfully)
                 } else {
                     stringResource(R.string.unable_to_register_vehicle)
                 }
-                if (vehicleUpdated) {
+                if (uiState.vehicleUpdated) {
                     Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
                     navigateToScreen(RmcScreen.MyVehicles.name)
                     viewModel.onEvent(RegisterVehicleUIEvent.ResetVehicleUpdated)
