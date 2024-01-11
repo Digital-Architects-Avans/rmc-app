@@ -12,7 +12,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,6 +49,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -64,11 +64,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -110,7 +112,9 @@ import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.domain.util.millisToLocalDateConverter
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
+import kotlinx.datetime.LocalDate
 
 /*
  * Composable components shared across different screens
@@ -1847,99 +1851,49 @@ fun AddressEdit(
         ) {
             Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
         }
-
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("City", fontWeight = FontWeight.Bold)
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        addressItem.city,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
+    }
+}
 
 
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("State", fontWeight = FontWeight.Bold)
-
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        addressItem.state,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Postal Code", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.postalCode,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Country", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.country,
-                        modifier = Modifier.weight(1.0f)
-                    )
-
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("Latitude", fontWeight = FontWeight.Bold)
-
-
-
-                    Text(
-                        addressItem.latitude.toString(),
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("Longitude", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.longitude.toString(),
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-            }
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RmcDatePickerDialog(
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return utcTimeMillis >= System.currentTimeMillis()
         }
+    })
+
+    val selectedDate = datePickerState.selectedDateMillis?.let {
+        millisToLocalDateConverter(it)
+    } ?: LocalDate(2024, 1, 1)
+
+    androidx.compose.material3.DatePickerDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            Button(onClick = {
+                onDateSelected(selectedDate)
+                onDismiss()
+            }
+
+            ) {
+                Text(text = "OK")
+            }
+        },
+        dismissButton = {
+            Button(onClick = {
+                onDismiss()
+            }) {
+                Text(text = "Cancel")
+            }
+        }
+    ) {
+        DatePicker(
+            state = datePickerState
+        )
     }
 }
