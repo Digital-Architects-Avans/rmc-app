@@ -215,10 +215,12 @@ fun RentACarScreen(
                     .fillMaxWidth()
             ) {
                 if (rentACarUiState.activeVehicleId != null) {
+                    val vehicle = rentACarUiState.listOfVehicles.first { vehicle ->
+                        vehicle.vehicleId == rentACarUiState.activeVehicleId
+                    }
                     RmcVehicleDetails(
-                        rentACarUiState.listOfVehicles.first { vehicle ->
-                            vehicle.vehicleId == rentACarUiState.activeVehicleId
-                        },
+                    vehicle = vehicle,
+                        location = vehicle.address,
                         showAvailability = false
                     )
                 }
