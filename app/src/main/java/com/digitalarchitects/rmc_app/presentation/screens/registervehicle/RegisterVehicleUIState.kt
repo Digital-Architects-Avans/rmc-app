@@ -14,5 +14,7 @@ data class RegisterVehicleUIState(
     val latitude: Float = 0.0F,
     val longitude: Float = 0.0F,
     val price: Double = 0.00,
-    val availability: Boolean = false
+    val availability: Boolean = false,
+
+    var vehicleUpdated: Boolean = false
 )
