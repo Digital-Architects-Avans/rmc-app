@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,15 +23,20 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ToggleOff
 import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.icons.filled.Visibility
@@ -49,6 +55,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -58,6 +65,9 @@ import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,10 +77,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -92,6 +104,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
+import com.digitalarchitects.rmc_app.domain.model.AddressItem
+import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
@@ -306,10 +320,11 @@ fun RmcTextField(
     icon: ImageVector? = null,
     placeholder: String? = null,
     isPassword: Boolean = false,
-    value: String,
+    maxLines: Int = 1,
+    value: String? = null,
+    isError: Boolean = false,
     enabled: Boolean = true,
     onValueChange: (String) -> Unit,
-    // TODO: Add error handling
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.None
@@ -317,7 +332,14 @@ fun RmcTextField(
 ) {
     OutlinedTextField(
         shape = MaterialTheme.shapes.small,
-        label = { Text(text = label) },
+        label = {
+            Text(
+                text = label,
+                style = if (isError) MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.error
+                ) else MaterialTheme.typography.bodyLarge,
+            )
+        },
         textStyle = MaterialTheme.typography.bodyLarge,
         colors = OutlinedTextFieldDefaults.colors(
             cursorColor = MaterialTheme.colorScheme.primary,
@@ -331,10 +353,10 @@ fun RmcTextField(
         ),
         keyboardOptions = keyboardOptions,
         modifier = modifier.fillMaxWidth(),
-        singleLine = true,
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        maxLines = 1,
-        value = value,
+        maxLines = maxLines,
+        singleLine = maxLines == 1,
+        value = value ?: "", // Provide an empty string if value is null
         enabled = enabled,
         onValueChange = onValueChange,
         leadingIcon = icon?.let {
@@ -1059,6 +1081,7 @@ fun RmcIconLabel(
 @Composable
 fun RmcVehicleDetails(
     vehicle: Vehicle,
+    location: String,
     showAvailability: Boolean
 ) {
     Column(
@@ -1105,7 +1128,7 @@ fun RmcVehicleDetails(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RmcIconLabel(
-                label = "Eindhoven",
+                label = location,
                 icon = Icons.Rounded.LocationOn
             )
             RmcIconLabel(
@@ -1161,6 +1184,7 @@ fun RmcVehicleDetails(
 @Composable
 fun RmcVehicleDetailsOwner(
     vehicle: Vehicle,
+    location: String,
     showAvailability: Boolean,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit
@@ -1215,7 +1239,7 @@ fun RmcVehicleDetailsOwner(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RmcIconLabel(
-                label = "Eindhoven",
+                label = location,
                 icon = Icons.Rounded.LocationOn
             )
             RmcIconLabel(
@@ -1258,12 +1282,23 @@ fun RmcVehicleDetailsOwner(
             )
         }
 
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
+        )
+
+        Text(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+                    append("\"${vehicle.description}\"")
+                }
+            },
+            modifier = Modifier
+                .padding(bottom = 8.dp),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
 
         Row(
@@ -1632,5 +1667,279 @@ fun MyRentalDetails(
             )
         }
     }
+}
 
+
+@Composable
+fun <T> AutoCompleteUI(
+    modifier: Modifier,
+    query: String,
+    queryLabel: String,
+    useOutlined: Boolean = false,
+    colors: TextFieldColors? = null,
+    onQueryChanged: (String) -> Unit = {},
+    predictions: List<T>,
+    onDoneActionClick: () -> Unit = {},
+    onClearClick: () -> Unit = {},
+    onItemClick: (T) -> Unit = {},
+    itemContent: @Composable (T) -> Unit = {}
+) {
+
+    val view = LocalView.current
+    val lazyListState = rememberLazyListState()
+
+
+    LazyColumn(
+        state = lazyListState,
+        modifier = modifier.heightIn(max = TextFieldDefaults.MinHeight * 6)
+    ) {
+
+        item {
+            QuerySearch(
+                query = query,
+                label = queryLabel,
+                useOutlined = useOutlined,
+                colors = colors,
+                onQueryChanged = onQueryChanged,
+                onDoneActionClick = {
+                    onDoneActionClick()
+                    //view.clearFocus()
+                },
+                onClearClick = {
+                    onClearClick()
+                }
+            )
+        }
+
+        if (predictions.isNotEmpty()) {
+            items(predictions) { prediction ->
+                Row(
+                    Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .clickable {
+                            view.clearFocus()
+                            onItemClick(prediction)
+                        }
+                ) {
+                    itemContent(prediction)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun QuerySearch(
+    modifier: Modifier = Modifier,
+    useOutlined: Boolean,
+    query: String,
+    label: String,
+    colors: TextFieldColors?,
+    onDoneActionClick: () -> Unit = {},
+    onClearClick: () -> Unit = {},
+    onQueryChanged: (String) -> Unit
+) {
+
+    var showClearButton by remember { mutableStateOf(false) }
+
+    if (useOutlined) {
+        OutlinedTextField(
+            modifier = modifier
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    showClearButton = (focusState.isFocused)
+                },
+            shape = MaterialTheme.shapes.small,
+            value = query,
+            onValueChange = onQueryChanged,
+            label = { Text(text = label, style = MaterialTheme.typography.bodyLarge) },
+            textStyle = MaterialTheme.typography.bodyLarge,
+            singleLine = true,
+            trailingIcon = {
+                if (showClearButton) {
+                    IconButton(onClick = {
+                        onClearClick()
+                    }) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Clear")
+                    }
+                }
+            },
+            keyboardActions = KeyboardActions(onDone = {
+                onDoneActionClick()
+            }),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.primary,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                errorTextColor = MaterialTheme.colorScheme.error,
+                unfocusedTextColor = MaterialTheme.colorScheme.scrim
+            )
+        )
+    } else {
+
+        TextField(
+            modifier = modifier
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    showClearButton = (focusState.isFocused)
+                },
+            value = query,
+            onValueChange = onQueryChanged,
+            label = { Text(text = label) },
+            textStyle = MaterialTheme.typography.bodySmall,
+            singleLine = true,
+            trailingIcon = {
+                if (showClearButton) {
+                    IconButton(onClick = { onClearClick() }) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Clear")
+                    }
+                }
+
+            },
+            keyboardActions = KeyboardActions(onDone = {
+                onDoneActionClick()
+            }),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Text
+            ),
+            colors = colors ?: TextFieldDefaults.colors(
+            )
+        )
+    }
+}
+
+
+@Composable
+fun AddressEdit(
+    addressItem: AddressItem,
+    modifier: Modifier,
+    addressPlaceItemPredictions: List<PlaceItem>,
+    onQueryChanged: (String) -> Unit,
+    onClearClick: () -> Unit,
+    onDoneClick: () -> Unit,
+    onItemClick: (PlaceItem) -> Unit
+) {
+
+    Column(
+        modifier = modifier.padding(top = 8.dp, bottom = 8.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        AutoCompleteUI(
+            modifier = Modifier.fillMaxWidth(),
+            query = addressItem.streetAddress,
+            queryLabel = stringResource(id = R.string.vehicle_location),
+            useOutlined = true,
+            onQueryChanged = onQueryChanged,
+            predictions = addressPlaceItemPredictions,
+            onClearClick = onClearClick,
+            onDoneActionClick = onDoneClick,
+            onItemClick = onItemClick
+        ) {
+            Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
+        }
+
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+
+            Row(modifier = modifier.height(IntrinsicSize.Min)) {
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("City", fontWeight = FontWeight.Bold)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        addressItem.city,
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("State", fontWeight = FontWeight.Bold)
+
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        addressItem.state,
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(modifier = modifier.height(IntrinsicSize.Min)) {
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Postal Code", fontWeight = FontWeight.Bold)
+
+                    Text(
+                        addressItem.postalCode,
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Country", fontWeight = FontWeight.Bold)
+
+                    Text(
+                        addressItem.country,
+                        modifier = Modifier.weight(1.0f)
+                    )
+
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(modifier = modifier.height(IntrinsicSize.Min)) {
+
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("Latitude", fontWeight = FontWeight.Bold)
+
+
+
+                    Text(
+                        addressItem.latitude.toString(),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+
+                    Text("Longitude", fontWeight = FontWeight.Bold)
+
+                    Text(
+                        addressItem.longitude.toString(),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+
+            }
+
+        }
+    }
 }

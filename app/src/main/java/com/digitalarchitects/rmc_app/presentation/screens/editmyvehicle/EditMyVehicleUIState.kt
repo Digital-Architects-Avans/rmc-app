@@ -12,8 +12,12 @@ data class EditMyVehicleUIState (
     val engineType: EngineType = EngineType.ICE,
     val licensePlate: String = "",
     val imgLink: Int = 1,
+    val description: String = "",
+    val address: String = "",
     val latitude: Float = 0.00F,
     val longitude: Float = 0.00F,
     val price: Double = 0.00,
-    val availability: Boolean = false
+    val availability: Boolean = false,
+
+    var vehicleUpdated: Boolean = false
 )

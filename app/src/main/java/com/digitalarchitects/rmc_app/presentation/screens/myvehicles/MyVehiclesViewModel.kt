@@ -65,7 +65,8 @@ class MyVehiclesViewModel @Inject constructor(
                 val vehicleId: String? = event.vehicleId
 
                 // Find the vehicle with the matching vehicleId
-                val selectedVehicle = uiState.value.listOfVehicles.find { it.vehicleId == vehicleId }
+                val selectedVehicle =
+                    uiState.value.listOfVehicles.find { it.vehicleId == vehicleId }
 
                 // Update the UI state with the selected vehicle
                 _uiState.update {

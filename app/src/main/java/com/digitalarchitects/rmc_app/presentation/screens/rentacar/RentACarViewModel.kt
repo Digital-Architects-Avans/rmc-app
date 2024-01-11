@@ -24,10 +24,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.toLocalDate
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
 import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -91,54 +91,53 @@ class RentACarViewModel @Inject constructor(
             }
 
             is RentACarUIEvent.ReserveVehicleButtonClicked -> {
-                // Disable form
-                setReserveVehicleUiState(true)
-
                 // Get Vehicle info
-                val vehicle = _rentACarUiState.value.listOfVehicles.first { vehicle ->
-                    vehicle.vehicleId == _rentACarUiState.value.activeVehicleId
+                val vehicle = _rentACarUiState.value.listOfVehicles.firstOrNull { it.vehicleId == _rentACarUiState.value.activeVehicleId }
+
+                if (vehicle == null) {
+                    Log.e("RegisterRentalViewModel", "Active vehicle not found")
+                    return
                 }
 
                 // Create rental DTO
-                val vehicleId = vehicle.vehicleId
-                val userId = _rentACarUiState.value.userId
-                val date = _rentACarUiState.value.date.toLocalDate()
-                val price = vehicle.price
-                val latitude = vehicle.latitude
-                val longitude = vehicle.longitude
-                val status = RentalStatus.PENDING
-                val distanceTravelled = 0.0
-                val score = 0
+                val date = _rentACarUiState.value.date ?: run {
+                    Log.e("RegisterRentalViewModel", "Date is null")
+                    return
+                }
 
                 val newRentalDTO = CreateRentalDTO(
-                    vehicleId = vehicleId,
-                    userId = userId,
+                    vehicleId = vehicle.vehicleId,
+                    userId = _rentACarUiState.value.userId,
                     date = date,
-                    price = price,
-                    latitude = latitude,
-                    longitude = longitude,
-                    status = status,
-                    distanceTravelled = distanceTravelled,
-                    score = score
+                    price = vehicle.price,
+                    latitude = vehicle.latitude,
+                    longitude = vehicle.longitude,
+                    status = RentalStatus.PENDING,
+                    distanceTravelled = 0.0,
+                    score = 0
                 )
 
-                viewModelScope.launch {
+                viewModelScope.launch(dispatcher) {
                     try {
                         withContext(Dispatchers.IO) {
                             rentalRepository.addRental(createRentalDTO = newRentalDTO)
-
-                            withContext(Dispatchers.Main) {
-                                setReserveVehicleUiState(false)
-                            }
                         }
-                        Log.d("RegisterRentalViewModel", "Created reservation successfully")
+                        Log.d("RentACarViewModel","Created rental successfully")
+
+                        // Reset uiState
+                        _rentACarUiState.update {
+                            it.copy(
+                                activeVehicleId = null,
+                                date = LocalDate(2024, 1, 1)
+                            )
+                        }
 
                     } catch (e: Exception) {
-                        // Re-enable reserve button
-                        Log.d("RegisterRentalViewModel", "Error creating reservation: $e")
+                        Log.e("RentACarViewModel", "Error creating rental")
                     }
                 }
             }
+
 
             // Permissions
             // Invoke locationService when permissions are granted
@@ -220,17 +219,6 @@ class RentACarViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.d("MyAccountViewModel", "error: $e")
             }
-        }
-    }
-
-    private fun setReserveVehicleUiState(state: Boolean) {
-        _rentACarUiState.value = _rentACarUiState.value.copy(
-            placingReservation = state
-        )
-        if (!state) {
-            _rentACarUiState.value = _rentACarUiState.value.copy(
-                date = LocalDate.now().plusDays(1).toString()
-            )
         }
     }
 
