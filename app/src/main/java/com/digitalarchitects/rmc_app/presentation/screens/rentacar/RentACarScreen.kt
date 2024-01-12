@@ -195,7 +195,7 @@ fun RentACarScreen(
     // Start Rent A Car screen
     BottomSheetScaffold(
         scaffoldState = detailsBottomSheet,
-        sheetPeekHeight = 194.dp, // 324.dp with image
+        sheetPeekHeight = 320.dp,
 
         // Bottom sheet: Vehicle details
         sheetContent = {
@@ -208,9 +208,8 @@ fun RentACarScreen(
                         vehicle.vehicleId == rentACarUiState.activeVehicleId
                     }
                     RmcVehicleDetails(
-                    vehicle = vehicle,
-                        location = vehicle.address,
-                        showAvailability = false
+                        vehicle = vehicle,
+                        ownerView = false
                     )
                 }
                 RmcDivider()

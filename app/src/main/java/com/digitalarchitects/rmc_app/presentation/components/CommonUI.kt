@@ -837,12 +837,16 @@ fun RmcVehicleListItem(
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
+                val addressAsList = vehicle.address.split(",")
+                val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
+
                 RmcIconLabel(
-                    label = "Eindhoven",
+                    label = detailedAddress,
                     icon = Icons.Rounded.LocationOn
                 )
                 RmcIconLabel(
-                    label = vehicle.price.toString(),
+                    label = vehicle.price.toInt().toString(),
                     icon = Icons.Rounded.PriceChange
                 )
             }
@@ -900,8 +904,7 @@ fun RmcIconLabel(
 @Composable
 fun RmcVehicleDetails(
     vehicle: Vehicle,
-    location: String,
-    showAvailability: Boolean
+    ownerView: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -917,7 +920,7 @@ fun RmcVehicleDetails(
                 style = MaterialTheme.typography.displayMedium,
                 color = colorResource(id = R.color.primary_red)
             )
-            if (showAvailability) {
+            if (ownerView) {
                 if (vehicle.availability) {
                     RmcTextBadge(
                         label = stringResource(R.string.available),
@@ -931,6 +934,12 @@ fun RmcVehicleDetails(
                         labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
                     )
                 }
+            } else {
+                RmcTextBadge(
+                    label = "€ ${vehicle.price.toInt()},- ",
+                    labelTextColor = MaterialTheme.colorScheme.primary,
+                    labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                )
             }
         }
         Text(
@@ -942,31 +951,30 @@ fun RmcVehicleDetails(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+                .padding(bottom = dimensionResource(R.dimen.padding_large)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             RmcIconLabel(
-                label = location,
+                label = vehicle.address,
                 icon = Icons.Rounded.LocationOn
             )
-            RmcIconLabel(
-                label = vehicle.price.toInt().toString(),
-                icon = Icons.Rounded.PriceChange
-            )
+            if (ownerView) {
+                RmcIconLabel(
+                    label = vehicle.price.toInt().toString(),
+                    icon = Icons.Rounded.PriceChange
+                )
+            }
         }
     }
-    if (vehicle.imgLink != 1) {
+    if (vehicle.imgLink == 1) {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(height = 160.dp, width = 20.dp)
-                .padding(
-                    top = dimensionResource(R.dimen.padding_medium),
-                    bottom = dimensionResource(R.dimen.padding_large)
-                ),
+                .height(184.dp)
+                .padding(bottom = dimensionResource(R.dimen.padding_large)),
             contentScale = ContentScale.Crop,
-            painter = painterResource(vehicle.imgLink),
+            painter = painterResource(R.drawable.civic),
             contentDescription = null
         )
     }
@@ -974,14 +982,11 @@ fun RmcVehicleDetails(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
-        //Text(
-        //    modifier = Modifier
-        //        .padding(
-        //            bottom = dimensionResource(R.dimen.padding_small)
-        //        ),
-        //    text = "A cheap car to go away for a day.",
-        //    style = MaterialTheme.typography.bodyMedium,
-        //)
+        Text(
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium)),
+            text = vehicle.description,
+            style = MaterialTheme.typography.bodyMedium,
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
