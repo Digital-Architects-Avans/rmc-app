@@ -516,7 +516,6 @@ fun RmcRentCarForm(
     isDateValid: Boolean,
     onReserveButtonClicked: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
@@ -535,19 +534,15 @@ fun RmcRentCarForm(
                 onValueChange = onValueChange
             )
         }
-
         RmcSpacer(16)
-
         RmcFilledButton(
             value = stringResource(id = R.string.reserve),
             icon = Icons.Filled.Key,
             isEnabled = isDateValid, // Enable the button only if the date is valid
             onClick = { onReserveButtonClicked() }
         )
-
     }
 }
-
 
 // Center camera position on location
 private suspend fun CameraPositionState.centerOnLocation(

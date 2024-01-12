@@ -809,7 +809,7 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (vehicle.imgLink != 1) {
+        if (vehicle.imgLink == 1) {
             Image(
                 painter = painterResource(id = R.drawable.civic),
                 contentDescription = null,
@@ -821,36 +821,35 @@ fun RmcVehicleListItem(
             )
         }
         Column {
-            Text(
-                text = vehicle.licensePlate,
-                style = MaterialTheme.typography.displaySmall,
-                color = colorResource(id = R.color.primary_red)
-            )
-            Text(
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(R.dimen.padding_small)),
-                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
-                style = MaterialTheme.typography.titleMedium,
-            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
             ) {
-
-                val addressAsList = vehicle.address.split(",")
-                val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
-
-                RmcIconLabel(
-                    label = detailedAddress,
-                    icon = Icons.Rounded.LocationOn
+                Text(
+                    text = vehicle.licensePlate,
+                    style = MaterialTheme.typography.displaySmall,
+                    color = colorResource(id = R.color.primary_red),
+                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
                 )
-                RmcIconLabel(
-                    label = vehicle.price.toInt().toString(),
-                    icon = Icons.Rounded.PriceChange
+                RmcTextBadge(
+                    label = "€ ${vehicle.price.toInt()},- ",
+                    labelTextColor = MaterialTheme.colorScheme.primary,
+                    labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
                 )
             }
+            Text(
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_small)),
+                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            val addressAsList = vehicle.address.split(",")
+            val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
+            RmcIconLabel(
+                label = detailedAddress,
+                icon = Icons.Rounded.LocationOn
+            )
         }
     }
 }
