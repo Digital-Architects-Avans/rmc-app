@@ -787,10 +787,9 @@ fun DividerTextComponent() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
@@ -798,12 +797,11 @@ fun DividerTextComponent() {
             thickness = 1.dp,
             color = Color.Gray
         )
-
         Text(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
             text = stringResource(R.string.or),
             fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.primary
+            color = Color.Gray
         )
         HorizontalDivider(
             modifier = Modifier
@@ -833,7 +831,6 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
     }
 
     ClickableText(
-        modifier = Modifier.heightIn(min = 40.dp),
         style = MaterialTheme.typography.bodyLarge,
         text = annotatedString,
         onClick = { offset ->
