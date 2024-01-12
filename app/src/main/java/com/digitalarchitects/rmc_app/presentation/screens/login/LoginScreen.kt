@@ -108,7 +108,7 @@ fun LoginScreen(
             ) {
                 RmcTextField(
                     label = stringResource(id = R.string.email),
-                    icon = Icons.Filled.Email,
+                    leadingIcon = Icons.Filled.Email,
                     value = uiState.email,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
@@ -123,7 +123,7 @@ fun LoginScreen(
 
                 RmcTextField(
                     label = stringResource(id = R.string.password),
-                    icon = Icons.Filled.Lock,
+                    leadingIcon = Icons.Filled.Lock,
                     value = uiState.password,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
