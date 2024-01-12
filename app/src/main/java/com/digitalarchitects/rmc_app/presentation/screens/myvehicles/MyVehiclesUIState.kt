@@ -7,5 +7,6 @@ data class MyVehiclesUIState(
     var listOfLocations: List<String> = emptyList(),
     var listOfLocationsDetailed: List<String> = emptyList(),
     val isLoading: Boolean = false,
-    val selectedVehicle: Vehicle? = null
+    val selectedVehicle: Vehicle? = null,
+    var isAvailable: Boolean = false
 )

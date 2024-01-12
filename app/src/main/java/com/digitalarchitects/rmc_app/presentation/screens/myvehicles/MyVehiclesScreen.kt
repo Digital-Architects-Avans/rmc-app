@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -19,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -124,10 +127,15 @@ fun MyVehiclesScreen(
                     ) {
                         RmcVehicleDetails(
                             vehicle = vehicle,
+                            isAvailable = uiState.isAvailable,
                             ownerView = true
                         )
                         RmcDivider()
                         RmcOwnerCarForm(
+                            isAvailable = uiState.isAvailable,
+                            onAvailabilityChanged = {
+                                viewModel.onEvent(MyVehiclesUIEvent.ChangeAvailability(vehicle.vehicleId))
+                            },
                             onDeleteClick = {
                                 viewModel.onEvent(MyVehiclesUIEvent.DeleteVehicle(vehicle.vehicleId))
                                 viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
@@ -148,16 +156,35 @@ fun MyVehiclesScreen(
     }
 }
 
-// FOrm for owner to manage vehicle
+// Form for owner to manage vehicle
 @Composable
 fun RmcOwnerCarForm(
+    isAvailable: Boolean,
+    onAvailabilityChanged: () -> Unit,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
+        // Vehicle_availability switch
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(id = R.string.vehicle_availability))
+            Switch(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.End),
+                checked = isAvailable,
+                onCheckedChange = { onAvailabilityChanged() }
+            )
+        }
+
+        RmcSpacer(16)
+
+        // Delete and Edit buttons
         Row(
             modifier = Modifier
                 .fillMaxWidth()

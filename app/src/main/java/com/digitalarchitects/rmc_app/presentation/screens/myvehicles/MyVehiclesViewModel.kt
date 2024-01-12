@@ -69,14 +69,33 @@ class MyVehiclesViewModel @Inject constructor(
                     uiState.value.listOfVehicles.find { it.vehicleId == vehicleId }
 
                 // Update the UI state with the selected vehicle
-                _uiState.update {
-                    it.copy(selectedVehicle = selectedVehicle)
+                if (selectedVehicle != null) {
+                    _uiState.update {
+                        it.copy(
+                            selectedVehicle = selectedVehicle,
+                            isAvailable = selectedVehicle.availability
+                        )
+                    }
                 }
             }
 
             is MyVehiclesUIEvent.CancelShowVehicleDetails -> {
                 _uiState.update {
                     it.copy(selectedVehicle = null)
+                }
+            }
+
+            is MyVehiclesUIEvent.ChangeAvailability -> {
+                val vehicleId: String = event.vehicleId
+
+                viewModelScope.launch(dispatcher) {
+                    try {
+                        _uiState.value.isAvailable = !_uiState.value.isAvailable
+                        vehicleRepository.updateVehicleAvailability(vehicleId = vehicleId)
+                        getVehiclesOfUser()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
 

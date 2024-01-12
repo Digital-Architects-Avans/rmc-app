@@ -927,6 +927,7 @@ fun RmcIconLabel(
 @Composable
 fun RmcVehicleDetails(
     vehicle: Vehicle,
+    isAvailable: Boolean = vehicle.availability,
     ownerView: Boolean = false
 ) {
     Column(
@@ -944,7 +945,7 @@ fun RmcVehicleDetails(
                 color = colorResource(id = R.color.primary_red)
             )
             if (ownerView) {
-                if (vehicle.availability) {
+                if (isAvailable) {
                     RmcTextBadge(
                         label = stringResource(R.string.available),
                         labelTextColor = MaterialTheme.colorScheme.primary,

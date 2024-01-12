@@ -33,4 +33,7 @@ interface VehicleRepository {
     /** Retrieves the model name from the [Vehicle]  */
     suspend fun getVehicleModel(vehicleId: String): String?
 
+    /** Updates the availability of a [Vehicle]  */
+    suspend fun updateVehicleAvailability(vehicleId: String)
+
 }
