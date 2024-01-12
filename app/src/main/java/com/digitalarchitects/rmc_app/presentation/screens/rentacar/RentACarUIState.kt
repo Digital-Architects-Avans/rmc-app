@@ -39,5 +39,15 @@ data class RentACarUIState(
     // Rental data
     var activeVehicleId: String? = null,
     var date: LocalDate? = null,
-    var userId: String = ""
+    var userId: String = "",
+
+    // Filter preference
+    val datePreference: LocalDate = LocalDate(2021, 1, 1),
+    val latitude: Float = 0.0F,
+    val longitude: Float = 0.0F,
+    val price: Double = 0.0,
+    val distance: Double = 0.0,
+    val engineTypeIce: Boolean = true,
+    val engineTypeBev: Boolean = true,
+    val engineTypeFcev: Boolean = true
 )
