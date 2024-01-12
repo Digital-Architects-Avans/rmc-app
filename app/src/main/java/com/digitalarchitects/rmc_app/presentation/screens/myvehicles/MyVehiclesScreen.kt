@@ -18,9 +18,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.PriceChange
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,8 +58,10 @@ import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
+import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
 import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetailsOwner
+import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,9 +82,9 @@ fun MyVehiclesScreen(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_my_vehicles,
-                navigationIcon = Icons.Rounded.Close,
+                navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
                 navigateUp = {
-                    navigateToScreen(RmcScreen.RentACar.name)
+                    navigateToScreen(RmcScreen.MyAccount.name)
                 },
             )
         },
@@ -106,7 +111,6 @@ fun MyVehiclesScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(24.dp)
                     ) {
                         itemsIndexed(uiState.listOfVehicles) { index, vehicle ->
 
@@ -114,22 +118,16 @@ fun MyVehiclesScreen(
                             val addressAsList = vehicle.address.split(",")
                             val streetAndCity = addressAsList[0] + ", " + addressAsList[1].drop(8)
 
-                            VehicleListItem(
+                            RmcVehicleListItem(
                                 vehicle = vehicle,
-                                location = streetAndCity,
-                                onItemClick = {
+                                ownerView = true,
+                                onClick = {
                                     viewModel.onEvent(MyVehiclesUIEvent.ShowVehicleDetails(vehicle.vehicleId))
                                 }
                             )
 
                             if (index < uiState.listOfVehicles.lastIndex)
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
-                                    thickness = 1.dp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-                                )
+                                RmcDivider()
                         }
                     }
                 } else {

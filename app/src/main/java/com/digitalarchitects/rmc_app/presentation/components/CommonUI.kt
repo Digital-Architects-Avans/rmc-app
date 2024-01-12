@@ -793,6 +793,7 @@ fun RmcMapVehicleItem() {
 @Composable
 fun RmcVehicleListItem(
     vehicle: Vehicle,
+    ownerView: Boolean = false,
     onClick: (String) -> Unit
 ) {
     Row(
@@ -833,11 +834,27 @@ fun RmcVehicleListItem(
                     color = colorResource(id = R.color.primary_red),
                     modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
                 )
-                RmcTextBadge(
-                    label = "€ ${vehicle.price.toInt()},- ",
-                    labelTextColor = MaterialTheme.colorScheme.primary,
-                    labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+                if (ownerView) {
+                    if (vehicle.availability) {
+                        RmcTextBadge(
+                            label = stringResource(R.string.available),
+                            labelTextColor = MaterialTheme.colorScheme.primary,
+                            labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    } else {
+                        RmcTextBadge(
+                            label = stringResource(R.string.unavailable),
+                            labelTextColor = MaterialTheme.colorScheme.error,
+                            labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    }
+                } else {
+                    RmcTextBadge(
+                        label = "€ ${vehicle.price.toInt()},- ",
+                        labelTextColor = MaterialTheme.colorScheme.primary,
+                        labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                }
             }
             Text(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_small)),
@@ -850,6 +867,12 @@ fun RmcVehicleListItem(
                 label = detailedAddress,
                 icon = Icons.Rounded.LocationOn
             )
+            if (ownerView) {
+                RmcIconLabel(
+                    label = vehicle.price.toInt().toString(),
+                    icon = Icons.Rounded.PriceChange
+                )
+            }
         }
     }
 }
@@ -904,7 +927,7 @@ fun RmcIconLabel(
 @Composable
 fun RmcVehicleDetails(
     vehicle: Vehicle,
-    ownerView: Boolean
+    ownerView: Boolean = false
 ) {
     Column(
         modifier = Modifier
