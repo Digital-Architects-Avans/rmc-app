@@ -25,26 +25,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ToggleOff
 import androidx.compose.material.icons.filled.ToggleOn
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.LocalGasStation
 import androidx.compose.material.icons.rounded.LocationOn
@@ -52,15 +44,16 @@ import androidx.compose.material.icons.rounded.PriceChange
 import androidx.compose.material.icons.rounded.Straighten
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,6 +64,7 @@ import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -96,7 +90,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -120,7 +113,6 @@ import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.domain.util.millisToLocalDateConverter
 import com.digitalarchitects.rmc_app.domain.util.validateDate
-import com.digitalarchitects.rmc_app.ui.theme.Shapes
 import kotlinx.datetime.LocalDate
 
 /*
@@ -240,67 +232,8 @@ fun NormalTextComponent(value: String) {
 }
 
 /**
- * Composable that displays a Text component with a specific styling for a large HeadingText
+ * Text field composable
  */
-@Composable
-fun LargeHeadingTextComponent(value: String) {
-    Text(
-        text = value,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(),
-        style = TextStyle(
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary,
-        textAlign = TextAlign.Center
-    )
-}
-
-/**
- * Stateless Composable that displays an OutlinedTextField with a label and leading icon
- */
-@Composable
-fun MyTextFieldComponent(
-    labelValue: String,
-    icon: ImageVector,
-    onTextSelected: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Text,
-        imeAction = ImeAction.Next
-    )
-) {
-    var textValue by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(shape = Shapes.small),
-        label = { Text(text = labelValue) },
-        colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = MaterialTheme.colorScheme.primary,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            focusedLabelColor = MaterialTheme.colorScheme.primary
-        ),
-        keyboardOptions = keyboardOptions,
-        singleLine = true,
-        maxLines = 1,
-        value = textValue,
-        onValueChange = {
-            textValue = it
-            onTextSelected(it)
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = null
-            )
-        }
-    )
-}
-
 @Composable
 fun RmcTextField(
     label: String,
@@ -379,69 +312,6 @@ fun RmcTextField(
                 )
             }
         }
-    )
-}
-
-/**
- * Stateless Composable that displays an OutlinedTextField with a label, leading icon, trialing
- * specific for passwords
- */
-@Composable
-fun PasswordTextFieldComponent(
-    labelValue: String,
-    icon: ImageVector,
-    onTextSelected: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Password,
-        imeAction = ImeAction.Next
-    ),
-) {
-
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(shape = Shapes.small),
-        label = { Text(text = labelValue) },
-        colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = MaterialTheme.colorScheme.primary,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            focusedLabelColor = MaterialTheme.colorScheme.primary
-        ),
-        keyboardOptions = keyboardOptions,
-        singleLine = true,
-        maxLines = 1,
-        value = password,
-        onValueChange = {
-            password = it
-            onTextSelected(it)
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = null
-            )
-        },
-        trailingIcon = {
-
-            val iconImage = if (passwordVisible) {
-                Icons.Filled.Visibility
-            } else Icons.Filled.VisibilityOff
-
-            val description = if (passwordVisible) {
-                stringResource(id = R.string.hide_password)
-            } else stringResource(id = R.string.show_password)
-
-            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                Icon(imageVector = iconImage, contentDescription = description)
-            }
-        },
-        visualTransformation = if (passwordVisible) {
-            VisualTransformation.None
-        } else PasswordVisualTransformation()
     )
 }
 
@@ -760,7 +630,6 @@ fun RmcFloatingActionButton(
                 color = MaterialTheme.colorScheme.primary
             )
         },
-        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
     )
 }
 
@@ -832,7 +701,7 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
 }
 
 /**
- * Stateless Text Composable with an underline
+ * Stateless Text Composable with an underline for Forgot Password
  */
 @Composable
 fun UnderLinedTextComponent(value: String) {
@@ -846,45 +715,6 @@ fun UnderLinedTextComponent(value: String) {
         textDecoration = TextDecoration.Underline
     )
 
-}
-
-/**
- * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
- */
-@Composable
-fun RmcTopButton() {
-    Row(
-        modifier = Modifier
-            .height(40.dp)
-            .padding(horizontal = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            onClick = { /* TODO */ }
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(Color.White, shape = CircleShape)
-                    .border(1.dp, Color.LightGray, shape = CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Clear,
-                    contentDescription = stringResource(R.string.close),
-                    modifier = Modifier.fillMaxSize(),
-                    tint = Color.Gray
-                )
-            }
-        }
-        Text(
-            text = stringResource(R.string.my_vehicles),
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.padding(start = 12.dp)
-        )
-    }
 }
 
 @Composable
