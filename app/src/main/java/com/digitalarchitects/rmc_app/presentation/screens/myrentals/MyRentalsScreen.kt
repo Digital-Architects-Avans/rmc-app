@@ -188,8 +188,14 @@ fun MyRentalsScreen(
 
         // Display vehicle details in a modal bottom sheet when a vehicle is selected
         uiState.selectedRentalItem?.let { details ->
+
+            // Format the address to drop the country
+            val addressAsList = details.second.address.split(",")
+            val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
+
             MyRentalDetailsBottomSheet(
                 details = details,
+                location = detailedAddress,
                 sheetState = rentalBottomSheet,
                 showButtons = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
                 onCancelRentalClick = {
@@ -213,6 +219,7 @@ fun MyRentalsScreen(
 @Composable
 fun MyRentalDetailsBottomSheet(
     details: Triple<Rental, Vehicle, User>,
+    location: String,
     sheetState: SheetState,
     showButtons: Boolean,
     onCancelRentalClick: () -> Unit,
@@ -226,6 +233,7 @@ fun MyRentalDetailsBottomSheet(
         MyRentalDetails(
             rental = details.first,
             vehicle = details.second,
+            location = location,
             user = details.third,
             showButtons = showButtons,
             onCancelRentalClick = { onCancelRentalClick() },

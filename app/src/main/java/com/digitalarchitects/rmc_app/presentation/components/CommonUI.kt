@@ -12,7 +12,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,8 +34,11 @@ import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ToggleOff
 import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.material.icons.filled.Visibility
@@ -50,7 +52,8 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
@@ -64,11 +67,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -110,7 +115,10 @@ import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import com.digitalarchitects.rmc_app.domain.util.millisToLocalDateConverter
+import com.digitalarchitects.rmc_app.domain.util.validateDate
 import com.digitalarchitects.rmc_app.ui.theme.Shapes
+import kotlinx.datetime.LocalDate
 
 /*
  * Composable components shared across different screens
@@ -180,12 +188,12 @@ fun RmcSpacer(height: Int = 24) {
  */
 @Composable
 fun RmcDivider() {
-    Divider(
+    HorizontalDivider(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = dimensionResource(R.dimen.padding_medium)),
-        color = MaterialTheme.colorScheme.outlineVariant,
-        thickness = 1.dp
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.outlineVariant
     )
 }
 
@@ -317,7 +325,9 @@ fun MyTextFieldComponent(
 fun RmcTextField(
     label: String,
     modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,
+    onTrailingIconButtonClick: () -> Unit = {},
     placeholder: String? = null,
     isPassword: Boolean = false,
     maxLines: Int = 1,
@@ -359,12 +369,22 @@ fun RmcTextField(
         value = value ?: "", // Provide an empty string if value is null
         enabled = enabled,
         onValueChange = onValueChange,
-        leadingIcon = icon?.let {
+        leadingIcon = leadingIcon?.let {
             {
                 Icon(
-                    imageVector = icon,
+                    imageVector = leadingIcon,
                     contentDescription = null
                 )
+            }
+        },
+        trailingIcon = trailingIcon?.let {
+            {
+                IconButton(onClick = {
+                    onTrailingIconButtonClick()
+                }) {
+                    Icon(imageVector = trailingIcon,
+                        contentDescription = null)
+                }
             }
         },
         placeholder = placeholder?.let {
@@ -771,12 +791,12 @@ fun DividerTextComponent() {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            color = Color.Gray,
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = Color.Gray
         )
 
         Text(
@@ -785,12 +805,12 @@ fun DividerTextComponent() {
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.primary
         )
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            color = Color.Gray,
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = Color.Gray
         )
     }
 }
@@ -1425,12 +1445,12 @@ fun RmcRentalDetailsOwner(
         }
     }
 
-    Divider(
+    HorizontalDivider(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 24.dp),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-        thickness = 1.dp
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
     )
 
     Column(
@@ -1460,6 +1480,22 @@ fun RmcRentalDetailsOwner(
                 style = MaterialTheme.typography.titleLarge,
             )
         }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = vehicle.address,
+                icon = Icons.Rounded.LocationOn
+            )
+            RmcIconLabel(
+                label = vehicle.price.toInt().toString(),
+                icon = Icons.Rounded.PriceChange
+            )
+        }
     }
 
     Image(
@@ -1480,22 +1516,16 @@ fun RmcRentalDetailsOwner(
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
 
-        Row(
+        Text(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+                    append("\"${vehicle.description}\"")
+                }
+            },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_extra_large)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RmcIconLabel(
-                label = "Eindhoven",
-                icon = Icons.Rounded.LocationOn
-            )
-            RmcIconLabel(
-                label = vehicle.price.toInt().toString(),
-                icon = Icons.Rounded.PriceChange
-            )
-        }
+                .padding(bottom = 8.dp),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
     }
 
 }
@@ -1505,6 +1535,7 @@ fun RmcRentalDetailsOwner(
 fun MyRentalDetails(
     rental: Rental,
     vehicle: Vehicle,
+    location: String,
     user: User,
     showButtons: Boolean,
     onCancelRentalClick: () -> Unit,
@@ -1595,12 +1626,12 @@ fun MyRentalDetails(
         }
     }
 
-    Divider(
+    HorizontalDivider(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 24.dp),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
-        thickness = 1.dp
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
     )
 
     Column(
@@ -1630,6 +1661,22 @@ fun MyRentalDetails(
                 style = MaterialTheme.typography.titleLarge,
             )
         }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RmcIconLabel(
+                label = location,
+                icon = Icons.Rounded.LocationOn
+            )
+            RmcIconLabel(
+                label = vehicle.price.toInt().toString(),
+                icon = Icons.Rounded.PriceChange
+            )
+        }
     }
 
     Image(
@@ -1650,22 +1697,16 @@ fun MyRentalDetails(
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
 
-        Row(
+        Text(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
+                    append("\"${vehicle.description}\"")
+                }
+            },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_extra_large)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RmcIconLabel(
-                label = "Eindhoven",
-                icon = Icons.Rounded.LocationOn
-            )
-            RmcIconLabel(
-                label = vehicle.price.toInt().toString(),
-                icon = Icons.Rounded.PriceChange
-            )
-        }
+                .padding(bottom = 8.dp),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
     }
 }
 
@@ -1698,6 +1739,7 @@ fun <T> AutoCompleteUI(
             QuerySearch(
                 query = query,
                 label = queryLabel,
+                leadingIcon = Icons.Filled.LocationOn,
                 useOutlined = useOutlined,
                 colors = colors,
                 onQueryChanged = onQueryChanged,
@@ -1735,6 +1777,7 @@ fun QuerySearch(
     useOutlined: Boolean,
     query: String,
     label: String,
+    leadingIcon: ImageVector? = null,
     colors: TextFieldColors?,
     onDoneActionClick: () -> Unit = {},
     onClearClick: () -> Unit = {},
@@ -1756,6 +1799,14 @@ fun QuerySearch(
             label = { Text(text = label, style = MaterialTheme.typography.bodyLarge) },
             textStyle = MaterialTheme.typography.bodyLarge,
             singleLine = true,
+            leadingIcon = leadingIcon?.let {
+                {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null
+                    )
+                }
+            },
             trailingIcon = {
                 if (showClearButton) {
                     IconButton(onClick = {
@@ -1847,99 +1898,112 @@ fun AddressEdit(
         ) {
             Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
         }
-
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("City", fontWeight = FontWeight.Bold)
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        addressItem.city,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
+    }
+}
 
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RmcDatePickerDialog(
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return utcTimeMillis >= System.currentTimeMillis()
+        }
+    })
 
-                Column(modifier = Modifier.weight(1f)) {
+    val selectedDate = datePickerState.selectedDateMillis?.let {
+        millisToLocalDateConverter(it)
+    } ?: LocalDate(2024, 1, 1)
 
-                    Text("State", fontWeight = FontWeight.Bold)
-
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        addressItem.state,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
+    DatePickerDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            Button(onClick = {
+                onDateSelected(selectedDate)
+                onDismiss()
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Postal Code", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.postalCode,
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text("Country", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.country,
-                        modifier = Modifier.weight(1.0f)
-                    )
-
-                }
+            ) {
+                Text(text = "OK")
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = modifier.height(IntrinsicSize.Min)) {
-
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("Latitude", fontWeight = FontWeight.Bold)
-
-
-
-                    Text(
-                        addressItem.latitude.toString(),
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-
-                    Text("Longitude", fontWeight = FontWeight.Bold)
-
-                    Text(
-                        addressItem.longitude.toString(),
-                        modifier = Modifier.weight(1.0f)
-                    )
-                }
-
+        },
+        dismissButton = {
+            Button(onClick = {
+                onDismiss()
+            }) {
+                Text(text = "Cancel")
             }
+        }
+    ) {
+        DatePicker(
+            state = datePickerState
+        )
+    }
+}
 
+// Form to reserve a vehicle
+@Composable
+fun RmcDateTextField(
+    date: LocalDate?,
+    onValueChange: (LocalDate) -> Unit
+) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    var textFieldValue by remember { mutableStateOf(date?.toString() ?: "") }
+    var isDateValid by remember { mutableStateOf(true) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            RmcTextField(
+                label = stringResource(R.string.date),
+                leadingIcon = Icons.Filled.CalendarMonth,
+                trailingIcon = Icons.Filled.EditCalendar,
+                onTrailingIconButtonClick = { showDatePicker = true },
+                value = textFieldValue.ifEmpty { null },
+                onValueChange = {
+                    textFieldValue = it
+                    isDateValid = validateDate(it)
+                },
+                isError = !isDateValid, // Set isError based on date validation
+                enabled = true,
+                placeholder = stringResource(id = R.string.date_placeholder), // Placeholder text
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = dimensionResource(R.dimen.padding_small))
+            )
+        }
+        // Show an error message if the date is not valid
+        if (!isDateValid) {
+            Text(
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(R.dimen.padding_small))
+                    .padding(start = dimensionResource(R.dimen.padding_small)),
+                text = stringResource(R.string.invalid_date),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+        // Show DatePickerDialog if the state is true
+        if (showDatePicker) {
+            RmcDatePickerDialog(
+                onDateSelected = {
+                    onValueChange(it)
+                    textFieldValue = it.toString()
+                    showDatePicker = false
+                    isDateValid = true // Reset validation on new date selection
+                },
+                onDismiss = {
+                    showDatePicker = false
+                }
+            )
         }
     }
 }

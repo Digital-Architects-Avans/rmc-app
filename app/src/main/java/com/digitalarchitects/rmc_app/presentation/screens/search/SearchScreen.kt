@@ -9,22 +9,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.PriceChange
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,19 +29,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
+import com.digitalarchitects.rmc_app.presentation.components.AddressEdit
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
+import com.digitalarchitects.rmc_app.presentation.components.RmcDateTextField
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
-import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
 
 @Composable
 fun SearchScreen(
@@ -52,6 +49,11 @@ fun SearchScreen(
     navigateToScreen: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val address by viewModel.address.collectAsState()
+    val placesPredictions by viewModel.placePredictions.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(SearchUIEvent.FetchFilterPreference)
@@ -82,34 +84,40 @@ fun SearchScreen(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    RmcTextField(
-                        label = stringResource(id = R.string.date),
-                        icon = Icons.Filled.CalendarMonth,
-                        value = uiState.date,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
+
+                    RmcDateTextField(
+                        date = uiState.date,
                         onValueChange = { date ->
                             viewModel.onEvent(SearchUIEvent.DateChanged(date))
-                        },
-                        modifier = Modifier.fillMaxWidth()
+                        }
                     )
 
                     RmcSpacer()
 
-                    RmcTextField(
-                        label = stringResource(id = R.string.location),
-                        icon = Icons.Filled.LocationOn,
-                        value = uiState.location,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        onValueChange = { location ->
-                            viewModel.onEvent(SearchUIEvent.LocationChanged(location))
+                    AddressEdit(
+                        addressItem = address,
+                        modifier = Modifier,
+                        addressPlaceItemPredictions = placesPredictions,
+                        onQueryChanged = { query ->
+                            viewModel.onEvent(SearchUIEvent.OnAddressChange(query))
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        onClearClick = {
+                            viewModel.onEvent(SearchUIEvent.OnAddressAutoCompleteClear)
+                        },
+                        onDoneClick = if (placesPredictions.isNotEmpty()) {
+                            {
+                                viewModel.onEvent(
+                                    SearchUIEvent.OnAddressSelected(
+                                        placesPredictions.first()
+                                    )
+                                )
+                            }
+                        } else {
+                            { keyboardController?.hide() }
+                        },
+                        onItemClick = { placeItem ->
+                            viewModel.onEvent(SearchUIEvent.OnAddressSelected(placeItem))
+                        }
                     )
 
                     RmcSpacer(32)
@@ -119,8 +127,9 @@ fun SearchScreen(
                         icon = Icons.Filled.PriceChange,
                         sliderPosition = uiState.price.toFloat(),
                         maxValue = 250.0F,
-                        onValueChange = { price ->
-                            viewModel.onEvent(SearchUIEvent.PriceChanged(price))
+                        onValueChange = {
+                            viewModel.onEvent(SearchUIEvent.PriceChanged(it))
+
                         }
                     )
 
@@ -131,8 +140,9 @@ fun SearchScreen(
                         icon = Icons.Filled.LocationOn,
                         sliderPosition = uiState.distance.toFloat(),
                         maxValue = 250.0F,
-                        onValueChange = { distance ->
-                            viewModel.onEvent(SearchUIEvent.DistanceChanged(distance))
+                        onValueChange = {
+                            viewModel.onEvent(SearchUIEvent.DistanceChanged(it))
+
                         }
                     )
 
@@ -148,8 +158,8 @@ fun SearchScreen(
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_ice),
                                 selected = uiState.engineTypeIce,
-                                onClick = { ice ->
-                                    viewModel.onEvent(SearchUIEvent.EngineTypeIceChanged(ice))
+                                onClick = {
+                                    viewModel.onEvent(SearchUIEvent.EngineTypeIceChanged(it))
                                 }
                             )
                         }
@@ -157,8 +167,9 @@ fun SearchScreen(
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_bev),
                                 selected = uiState.engineTypeBev,
-                                onClick = { bev ->
-                                    viewModel.onEvent(SearchUIEvent.EngineTypeBevChanged(bev))
+                                onClick = {
+                                    viewModel.onEvent(SearchUIEvent.EngineTypeBevChanged(it))
+
                                 }
                             )
                         }
@@ -166,8 +177,8 @@ fun SearchScreen(
                             RmcFilterChip(
                                 label = stringResource(id = R.string.engine_type_fcev),
                                 selected = uiState.engineTypeFcev,
-                                onClick = { fcev ->
-                                    viewModel.onEvent(SearchUIEvent.EngineTypeFcevChanged(fcev))
+                                onClick = {
+                                    viewModel.onEvent(SearchUIEvent.EngineTypeFcevChanged(it))
                                 }
                             )
                         }
@@ -201,6 +212,7 @@ fun SearchScreen(
         }
     }
 }
+
 
 @Composable
 fun RmcSliderLabel(
@@ -298,7 +310,6 @@ fun RmcFilterLabel(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RmcFilterChip(
     label: String,
