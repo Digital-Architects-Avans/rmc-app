@@ -447,7 +447,8 @@ fun RmcFilledButton(
                 imageVector = it,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(18.dp)
+                    .size(18.dp),
+                tint = Color.White
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
