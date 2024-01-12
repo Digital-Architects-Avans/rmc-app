@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
@@ -99,7 +100,7 @@ fun RegisterScreen(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_register,
-                navigationIcon = Icons.Rounded.ArrowBack,
+                navigationIcon = Icons.AutoMirrored.Rounded.ArrowBack,
                 navigateUp = {
                     navigateToScreen(RmcScreen.Welcome.name)
                 }
@@ -140,7 +141,6 @@ fun RegisterScreen(
                     )
                     RmcTextField(
                         label = stringResource(id = R.string.last_name),
-                        leadingIcon = Icons.Filled.Person,
                         value = uiState.lastName,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
@@ -205,19 +205,6 @@ fun RegisterScreen(
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
                 ) {
                     RmcTextField(
-                        label = stringResource(id = R.string.postal_code),
-                        leadingIcon = Icons.Filled.Numbers,
-                        value = uiState.postalCode,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        onValueChange = {
-                            viewModel.onEvent(RegisterUIEvent.PostalCodeChanged(it))
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
-                    RmcTextField(
                         label = stringResource(id = R.string.building_number),
                         leadingIcon = Icons.Filled.Numbers,
                         value = uiState.buildingNumber,
@@ -227,6 +214,18 @@ fun RegisterScreen(
                         ),
                         onValueChange = {
                             viewModel.onEvent(RegisterUIEvent.BuildingNumberChanged(it))
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                    RmcTextField(
+                        label = stringResource(id = R.string.postal_code),
+                        value = uiState.postalCode,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        onValueChange = {
+                            viewModel.onEvent(RegisterUIEvent.PostalCodeChanged(it))
                         },
                         modifier = Modifier.weight(1f)
                     )
@@ -268,7 +267,7 @@ fun RegisterScreen(
                     onTextSelected = { /* TODO */ }
                 )
 
-                RmcSpacer(32)
+                RmcSpacer(16)
 
                 RmcFilledButton(
                     value = stringResource(id = R.string.register),
@@ -300,6 +299,8 @@ fun RegisterScreen(
                         CircularProgressIndicator()
                     }
                 }
+
+                RmcSpacer()
             }
         }
     }
