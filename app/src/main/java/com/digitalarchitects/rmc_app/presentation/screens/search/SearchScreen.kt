@@ -32,8 +32,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.AddressEdit
@@ -79,7 +77,7 @@ fun SearchScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(dimensionResource(R.dimen.padding_large))
+                    .padding(horizontal = dimensionResource(R.dimen.padding_large))
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -92,7 +90,7 @@ fun SearchScreen(
                         }
                     )
 
-                    RmcSpacer()
+                    RmcSpacer(16)
 
                     AddressEdit(
                         addressItem = address,
@@ -120,7 +118,7 @@ fun SearchScreen(
                         }
                     )
 
-                    RmcSpacer(32)
+                    RmcSpacer()
 
                     RmcSlider(
                         label = stringResource(id = R.string.price),
@@ -133,8 +131,6 @@ fun SearchScreen(
                         }
                     )
 
-                    RmcSpacer()
-
                     RmcSlider(
                         label = stringResource(id = R.string.distance),
                         icon = Icons.Filled.LocationOn,
@@ -146,7 +142,7 @@ fun SearchScreen(
                         }
                     )
 
-                    RmcSpacer()
+                    RmcSpacer(16)
 
                     RmcFilterLabel(label = stringResource(id = R.string.engine_type))
                     Row(
@@ -187,7 +183,8 @@ fun SearchScreen(
                 }
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(bottom = dimensionResource(R.dimen.padding_large)),
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
                 ) {
                     Column(Modifier.weight(1f)) {
@@ -212,7 +209,6 @@ fun SearchScreen(
         }
     }
 }
-
 
 @Composable
 fun RmcSliderLabel(
@@ -335,14 +331,5 @@ fun RmcFilterChip(
         },
         modifier = Modifier
             .fillMaxWidth()
-    )
-}
-
-@Preview
-@Composable
-fun SearchScreenPreview() {
-    SearchScreen(
-        viewModel = viewModel(),
-        navigateToScreen = { }
     )
 }

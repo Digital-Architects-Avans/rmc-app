@@ -104,7 +104,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-
     private fun clearPredictions() {
         _placePredictions.value = mutableListOf()
     }
@@ -163,11 +162,12 @@ class SearchViewModel @Inject constructor(
                             Log.d("SearchViewModel", "date: ${filterPreferences.date}")
 
                             // If user has set a date preference, convert it to LocalDate else null
-                            val dateAsLocalDate: LocalDate? = if (filterPreferences.date.isNullOrEmpty()) {
-                                LocalDate.parse(filterPreferences.date)
-                            } else {
-                                null
-                            }
+                            val dateAsLocalDate: LocalDate? =
+                                if (filterPreferences.date.isNullOrEmpty()) {
+                                    LocalDate.parse(filterPreferences.date)
+                                } else {
+                                    null
+                                }
 
                             _uiState.value = _uiState.value.copy(
                                 date = dateAsLocalDate,

@@ -25,11 +25,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Surface
@@ -334,9 +336,11 @@ fun RmcTextField(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
             focusedTextColor = MaterialTheme.colorScheme.primary,
+            errorContainerColor = MaterialTheme.colorScheme.error,
             errorBorderColor = MaterialTheme.colorScheme.error,
             errorTextColor = MaterialTheme.colorScheme.error,
-            unfocusedTextColor = MaterialTheme.colorScheme.scrim
+            unfocusedTextColor = MaterialTheme.colorScheme.scrim,
+            focusedTrailingIconColor = MaterialTheme.colorScheme.primary
         ),
         keyboardOptions = keyboardOptions,
         modifier = modifier.fillMaxWidth(),
@@ -359,8 +363,10 @@ fun RmcTextField(
                 IconButton(onClick = {
                     onTrailingIconButtonClick()
                 }) {
-                    Icon(imageVector = trailingIcon,
-                        contentDescription = null)
+                    Icon(
+                        imageVector = trailingIcon,
+                        contentDescription = null
+                    )
                 }
             }
         },
@@ -1692,10 +1698,8 @@ fun <T> AutoCompleteUI(
     onItemClick: (T) -> Unit = {},
     itemContent: @Composable (T) -> Unit = {}
 ) {
-
     val view = LocalView.current
     val lazyListState = rememberLazyListState()
-
 
     LazyColumn(
         state = lazyListState,
@@ -1724,7 +1728,8 @@ fun <T> AutoCompleteUI(
             items(predictions) { prediction ->
                 Row(
                     Modifier
-                        .padding(8.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .padding(dimensionResource(id = R.dimen.padding_medium))
                         .fillMaxWidth()
                         .clickable {
                             view.clearFocus()
@@ -1798,7 +1803,8 @@ fun QuerySearch(
                 focusedTextColor = MaterialTheme.colorScheme.primary,
                 errorBorderColor = MaterialTheme.colorScheme.error,
                 errorTextColor = MaterialTheme.colorScheme.error,
-                unfocusedTextColor = MaterialTheme.colorScheme.scrim
+                unfocusedTextColor = MaterialTheme.colorScheme.scrim,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.primary
             )
         )
     } else {
@@ -1846,26 +1852,18 @@ fun AddressEdit(
     onDoneClick: () -> Unit,
     onItemClick: (PlaceItem) -> Unit
 ) {
-
-    Column(
-        modifier = modifier.padding(top = 8.dp, bottom = 8.dp),
-        verticalArrangement = Arrangement.Center
+    AutoCompleteUI(
+        modifier = Modifier.fillMaxWidth(),
+        query = addressItem.streetAddress,
+        queryLabel = stringResource(id = R.string.vehicle_location),
+        useOutlined = true,
+        onQueryChanged = onQueryChanged,
+        predictions = addressPlaceItemPredictions,
+        onClearClick = onClearClick,
+        onDoneActionClick = onDoneClick,
+        onItemClick = onItemClick
     ) {
-
-        AutoCompleteUI(
-            modifier = Modifier.fillMaxWidth(),
-            query = addressItem.streetAddress,
-            queryLabel = stringResource(id = R.string.vehicle_location),
-            useOutlined = true,
-            onQueryChanged = onQueryChanged,
-            predictions = addressPlaceItemPredictions,
-            onClearClick = onClearClick,
-            onDoneActionClick = onDoneClick,
-            onItemClick = onItemClick
-        ) {
-            Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
     }
 }
 
@@ -1942,17 +1940,18 @@ fun RmcDateTextField(
                 isError = !isDateValid, // Set isError based on date validation
                 enabled = true,
                 placeholder = stringResource(id = R.string.date_placeholder), // Placeholder text
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.padding_small))
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                )
             )
         }
         // Show an error message if the date is not valid
         if (!isDateValid) {
             Text(
                 modifier = Modifier
-                    .padding(vertical = dimensionResource(R.dimen.padding_small))
-                    .padding(start = dimensionResource(R.dimen.padding_small)),
+                    .padding(start = dimensionResource(R.dimen.padding_small))
+                    .padding(top = dimensionResource(R.dimen.padding_extra_small)),
                 text = stringResource(R.string.invalid_date),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error
