@@ -232,11 +232,7 @@ fun NormalTextComponent(value: String) {
             .fillMaxWidth()
             .heightIn(min = 40.dp)
             .padding(bottom = 15.dp),
-        style = TextStyle(
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 
@@ -244,18 +240,15 @@ fun NormalTextComponent(value: String) {
  * Composable that displays a Text component with a specific styling for small HeadingText
  */
 @Composable
-fun SmallHeadingTextComponent(value: String) {
+fun SmallHeadingTextComponent(
+    value: String,
+    modifier: Modifier = Modifier
+) {
     Text(
         text = value,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(),
-        style = TextStyle(
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary,
-        textAlign = TextAlign.Center
+        modifier = modifier,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.primary,
     )
 }
 
@@ -856,12 +849,8 @@ fun UnderLinedTextComponent(value: String) {
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 40.dp),
-        style = TextStyle(
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary,
-        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.primary,
         textDecoration = TextDecoration.Underline
     )
 
