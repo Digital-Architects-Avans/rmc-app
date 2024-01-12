@@ -52,6 +52,7 @@ import androidx.compose.material.icons.rounded.PriceChange
 import androidx.compose.material.icons.rounded.Straighten
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
@@ -631,7 +632,8 @@ fun RmcOutlinedButton(
         onClick = { onClick() },
         enabled = isEnabled,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
     ) {
         icon?.let {
             Icon(
@@ -1887,20 +1889,22 @@ fun RmcDatePickerDialog(
     DatePickerDialog(
         onDismissRequest = { onDismiss() },
         confirmButton = {
-            Button(onClick = {
-                onDateSelected(selectedDate)
-                onDismiss()
-            }
-
+            Button(
+                onClick = {
+                    onDateSelected(selectedDate)
+                    onDismiss()
+                }
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(id = R.string.apply))
             }
         },
         dismissButton = {
-            Button(onClick = {
-                onDismiss()
-            }) {
-                Text(text = "Cancel")
+            OutlinedButton(
+                modifier = Modifier,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                onClick = { onDismiss() }
+            ) {
+                Text(text = stringResource(id = R.string.cancel))
             }
         }
     ) {
