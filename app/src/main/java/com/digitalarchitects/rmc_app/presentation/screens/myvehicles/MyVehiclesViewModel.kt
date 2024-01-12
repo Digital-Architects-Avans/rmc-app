@@ -91,7 +91,6 @@ class MyVehiclesViewModel @Inject constructor(
                         e.printStackTrace()
                     }
                 }
-
             }
         }
     }
