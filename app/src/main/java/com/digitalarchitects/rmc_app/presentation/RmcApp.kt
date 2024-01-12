@@ -98,7 +98,6 @@ fun RmcApp(
         }
         composable(route = RmcScreen.TermsAndConditions.name) {
             TermsAndConditionsScreen(
-                viewModel = termsAndConditionsViewModel,
                 navigateToScreen = { route -> navController.navigate(route) }
             )
         }

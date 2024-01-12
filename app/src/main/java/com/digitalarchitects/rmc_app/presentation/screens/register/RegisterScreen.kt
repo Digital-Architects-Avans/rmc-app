@@ -264,7 +264,7 @@ fun RegisterScreen(
 
                 CheckboxComponent(
                     value = stringResource(id = R.string.terms_and_conditions),
-                    onTextSelected = { /* TODO */ }
+                    onTextSelected = { navigateToScreen(RmcScreen.TermsAndConditions.name) },
                 )
 
                 RmcSpacer(16)
