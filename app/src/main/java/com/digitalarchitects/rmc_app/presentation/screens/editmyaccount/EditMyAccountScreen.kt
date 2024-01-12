@@ -86,7 +86,7 @@ fun EditMyAccountScreen(
                 ) {
                     RmcTextField(
                         label = stringResource(id = R.string.first_name),
-                        icon = Icons.Filled.Person,
+                        leadingIcon = Icons.Filled.Person,
                         value = uiState.firstName,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
@@ -99,7 +99,7 @@ fun EditMyAccountScreen(
                     )
                     RmcTextField(
                         label = stringResource(id = R.string.last_name),
-                        icon = Icons.Filled.Person,
+                        leadingIcon = Icons.Filled.Person,
                         value = uiState.lastName,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
@@ -116,7 +116,7 @@ fun EditMyAccountScreen(
 
                 RmcTextField(
                     label = stringResource(id = R.string.email),
-                    icon = Icons.Filled.Email,
+                    leadingIcon = Icons.Filled.Email,
                     value = uiState.email,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
@@ -131,7 +131,7 @@ fun EditMyAccountScreen(
 
                 RmcTextField(
                     label = stringResource(id = R.string.telephone),
-                    icon = Icons.Filled.Call,
+                    leadingIcon = Icons.Filled.Call,
                     value = uiState.phone,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
@@ -146,7 +146,7 @@ fun EditMyAccountScreen(
 
                 RmcTextField(
                     label = stringResource(id = R.string.address),
-                    icon = Icons.Filled.Home,
+                    leadingIcon = Icons.Filled.Home,
                     value = uiState.street,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
@@ -165,7 +165,7 @@ fun EditMyAccountScreen(
                 ) {
                     RmcTextField(
                         label = stringResource(id = R.string.postal_code),
-                        icon = Icons.Filled.Numbers,
+                        leadingIcon = Icons.Filled.Numbers,
                         value = uiState.zipCode,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
@@ -178,7 +178,7 @@ fun EditMyAccountScreen(
                     )
                     RmcTextField(
                         label = stringResource(id = R.string.building_number),
-                        icon = Icons.Filled.Numbers,
+                        leadingIcon = Icons.Filled.Numbers,
                         value = uiState.buildingNumber,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number,
@@ -195,7 +195,7 @@ fun EditMyAccountScreen(
 
                 RmcTextField(
                     label = stringResource(id = R.string.city),
-                    icon = Icons.Filled.LocationCity,
+                    leadingIcon = Icons.Filled.LocationCity,
                     value = uiState.city,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
@@ -210,7 +210,7 @@ fun EditMyAccountScreen(
 
                 RmcTextField(
                     label = stringResource(id = R.string.password),
-                    icon = Icons.Filled.Lock,
+                    leadingIcon = Icons.Filled.Lock,
                     value = uiState.password,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Password,
