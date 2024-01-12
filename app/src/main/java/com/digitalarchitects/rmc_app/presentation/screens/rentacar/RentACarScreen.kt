@@ -20,9 +20,9 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CarRental
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialogDefaults
@@ -414,7 +414,7 @@ fun RentACarScreen(
                             )
                         }
                         RmcFloatingActionButton(
-                            icon = Icons.AutoMirrored.Filled.List,
+                            icon = Icons.Filled.List,
                             label = R.string.list_view,
                             onClick = {
                                 viewModel.onEvent(RentACarUIEvent.ShowListView(true))
