@@ -224,7 +224,7 @@ fun RentACarScreen(
                         navigateToScreen(RmcScreen.MyRentals.name)
                     }
                 )
-                RmcSpacer()
+                RmcSpacer(32)
             }
         },
     ) {
