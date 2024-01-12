@@ -247,5 +247,6 @@ class SearchViewModel @Inject constructor(
             engineTypeBev = true,
             engineTypeFcev = true
         )
+        _address.value = AddressItem()
     }
 }
