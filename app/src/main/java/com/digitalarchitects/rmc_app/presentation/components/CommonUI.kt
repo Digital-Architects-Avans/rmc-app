@@ -237,22 +237,6 @@ fun NormalTextComponent(value: String) {
 }
 
 /**
- * Composable that displays a Text component with a specific styling for small HeadingText
- */
-@Composable
-fun SmallHeadingTextComponent(
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = value,
-        modifier = modifier,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.primary,
-    )
-}
-
-/**
  * Composable that displays a Text component with a specific styling for a large HeadingText
  */
 @Composable
@@ -1390,7 +1374,10 @@ fun RmcRentalDetailsOwner(
             RmcUserIcon(userIcon = R.drawable.usericon,
                 size = dimensionResource(R.dimen.image_size_medium),
                 onClick = {})
-            SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+            Text(
+                text = "${user.firstName} ${user.lastName}",
+                style = MaterialTheme.typography.bodyLarge,
+            )
         }
     }
 
@@ -1573,7 +1560,10 @@ fun MyRentalDetails(
             RmcUserIcon(userIcon = R.drawable.usericon,
                 size = dimensionResource(R.dimen.image_size_medium),
                 onClick = {})
-            SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+            Text(
+                text = "${user.firstName} ${user.lastName}",
+                style = MaterialTheme.typography.bodyLarge,
+            )
         }
     }
 

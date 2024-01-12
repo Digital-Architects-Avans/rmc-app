@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Output
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,7 +31,6 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcLogoText
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcUserIcon
-import com.digitalarchitects.rmc_app.presentation.components.SmallHeadingTextComponent
 
 
 @Composable
@@ -78,8 +78,10 @@ fun MyAccountScreen(
                     }
                 )
                 uiState.currentUser?.let {
-                    SmallHeadingTextComponent(
-                        value = it.firstName
+                    Text(
+                        text = it.firstName,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 }
                 RmcSpacer()
