@@ -304,13 +304,3 @@ fun RegisterScreen(
         }
     }
 }
-
-@Preview
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(
-        viewModel = viewModel(),
-        navigateToScreen = { }
-    )
-}
-
