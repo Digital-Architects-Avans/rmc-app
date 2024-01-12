@@ -101,7 +101,16 @@ fun RentACarScreen(
     viewModel: RentACarViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    // UI States
+    // Bottom sheet states
+    val detailsBottomSheet = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            skipHiddenState = false,
+            initialValue = SheetValue.Hidden
+        )
+    )
+    val listBottomSheet = rememberModalBottomSheetState()
+
+    // UI states
     val rentACarUiState by viewModel.rentACarUiState.collectAsState()
     val locationPermissionsUiState by viewModel.locationPermissionsUiState.collectAsStateWithLifecycle()
 
@@ -109,7 +118,7 @@ fun RentACarScreen(
     val scope = rememberCoroutineScope()
     val context: Context = LocalContext.current
 
-    // Set Maps and bottom sheets states
+    // Maps states
     val cameraState = rememberCameraPositionState {
         if (rentACarUiState.userLocation == null) {
             position = CameraPosition.fromLatLngZoom(
@@ -118,22 +127,20 @@ fun RentACarScreen(
             )
         }
     }
-    val detailsBottomSheet = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Hidden,
-            skipHiddenState = false,
-        )
-    )
 
-    val listBottomSheet = rememberModalBottomSheetState()
-
-    // Get vehicles and create map items in view model
-    // Get filter preference from datastore
     LaunchedEffect(Unit) {
-        viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
-        viewModel.setMapData()
+        // Hide details bottom sheet first
         detailsBottomSheet.bottomSheetState.hide()
-        listBottomSheet.hide()
+        // Get vehicles and create map items in view model
+        viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
+        // Get filter preference from datastore
+        viewModel.setMapData()
+        // Set map data in view model
+        snapshotFlow { cameraState.isMoving }
+            .collect {
+                viewModel.onEvent(RentACarUIEvent.ZoomLevelChanged(cameraState.position.zoom))
+                viewModel.onEvent(RentACarUIEvent.CameraPositionChanged(cameraState.position.target))
+            }
     }
 
     // Location permissions
@@ -184,18 +191,10 @@ fun RentACarScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { cameraState.isMoving }
-            .collect {
-                viewModel.onEvent(RentACarUIEvent.ZoomLevelChanged(cameraState.position.zoom))
-                viewModel.onEvent(RentACarUIEvent.CameraPositionChanged(cameraState.position.target))
-            }
-    }
-
     // Start Rent A Car screen
     BottomSheetScaffold(
-        scaffoldState = detailsBottomSheet,
         sheetPeekHeight = 320.dp,
+        scaffoldState = detailsBottomSheet,
 
         // Bottom sheet: Vehicle details
         sheetContent = {
@@ -259,7 +258,9 @@ fun RentACarScreen(
                         ),
                         onMapClick = { location ->
                             Log.d(TAG, "On map clicked: $location")
-                            scope.launch { detailsBottomSheet.bottomSheetState.hide() }
+                            scope.launch {
+                                detailsBottomSheet.bottomSheetState.hide()
+                            }
                         }
                     ) {
                         // Draw marker if user location is set
