@@ -25,7 +25,7 @@ class RegisterViewModel @Inject constructor(
     private val vehicleRepository: VehicleRepository,
     private val rentalRepository: RentalRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
-)  : ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterUIState())
     val uiState: StateFlow<RegisterUIState> = _uiState.asStateFlow()
 
