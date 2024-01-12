@@ -2,17 +2,20 @@ package com.digitalarchitects.rmc_app.presentation.screens.login
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,8 +32,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
@@ -40,14 +41,12 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
-import com.digitalarchitects.rmc_app.presentation.components.UnderLinedTextComponent
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(viewModel, context) {
@@ -89,7 +88,7 @@ fun LoginScreen(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_login,
-                navigationIcon = Icons.Rounded.ArrowBack,
+                navigationIcon = Icons.AutoMirrored.Rounded.ArrowBack,
                 navigateUp = { navigateToScreen(RmcScreen.Welcome.name) }
             )
         }
@@ -103,7 +102,7 @@ fun LoginScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(dimensionResource(R.dimen.padding_large))
+                    .padding(horizontal = dimensionResource(R.dimen.padding_large))
                     .verticalScroll(rememberScrollState())
             ) {
                 RmcTextField(
@@ -119,7 +118,7 @@ fun LoginScreen(
                     }
                 )
 
-                RmcSpacer()
+                RmcSpacer(8)
 
                 RmcTextField(
                     label = stringResource(id = R.string.password),
@@ -135,9 +134,9 @@ fun LoginScreen(
                     }
                 )
 
-                RmcSpacer()
+                RmcSpacer(16)
 
-                UnderLinedTextComponent(value = stringResource(id = R.string.forgot_password))
+                // UnderLinedTextComponent(value = stringResource(id = R.string.forgot_password))
 
                 RmcFilledButton(
                     value = stringResource(id = R.string.login),
@@ -146,10 +145,15 @@ fun LoginScreen(
 
                 DividerTextComponent()
 
-                ClickableLoginTextComponent(
-                    tryingToLogin = false,
-                    onTextSelected = { navigateToScreen(RmcScreen.Register.name) }
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    ClickableLoginTextComponent(
+                        tryingToLogin = false,
+                        onTextSelected = { navigateToScreen(RmcScreen.Register.name) }
+                    )
+                }
 
                 if (uiState.isLoading) {
                     Box(
@@ -165,13 +169,3 @@ fun LoginScreen(
         }
     }
 }
-
-@Preview
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen(
-        viewModel = viewModel(),
-        navigateToScreen = { }
-    )
-}
-

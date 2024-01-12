@@ -264,7 +264,7 @@ fun RegisterScreen(
                     onTextSelected = { navigateToScreen(RmcScreen.TermsAndConditions.name) },
                 )
 
-                RmcSpacer(16)
+                RmcSpacer(8)
 
                 RmcFilledButton(
                     value = stringResource(id = R.string.register),
