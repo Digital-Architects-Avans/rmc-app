@@ -129,6 +129,7 @@ fun SearchScreen(
                         maxValue = 250.0F,
                         onValueChange = {
                             viewModel.onEvent(SearchUIEvent.PriceChanged(it))
+
                         }
                     )
 
@@ -141,6 +142,7 @@ fun SearchScreen(
                         maxValue = 250.0F,
                         onValueChange = {
                             viewModel.onEvent(SearchUIEvent.DistanceChanged(it))
+
                         }
                     )
 
@@ -167,6 +169,7 @@ fun SearchScreen(
                                 selected = uiState.engineTypeBev,
                                 onClick = {
                                     viewModel.onEvent(SearchUIEvent.EngineTypeBevChanged(it))
+
                                 }
                             )
                         }

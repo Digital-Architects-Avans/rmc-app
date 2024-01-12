@@ -209,6 +209,8 @@ class RentACarViewModel @Inject constructor(
 
     private fun getVehicles() {
         viewModelScope.launch(dispatcher) {
+            val filterPreferences = _rentACarUiState.value
+            // Get all vehicles
             val result: Result<List<Vehicle>> = runCatching {
                 vehicleRepository.getAllVehicles()
             }
@@ -217,7 +219,9 @@ class RentACarViewModel @Inject constructor(
                 _rentACarUiState.value.listOfVehicles = filteredVehicles
 
                 // Get vehicle map items
-                _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                if (filteredVehicles.isNotEmpty()) {
+                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                }
             }.onFailure { e ->
                 e.printStackTrace()
             }
@@ -343,7 +347,7 @@ class RentACarViewModel @Inject constructor(
                     _rentACarUiState.value.userId = userId!!
                 }
             } catch (e: Exception) {
-                Log.d("MyAccountViewModel", "error: $e")
+                Log.d("RentACarViewModel", "error: $e")
             }
         }
     }

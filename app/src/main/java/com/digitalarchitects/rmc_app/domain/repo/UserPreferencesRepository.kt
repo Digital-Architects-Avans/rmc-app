@@ -17,6 +17,7 @@ class UserPreferencesRepository @Inject constructor(
         val JWT_TOKEN = stringPreferencesKey("jwt_token")
         val USER_ID = stringPreferencesKey("user_id")
         val DATE = stringPreferencesKey("date")
+
         val LATITUDE = floatPreferencesKey("latitude")
         val LONGITUDE = floatPreferencesKey("longitude")
         val PRICE = stringPreferencesKey("price")
@@ -72,6 +73,7 @@ class UserPreferencesRepository @Inject constructor(
             preferences[ENGINETYPEFCEV] = engineTypeFCEV
         }
         Log.d("UserPreferencesRepository", "Saving filter preference, date = $DATE")
+
     }
 
     // get filter preference from user from datastore

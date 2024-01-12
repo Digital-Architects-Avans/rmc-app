@@ -51,10 +51,13 @@ To run the app locally, follow these steps:
 ```bash
 git clone https://github.com/your-username/vehicle-rental-app.git
 ```
+2. Ensure that you have a local instance of the [RMC API 2](https://github.com/Digital-Architects-Avans/rmc-api-2) up and running. The Android app interacts with this API as its backend, connecting to the API hosted on localhost (http://10.0.2.2:8080/ or https://10.0.2.2:8443/). For utilizing the MongoDB Atlas database associated with the [RMC API 2](https://github.com/Digital-Architects-Avans/rmc-api-2), you must have network access to the project. Teachers seeking access privileges can contact any of the project group students.
 
 2. Open the project in Android Studio.
 
-3. Build and run the app on an emulator or physical device.
+3. This applicaiton uses the Google Maps SDK and Google Places API, you should insert your own `MAPS_API_KEY=[KEY]` in the `local.properties` file in order to successfully establish a connection with the Google API.
+
+4. Build and run the app on an emulator or physical device.
 
 
 ## Contributing

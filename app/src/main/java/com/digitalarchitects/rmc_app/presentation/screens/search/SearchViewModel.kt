@@ -183,11 +183,11 @@ class SearchViewModel @Inject constructor(
                         Log.d("SearchViewModel", "Fetched preferences successfully")
 
                     } catch (e: Exception) {
+
                         Log.d("SearchViewModel", "Error fetching filter preference: $e")
                     }
                 }
             }
-
 
             is SearchUIEvent.OnAddressAutoCompleteClear -> {
                 viewModelScope.launch {
