@@ -140,6 +140,7 @@ fun LoginScreen(
 
                 RmcFilledButton(
                     value = stringResource(id = R.string.login),
+                    isEnabled = uiState.email.isNotEmpty() && uiState.password.isNotEmpty(),
                     onClick = { viewModel.onEvent(LoginUIEvent.LoginButtonClicked) }
                 )
 
