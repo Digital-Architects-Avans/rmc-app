@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -278,11 +279,16 @@ fun RegisterScreen(
 
                 DividerTextComponent()
 
-                ClickableLoginTextComponent(
-                    tryingToLogin = true,
-                    onTextSelected = { navigateToScreen(RmcScreen.Login.name) }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    ClickableLoginTextComponent(
+                        tryingToLogin = true,
+                        onTextSelected = { navigateToScreen(RmcScreen.Login.name) }
 
-                )
+                    )
+                }
 
                 if (uiState.isLoading) {
                     Box(

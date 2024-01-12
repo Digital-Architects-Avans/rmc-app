@@ -833,18 +833,10 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
     }
 
     ClickableText(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 40.dp),
-        style = TextStyle(
-            fontSize = 21.sp,
-            fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center
-        ),
+        modifier = Modifier.heightIn(min = 40.dp),
+        style = MaterialTheme.typography.bodyLarge,
         text = annotatedString,
         onClick = { offset ->
-
             annotatedString.getStringAnnotations(offset, offset)
                 .firstOrNull()?.also { span ->
                     Log.d("ClickableTextComponent", "{${span.item}}")
@@ -853,7 +845,6 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
                         onTextSelected(span.item)
                     }
                 }
-
         },
     )
 }
