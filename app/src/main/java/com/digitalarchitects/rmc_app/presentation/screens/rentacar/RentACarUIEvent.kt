@@ -19,4 +19,8 @@ sealed interface RentACarUIEvent {
     object PermissionsGranted : RentACarUIEvent
     object PermissionsRevoked : RentACarUIEvent
     class ShowPermissionDialog(val show: Boolean) : RentACarUIEvent
+
+
+    // Filter preference
+    object FetchFilterPreference : RentACarUIEvent
 }
