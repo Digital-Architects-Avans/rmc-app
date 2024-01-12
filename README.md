@@ -55,7 +55,9 @@ git clone https://github.com/your-username/vehicle-rental-app.git
 
 2. Open the project in Android Studio.
 
-3. Build and run the app on an emulator or physical device.
+3. This applicaiton uses the Google Maps SDK and Google Places API, you should insert your own `MAPS_API_KEY=[KEY]` in the `local.properties` file in order to successfully establish a connection with the Google API.
+
+4. Build and run the app on an emulator or physical device.
 
 
 ## Contributing
