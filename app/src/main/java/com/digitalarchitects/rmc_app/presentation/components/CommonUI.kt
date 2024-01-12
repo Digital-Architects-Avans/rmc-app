@@ -893,8 +893,8 @@ fun RmcTextBadge(
             color = labelTextColor,
             modifier = Modifier
                 .padding(
-                    vertical = dimensionResource(R.dimen.padding_extra_small),
-                    horizontal = dimensionResource(R.dimen.padding_medium)
+                    vertical = dimensionResource(id = R.dimen.padding_tiny),
+                    horizontal = dimensionResource(R.dimen.padding_small)
                 )
         )
     }
