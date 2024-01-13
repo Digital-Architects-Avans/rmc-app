@@ -24,4 +24,6 @@ sealed interface RentACarUIEvent {
 
     // Filter preference
     object FetchFilterPreference : RentACarUIEvent
+    object FetchShowSearchLocation : RentACarUIEvent
+    class SetShowSearchLocation(val show: Boolean) : RentACarUIEvent
 }

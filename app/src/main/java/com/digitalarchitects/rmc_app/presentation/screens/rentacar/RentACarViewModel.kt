@@ -150,7 +150,6 @@ class RentACarViewModel @Inject constructor(
                 }
             }
 
-
             // Permissions
             // Invoke locationService when permissions are granted
             is RentACarUIEvent.PermissionsGranted -> {
@@ -200,6 +199,15 @@ class RentACarViewModel @Inject constructor(
                             engineTypeBev = filterPreferences.engineTypeBEV,
                             engineTypeFcev = filterPreferences.engineTypeFCEV
                         )
+
+                        Log.d("SearchViewModel", "latitude ${filterPreferences.latitude}")
+                        Log.d("SearchViewModel", "longitude ${filterPreferences.longitude}")
+
+                        if (filterPreferences.latitude == 0.0f || filterPreferences.longitude == 0.0f) {
+                            _rentACarUiState.value = _rentACarUiState.value.copy(
+                                showSearchLocation = false
+                            )
+                        }
                         Log.d("SearchViewModel", "Fetched preferences successfully")
                         Log.d("SearchViewModel", "rentACarUiState: ${rentACarUiState.value.price}")
                     } catch (e: Exception) {
@@ -207,9 +215,37 @@ class RentACarViewModel @Inject constructor(
                     }
                 }
             }
+
+            is RentACarUIEvent.FetchShowSearchLocation -> {
+                viewModelScope.launch(dispatcher) {
+                    try {
+                        val currentState = userPreferencesRepository.getShowSearchLocation()
+                        Log.d("RentACarViewModel", "Current showSearchLocation: $currentState")
+
+                        _rentACarUiState.value = _rentACarUiState.value.copy(
+                            showSearchLocation = currentState
+                        )
+                        Log.d("SearchViewModel", "showSearchLocation set to: $currentState")
+                    } catch (e: Exception) {
+                        Log.d("SearchViewModel", "Error fetching filter preference: $e")
+                    }
+                }
+            }
+
+            is RentACarUIEvent.SetShowSearchLocation -> {
+                viewModelScope.launch(dispatcher) {
+                    try {
+                        _rentACarUiState.value = _rentACarUiState.value.copy(
+                            showSearchLocation = event.show
+                        )
+                        Log.d("SearchViewModel", "showSearchLocation set to: ${event.show}")
+                    } catch (e: Exception) {
+                        Log.d("SearchViewModel", "Error fetching filter preference: $e")
+                    }
+                }
+            }
         }
     }
-
 
     fun setMapData() {
         getVehicles()

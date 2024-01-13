@@ -133,11 +133,12 @@ fun RentACarScreen(
     val listBottomSheet = rememberModalBottomSheetState()
 
     LaunchedEffect(Unit) {
-        // Get vehicles and create map items in view model
-        viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         // Get filter preference from datastore
+        viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
+        viewModel.onEvent(RentACarUIEvent.FetchShowSearchLocation)
+        // Get vehicles and create map items in view model
         viewModel.setMapData()
-        // Set map data in view model
+        // Set camera data in view model
         snapshotFlow { cameraState.isMoving }
             .collect {
                 viewModel.onEvent(RentACarUIEvent.ZoomLevelChanged(cameraState.position.zoom))
@@ -339,6 +340,16 @@ fun RentACarScreen(
                                 title = stringResource(R.string.your_location),
                                 draggable = false
                             )
+                        }
+                        // Locate camera on search results
+                        if (rentACarUiState.showSearchLocation) {
+                            val searchLocation = LatLng(
+                                rentACarUiState.latitude.toDouble(),
+                                rentACarUiState.longitude.toDouble()
+                            )
+                            cameraState.move(CameraUpdateFactory.zoomTo(12f))
+                            cameraState.move(CameraUpdateFactory.newLatLng(searchLocation))
+                            viewModel.onEvent(RentACarUIEvent.SetShowSearchLocation(false))
                         }
                         // Set cluster manager and callback functions
                         val clusterManager = rememberClusterManager<VehicleMapItem>()

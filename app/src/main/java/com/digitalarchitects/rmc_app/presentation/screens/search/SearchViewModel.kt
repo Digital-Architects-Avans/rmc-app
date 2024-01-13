@@ -230,6 +230,9 @@ class SearchViewModel @Inject constructor(
                     engineTypeFCEV = state.engineTypeFcev
                 )
                 Log.d("SearchViewModel", "Saved preferences successfully, $state")
+
+                userPreferencesRepository.saveShowSearchLocation(true)
+                Log.d("SearchViewModel", "Set ShowSearchLocation to true")
             } catch (e: Exception) {
                 Log.d("SearchViewModel", "Error applying filter preference: $e")
             }
@@ -248,5 +251,14 @@ class SearchViewModel @Inject constructor(
             engineTypeFcev = true
         )
         _address.value = AddressItem()
+
+        viewModelScope.launch(dispatcher) {
+            try {
+                userPreferencesRepository.saveShowSearchLocation(false)
+                Log.d("SearchViewModel", "Set ShowSearchLocation to true")
+            } catch (e: Exception) {
+                Log.d("SearchViewModel", "Error clearing filter preference: $e")
+            }
+        }
     }
 }
