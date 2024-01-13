@@ -5,7 +5,7 @@ import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 
-data class MyRentalsUIState (
+data class MyRentalsUIState(
     var selectedTab: MyRentalTab = MyRentalTab.OPEN,
     val isLoading: Boolean = false,
     var myRentalsList: List<Triple<Rental, Vehicle, User>> = emptyList(),
