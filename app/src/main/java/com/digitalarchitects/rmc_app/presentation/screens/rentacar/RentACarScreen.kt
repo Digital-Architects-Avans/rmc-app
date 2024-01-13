@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -507,14 +509,16 @@ fun RentACarScreen(
                                 )
                             )
                         }
-                        RmcFloatingActionButton(
-                            icon = Icons.AutoMirrored.Filled.List,
-                            label = R.string.list_view,
-                            number = rentACarUiState.searchResults,
-                            onClick = {
-                                viewModel.onEvent(RentACarUIEvent.ShowListView(true))
-                            }
-                        )
+                        if (rentACarUiState.searchResults != 0) {
+                            RmcFloatingActionButton(
+                                icon = Icons.AutoMirrored.Filled.List,
+                                label = R.string.list_view,
+                                number = rentACarUiState.searchResults,
+                                onClick = {
+                                    viewModel.onEvent(RentACarUIEvent.ShowListView(true))
+                                }
+                            )
+                        }
                     }
                 }
 
