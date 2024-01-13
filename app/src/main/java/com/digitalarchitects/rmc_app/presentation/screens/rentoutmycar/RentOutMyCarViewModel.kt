@@ -114,7 +114,6 @@ class RentOutMyCarViewModel @Inject constructor(
                 }
             }
 
-
             is RentOutMyCarUIEvent.AcceptRental -> {
                 // Access the rentalId property directly from the event
                 val rentalId: String = event.rentalId
