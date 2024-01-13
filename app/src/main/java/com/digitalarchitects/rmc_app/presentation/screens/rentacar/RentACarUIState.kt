@@ -20,6 +20,8 @@ sealed interface LocationPermissionsUIState {
 
 // Rent A Car UI state
 data class RentACarUIState(
+    // Intro
+    var showIntro: Boolean = true,
 
     // Permissions
     var permissionStatus: PermissionsStatus = PermissionsStatus.PENDING,

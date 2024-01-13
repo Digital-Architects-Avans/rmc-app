@@ -60,6 +60,12 @@ class RentACarViewModel @Inject constructor(
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
+            // Intro
+            is RentACarUIEvent.ShowIntro -> {
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    showIntro = event.show
+                )
+            }
 
             // Map controls
             is RentACarUIEvent.ZoomLevelChanged -> {
@@ -82,8 +88,9 @@ class RentACarViewModel @Inject constructor(
 
             is RentACarUIEvent.RmcMapVehicleItemClicked -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
-                    activeVehicleId = event.id,
-                    showVehicleList = false,
+                    showIntro = false,
+                    activeVehicleId = if (event.id == "0") null else event.id,
+                    showVehicleList = false
                 )
             }
 
@@ -176,11 +183,12 @@ class RentACarViewModel @Inject constructor(
                         Log.d("RentACarViewModel", "filterPreferences: $filterPreferences")
 
                         // If user has set a date preference, convert it to LocalDate else null
-                        val dateAsLocalDate: LocalDate? = if (filterPreferences.date?.isEmpty() == true) {
-                            LocalDate.parse(filterPreferences.date)
-                        } else {
-                            null
-                        }
+                        val dateAsLocalDate: LocalDate? =
+                            if (filterPreferences.date.isEmpty()) {
+                                LocalDate.parse(filterPreferences.date)
+                            } else {
+                                null
+                            }
 
                         _rentACarUiState.value = _rentACarUiState.value.copy(
                             date = dateAsLocalDate,
@@ -237,8 +245,10 @@ class RentACarViewModel @Inject constructor(
                     " EngineTypeFCEV: ${rentACarUiState.value.engineTypeFcev}," +
                     "Latitude: ${rentACarUiState.value.latitude}," +
                     " Longitude: ${rentACarUiState.value.longitude}," +
-                    " Distance: ${rentACarUiState.value.distance}")
-                    Log . d ("RentACarViewModelFilter", "vehicles: ${vehicles.size} $vehicles"
+                    " Distance: ${rentACarUiState.value.distance}"
+        )
+        Log.d(
+            "RentACarViewModelFilter", "vehicles: ${vehicles.size} $vehicles"
         )
         val filterPreferences = _rentACarUiState.value
 

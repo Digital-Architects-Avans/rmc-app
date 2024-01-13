@@ -56,7 +56,8 @@
     <string name="or">of</string>
     <string name="login">Inloggen</string>
     <string name="logout">Uitloggen</string>
-    <string name="welcome">Welkom terug</string>
+    <string name="welcome">Welkom terug!</string>
+    <string name="welcome_text">Klaar voor een rit? Of je eigen auto verhuren?</string>
     <string name="forgot_password">Wachtwoord vergeten?</string>
     <string name="back_button">Terug</string>
     <string name="tac_acceptance_of_terms_header">1. Acceptatie van voorwaarden</string>

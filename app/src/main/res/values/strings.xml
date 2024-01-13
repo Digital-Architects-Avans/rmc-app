@@ -65,7 +65,8 @@
     <string name="or">or</string>
     <string name="login">Login</string>
     <string name="logout">Log out</string>
-    <string name="welcome">Welcome Back</string>
+    <string name="welcome">Welcome back!</string>
+    <string name="welcome_text">Are you ready for a ride? Or do you want to rent out your car?</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="back_button">Back</string>
     <string name="list_view">List view</string>

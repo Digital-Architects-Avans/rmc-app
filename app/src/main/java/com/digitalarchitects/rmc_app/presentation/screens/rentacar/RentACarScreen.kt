@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CarRental
+import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
@@ -46,6 +47,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -66,6 +68,7 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionBu
 import com.digitalarchitects.rmc_app.presentation.components.RmcImgFilledIconButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcMapVehicleCluster
 import com.digitalarchitects.rmc_app.presentation.components.RmcMapVehicleItem
+import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
@@ -101,15 +104,6 @@ fun RentACarScreen(
     viewModel: RentACarViewModel,
     navigateToScreen: (String) -> Unit
 ) {
-    // Bottom sheet states
-    val detailsBottomSheet = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberStandardBottomSheetState(
-            skipHiddenState = false,
-            initialValue = SheetValue.Hidden
-        )
-    )
-    val listBottomSheet = rememberModalBottomSheetState()
-
     // UI states
     val rentACarUiState by viewModel.rentACarUiState.collectAsState()
     val locationPermissionsUiState by viewModel.locationPermissionsUiState.collectAsStateWithLifecycle()
@@ -127,10 +121,17 @@ fun RentACarScreen(
             )
         }
     }
+    // Bottom sheet states
+    val detailsBottomSheet = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            // skipPartiallyExpanded = false,
+            skipHiddenState = false,
+        )
+    )
+    val listBottomSheet = rememberModalBottomSheetState()
 
     LaunchedEffect(Unit) {
-        // Hide details bottom sheet first
-        detailsBottomSheet.bottomSheetState.hide()
         // Get vehicles and create map items in view model
         viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         // Get filter preference from datastore
@@ -193,37 +194,92 @@ fun RentACarScreen(
 
     // Start Rent A Car screen
     BottomSheetScaffold(
-        sheetPeekHeight = 320.dp,
         scaffoldState = detailsBottomSheet,
+        sheetPeekHeight = 320.dp,
 
         // Bottom sheet: Vehicle details
         sheetContent = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                if (rentACarUiState.activeVehicleId != null) {
-                    val vehicle = rentACarUiState.listOfVehicles.first { vehicle ->
-                        vehicle.vehicleId == rentACarUiState.activeVehicleId
+            // Show intro on startup
+            if (rentACarUiState.showIntro) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(R.dimen.padding_large))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.welcome),
+                            style = MaterialTheme.typography.displayMedium,
+                            color = colorResource(id = R.color.primary_red)
+                        )
+                        RmcSpacer(8)
+                        Text(
+                            text = stringResource(id = R.string.welcome_body),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        RmcSpacer()
+                        RmcFilledButton(
+                            value = "Rent A Car",
+                            icon = Icons.Filled.CarRental,
+                            onClick = {
+                                scope.launch {
+                                    detailsBottomSheet.bottomSheetState.partialExpand()
+                                }
+                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                            }
+                        )
+                        RmcSpacer(8)
+                        RmcOutlinedButton(
+                            value = "Add a vehicle",
+                            icon = Icons.Filled.DirectionsCar,
+                            onClick = {
+                                scope.launch {
+                                    detailsBottomSheet.bottomSheetState.hide()
+                                }
+                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                navigateToScreen(RmcScreen.MyVehicles.name)
+                            }
+                        )
+                        RmcSpacer()
                     }
-                    RmcVehicleDetails(
-                        vehicle = vehicle,
-                        ownerView = false
-                    )
                 }
-                RmcDivider()
-                RmcRentCarForm(
-                    date = rentACarUiState.date,
-                    onValueChange = { date ->
-                        viewModel.onEvent(RentACarUIEvent.DateChanged(date))
-                    },
-                    isDateValid = validateDate(rentACarUiState.date.toString()),
-                    onReserveButtonClicked = {
-                        viewModel.onEvent(RentACarUIEvent.ReserveVehicleButtonClicked)
-                        navigateToScreen(RmcScreen.MyRentals.name)
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+
+                    // Show vehicle details if a vehicle is selected
+                    if (rentACarUiState.activeVehicleId != null) {
+                        val vehicle = rentACarUiState.listOfVehicles.first { vehicle ->
+                            vehicle.vehicleId == rentACarUiState.activeVehicleId
+                        }
+                        RmcVehicleDetails(
+                            vehicle = vehicle,
+                            ownerView = false
+                        )
+                        RmcDivider()
+                        RmcRentCarForm(
+                            date = rentACarUiState.date,
+                            onValueChange = { date ->
+                                viewModel.onEvent(RentACarUIEvent.DateChanged(date))
+                            },
+                            isDateValid = validateDate(rentACarUiState.date.toString()),
+                            onReserveButtonClicked = {
+                                viewModel.onEvent(RentACarUIEvent.ReserveVehicleButtonClicked)
+                                navigateToScreen(RmcScreen.MyRentals.name)
+                            }
+                        )
+                        RmcSpacer(32)
+                    } else {
+                        // Hide bottom sheet if no vehicle is selected, by clicking on the map
+                        LaunchedEffect(Unit) {
+                            detailsBottomSheet.bottomSheetState.hide()
+                        }
                     }
-                )
-                RmcSpacer(32)
+                }
             }
         },
     ) {
@@ -261,6 +317,9 @@ fun RentACarScreen(
                             scope.launch {
                                 detailsBottomSheet.bottomSheetState.hide()
                             }
+                            viewModel.onEvent(
+                                RentACarUIEvent.RmcMapVehicleItemClicked("0")
+                            )
                         }
                     ) {
                         // Draw marker if user location is set
@@ -463,6 +522,7 @@ fun RentACarScreen(
         }
     }
 }
+
 
 // Dialog to explain required permissions
 @Composable

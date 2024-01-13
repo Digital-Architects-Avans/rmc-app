@@ -1,10 +1,11 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
-import com.digitalarchitects.rmc_app.presentation.screens.search.SearchUIEvent
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.datetime.LocalDate
 
 sealed interface RentACarUIEvent {
+    // Intro
+    class ShowIntro(val show: Boolean) : RentACarUIEvent
 
     // Map controls
     data class ZoomLevelChanged(val zoom: Float) : RentACarUIEvent
