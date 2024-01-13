@@ -34,16 +34,10 @@ interface RentalDao {
     @Upsert
     suspend fun upsertRental(rental: LocalRental)
 
-    @Insert
-    suspend fun insertRental(rental: LocalRental)
-
     @Delete
     suspend fun deleteRental(rental: LocalRental)
 
     @Query("DELETE FROM LocalRental")
     suspend fun clearCache()
-
-// TODO GET CURRENT Vehicle
-//    @Query("SELECT * FROM rentaltable LIMIT 1")
-//    fun getRental(): RentalTable
+    
 }
