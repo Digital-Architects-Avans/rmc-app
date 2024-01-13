@@ -196,9 +196,9 @@ fun RentACarScreen(
     // Start Rent A Car screen
     BottomSheetScaffold(
         scaffoldState = detailsBottomSheet,
-        sheetSwipeEnabled = !rentACarUiState.showIntro,
+        sheetSwipeEnabled = !rentACarUiState.showStats,
         sheetDragHandle = {
-            if (rentACarUiState.showIntro) {
+            if (rentACarUiState.showStats) {
                 RmcSpacer(32)
             } else {
                 BottomSheetDefaults.DragHandle()
@@ -210,7 +210,7 @@ fun RentACarScreen(
         sheetContent = {
             // Show intro on startup
             // TODO: Swipe down to dismiss intro
-            if (rentACarUiState.showIntro) {
+            if (rentACarUiState.showStats) {
                 Column(
                     modifier = Modifier
                         .padding(horizontal = dimensionResource(R.dimen.padding_large))

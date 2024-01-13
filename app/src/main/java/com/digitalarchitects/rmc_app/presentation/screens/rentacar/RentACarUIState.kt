@@ -52,4 +52,5 @@ data class RentACarUIState(
     val engineTypeIce: Boolean = true,
     val engineTypeBev: Boolean = true,
     val engineTypeFcev: Boolean = true
+    var searchResults: Int = 0,
 )
