@@ -32,5 +32,5 @@ interface UserDao {
 
     @Query("DELETE FROM LocalUser")
     suspend fun clearCache()
-    
+
 }
