@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
-import com.digitalarchitects.rmc_app.domain.model.AddressItem
 import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.domain.repo.PlacesRepository
@@ -33,9 +32,6 @@ class RegisterVehicleViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(RegisterVehicleUIState())
     val uiState: StateFlow<RegisterVehicleUIState> get() = _uiState.asStateFlow()
-
-    private val _address: MutableStateFlow<AddressItem> = MutableStateFlow(AddressItem())
-    val address = _address.asStateFlow()
 
     private val _placePredictions: MutableStateFlow<List<PlaceItem>> = MutableStateFlow(arrayListOf())
     val placePredictions = _placePredictions.asStateFlow()
@@ -94,20 +90,19 @@ class RegisterVehicleViewModel @Inject constructor(
                 is Result.Success -> {
                     val addressFromPlace = addressResult.data
                     if (addressFromPlace != null) {
-                        _address.value = addressFromPlace
-                        _uiState.update {
-                            it.copy(
-                                latitude = addressFromPlace.latitude.toFloat()
-                            )
+                        Log.d("RegisterVehicleViewModel", "addressFromPlace: $addressFromPlace")
+
+                        val query = if (addressFromPlace.streetAddress == " ") {
+                            addressFromPlace.city + ", " + addressFromPlace.country
+                        } else {
+                            addressFromPlace.streetAddress + ", " + addressFromPlace.city
                         }
+
                         _uiState.update {
                             it.copy(
-                                longitude = addressFromPlace.longitude.toFloat()
-                            )
-                        }
-                        _uiState.update {
-                            it.copy(
-                                address = addressFromPlace.address
+                                latitude = addressFromPlace.latitude.toFloat(),
+                                longitude = addressFromPlace.longitude.toFloat(),
+                                query = query
                             )
                         }
                     }
@@ -127,9 +122,14 @@ class RegisterVehicleViewModel @Inject constructor(
     }
 
     private fun onLocationAutoCompleteClear() {
+        Log.d("RegisterVehicleViewModel", "onLocationAutoCompleteClear")
         viewModelScope.launch {
-            _address.value = AddressItem()
             clearPredictions()
+            _uiState.update {
+                it.copy(
+                    query = ""
+                )
+            }
         }
     }
 
@@ -301,7 +301,7 @@ class RegisterVehicleViewModel @Inject constructor(
                 _uiState.value.vehicleUpdated = false
             }
 
-            RegisterVehicleUIEvent.OnAddressAutoCompleteClear -> {
+            is RegisterVehicleUIEvent.OnAddressAutoCompleteClear -> {
                 viewModelScope.launch {
                     onLocationAutoCompleteClear()
                 }
@@ -309,10 +309,9 @@ class RegisterVehicleViewModel @Inject constructor(
 
             is RegisterVehicleUIEvent.OnAddressChange -> {
                 viewModelScope.launch {
-
-                    _address.update {
+                    _uiState.update {
                         it.copy(
-                            streetAddress = event.address
+                            query = event.address
                         )
                     }
                     getPlacePredictions(event.address)
@@ -342,12 +341,8 @@ class RegisterVehicleViewModel @Inject constructor(
                 latitude = 0.0F,
                 longitude = 0.0F,
                 price = 0.00,
-                availability = false
-            )
-        }
-        _address.update {
-            it.copy(
-                streetAddress = ""
+                availability = false,
+                query = ""
             )
         }
     }

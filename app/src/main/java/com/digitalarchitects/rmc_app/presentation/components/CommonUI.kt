@@ -105,7 +105,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.domain.model.AddressItem
 import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
@@ -1715,7 +1714,7 @@ fun QuerySearch(
 
 @Composable
 fun AddressEdit(
-    addressItem: AddressItem,
+    query: String,
     modifier: Modifier,
     addressPlaceItemPredictions: List<PlaceItem>,
     onQueryChanged: (String) -> Unit,
@@ -1725,7 +1724,7 @@ fun AddressEdit(
 ) {
     AutoCompleteUI(
         modifier = Modifier.fillMaxWidth(),
-        query = addressItem.streetAddress,
+        query = query,
         queryLabel = stringResource(id = R.string.vehicle_location),
         useOutlined = true,
         onQueryChanged = onQueryChanged,

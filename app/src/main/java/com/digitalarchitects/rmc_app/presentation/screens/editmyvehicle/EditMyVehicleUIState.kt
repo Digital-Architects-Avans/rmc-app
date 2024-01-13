@@ -19,5 +19,6 @@ data class EditMyVehicleUIState (
     val price: Double = 0.00,
     val availability: Boolean = false,
 
-    var vehicleUpdated: Boolean = false
+    var vehicleUpdated: Boolean = false,
+    val query: String = "",
 )

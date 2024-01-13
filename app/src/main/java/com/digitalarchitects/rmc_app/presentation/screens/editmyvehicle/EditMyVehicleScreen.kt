@@ -55,10 +55,7 @@ fun EditMyVehicleScreen(
     vehicleId: String?
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val address by viewModel.address.collectAsState()
     val placesPredictions by viewModel.placePredictions.collectAsState()
 
     LaunchedEffect(vehicleId) {
@@ -303,7 +300,7 @@ fun EditMyVehicleScreen(
                     )
 
                     AddressEdit(
-                        addressItem = address,
+                        query = uiState.query,
                         modifier = Modifier,
                         addressPlaceItemPredictions = placesPredictions,
                         onQueryChanged = { query ->
