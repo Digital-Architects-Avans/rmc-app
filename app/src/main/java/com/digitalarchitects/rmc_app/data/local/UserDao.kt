@@ -32,8 +32,5 @@ interface UserDao {
 
     @Query("DELETE FROM LocalUser")
     suspend fun clearCache()
-
-//    TODO("GET CURRENT USER")
-//    @Query("SELECT * FROM userentity LIMIT 1")
-//    fun getUser(): UserTable?
+    
 }

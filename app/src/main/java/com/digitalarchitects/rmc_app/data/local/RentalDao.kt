@@ -39,5 +39,5 @@ interface RentalDao {
 
     @Query("DELETE FROM LocalRental")
     suspend fun clearCache()
-    
+
 }
