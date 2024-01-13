@@ -49,6 +49,7 @@ data class RentACarUIState(
     val engineTypeIce: Boolean = true,
     val engineTypeBev: Boolean = true,
     val engineTypeFcev: Boolean = true,
+    val showSearchLocation: Boolean = false,
 
     // Stats
     var showStats: Boolean = true,
