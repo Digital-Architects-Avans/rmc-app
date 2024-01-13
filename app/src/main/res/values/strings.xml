@@ -137,5 +137,6 @@
     <string name="date_placeholder" translatable="false">YYYY-MM-DD</string>
     <string name="vehicle_location">Vehicle Location</string>
     <string name="vehicle_description">Vehicle description</string>
+    <string name="no_rentals_found">No rentals found</string>
 
 </resources>
