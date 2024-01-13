@@ -609,8 +609,9 @@ fun RmcImgFilledIconButton(
 fun RmcFloatingActionButton(
     icon: ImageVector,
     @StringRes label: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    number: Int? = null,
+    onClick: () -> Unit
 ) {
     ExtendedFloatingActionButton(
         onClick = onClick,
@@ -625,11 +626,20 @@ fun RmcFloatingActionButton(
             )
         },
         text = {
-            Text(
-                text = stringResource(label),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
+            if (number == null) {
+                Text(
+                    text = stringResource(label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            } else {
+                Text(
+                    text = stringResource(label, number),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
         },
     )
 }

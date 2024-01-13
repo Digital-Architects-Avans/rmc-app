@@ -63,7 +63,7 @@ class RentACarViewModel @Inject constructor(
             // Intro
             is RentACarUIEvent.ShowIntro -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
-                    showIntro = event.show
+                    showStats = event.show
                 )
             }
 
@@ -88,7 +88,7 @@ class RentACarViewModel @Inject constructor(
 
             is RentACarUIEvent.RmcMapVehicleItemClicked -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
-                    showIntro = false,
+                    showStats = false,
                     activeVehicleId = if (event.id == "0") null else event.id,
                     showVehicleList = false
                 )

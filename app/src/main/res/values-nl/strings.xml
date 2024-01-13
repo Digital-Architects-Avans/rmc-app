@@ -61,7 +61,7 @@
     <string name="forgot_password">Wachtwoord vergeten?</string>
     <string name="back_button">Terug</string>
     <string name="tac_acceptance_of_terms_header">1. Acceptatie van voorwaarden</string>
-    <string name="list_view">Lijstweergave</string>
+    <string name="list_view">Lijstweergave (%d)</string>
     <string name="tac_1">Door deze mobiele applicatie te openen en te gebruiken, stemt u in met en gaat u akkoord met de volgende gebruiksvoorwaarden. Als u het niet eens bent met een deel van deze voorwaarden, gebruik dan alstublieft onze app niet.</string>
     <string name="tac_acceptance_of_terms_content">Door de Rent My Car-applicatie te downloaden, installeren of gebruiken, erkent u dat u deze voorwaarden heeft gelezen, begrepen en ermee akkoord gaat gebonden te zijn.</string>
     <string name="tac_use_header">2. Gebruik van de App</string>

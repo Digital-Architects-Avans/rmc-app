@@ -488,6 +488,7 @@ fun RentACarScreen(
                         RmcFloatingActionButton(
                             icon = Icons.AutoMirrored.Filled.List,
                             label = R.string.list_view,
+                            number = rentACarUiState.searchResults,
                             onClick = {
                                 viewModel.onEvent(RentACarUIEvent.ShowListView(true))
                             }

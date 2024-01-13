@@ -69,7 +69,7 @@
     <string name="welcome_text">Are you ready for a ride? Or do you want to rent out your car?</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="back_button">Back</string>
-    <string name="list_view">List view</string>
+    <string name="list_view">List view (%d)</string>
     <string name="tac_acceptance_of_terms_header">1. Acceptance of Terms</string>
     <string name="tac_1">By accessing and using this mobile application, you agree to comply with and be bound by the following terms and conditions of use. If you do not agree with any part of these terms, please do not use our app.</string>
     <string name="tac_acceptance_of_terms_content">By downloading, installing, or using the Rent My Car application, you acknowledge that you have read, understood, and agree to be bound by these terms.</string>
