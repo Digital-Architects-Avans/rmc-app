@@ -229,6 +229,9 @@ class RentACarViewModel @Inject constructor(
                 // Get vehicle map items
                 if (filteredVehicles.isNotEmpty()) {
                     _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                    _rentACarUiState.value = _rentACarUiState.value.copy(
+                        searchResults = filteredVehicles.size
+                    )
                 }
             }.onFailure { e ->
                 e.printStackTrace()
