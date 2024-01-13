@@ -208,7 +208,7 @@ fun RentOutMyCarScreen(
             }
         }
 
-        // Display vehicle details in a modal bottom sheet when a vehicle is selected
+        // Display rental and vehicle details in a modal bottom sheet when a vehicle is selected
         uiState.selectedRentalItem?.let { details ->
             ModalBottomSheet(
                 sheetState = rentalBottomSheet,
@@ -218,6 +218,7 @@ fun RentOutMyCarScreen(
                     rental = details.first,
                     vehicle = details.second,
                     user = details.third,
+                    ownerView = true,
                     showAcceptButton = details.first.status == RentalStatus.PENDING,
                     showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
                     onRejectClick = {

@@ -16,7 +16,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -26,22 +25,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
-import com.digitalarchitects.rmc_app.domain.model.User
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
-import com.digitalarchitects.rmc_app.presentation.components.MyRentalDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
+import com.digitalarchitects.rmc_app.presentation.components.RmcRentalDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcRentalListItem
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
+import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +51,8 @@ fun MyRentalsScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     val rentalBottomSheet = rememberModalBottomSheetState()
+
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(
         uiState.myRentalsList
@@ -164,68 +165,45 @@ fun MyRentalsScreen(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(50.dp)
-                        )
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
                         }
                     }
                 }
             }
         }
 
-        // Display vehicle details in a modal bottom sheet when a vehicle is selected
+        // Display rental and vehicle details in a modal bottom sheet when a vehicle is selected
         uiState.selectedRentalItem?.let { details ->
-
-            // Format the address to drop the country
-            val addressAsList = details.second.address.split(",")
-            val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
-
-            MyRentalDetailsBottomSheet(
-                details = details,
-                location = detailedAddress,
+            ModalBottomSheet(
                 sheetState = rentalBottomSheet,
-                showButtons = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
-                onCancelRentalClick = {
-                    viewModel.onEvent(MyRentalsUIEvent.CancelRental(details.first.rentalId))
-                    viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
-                },
-                onRouteClick = {
-                    viewModel.onEvent(MyRentalsUIEvent.RouteToRental(details.first.rentalId))
-                    viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
-                },
-                onCancel = {
-                    viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
+                onDismissRequest = { viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails) },
+            ) {
+                RmcRentalDetails(
+                    rental = details.first,
+                    vehicle = details.second,
+                    user = details.third,
+                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
+                    onCancelRentalClick = {
+                        viewModel.onEvent(MyRentalsUIEvent.CancelRental(details.first.rentalId))
+                        viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
+                    },
+                    onRouteClick = {
+                        viewModel.onEvent(MyRentalsUIEvent.RouteToRental(details.first.rentalId))
+                        viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
+                    },
+                )
+                RmcDivider()
+                RmcVehicleListItem(details.second) {
+                    scope.launch {
+                        rentalBottomSheet.hide()
+                    }
+                    navigateToScreen(RmcScreen.MyVehicles.name)
                 }
-            )
+                RmcSpacer(32)
+            }
         }
-
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyRentalDetailsBottomSheet(
-    details: Triple<Rental, Vehicle, User>,
-    location: String,
-    sheetState: SheetState,
-    showButtons: Boolean,
-    onCancelRentalClick: () -> Unit,
-    onRouteClick: () -> Unit,
-    onCancel: () -> Unit
-) {
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = onCancel,
-    ) {
-        MyRentalDetails(
-            rental = details.first,
-            vehicle = details.second,
-            location = location,
-            user = details.third,
-            showButtons = showButtons,
-            onCancelRentalClick = { onCancelRentalClick() },
-            onRouteClick = { onRouteClick() }
-        )
     }
 }
