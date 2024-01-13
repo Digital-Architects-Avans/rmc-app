@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
-import com.digitalarchitects.rmc_app.domain.model.AddressItem
 import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.domain.repo.PlacesRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
@@ -29,9 +28,6 @@ class SearchViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(SearchUIState())
     val uiState: StateFlow<SearchUIState> = _uiState.asStateFlow()
-
-    private val _address: MutableStateFlow<AddressItem> = MutableStateFlow(AddressItem())
-    val address = _address.asStateFlow()
 
     private val _placePredictions: MutableStateFlow<List<PlaceItem>> =
         MutableStateFlow(arrayListOf())
@@ -69,15 +65,19 @@ class SearchViewModel @Inject constructor(
                 is Result.Success -> {
                     val addressFromPlace = addressResult.data
                     if (addressFromPlace != null) {
-                        _address.value = addressFromPlace
-                        _uiState.update {
-                            it.copy(
-                                latitude = addressFromPlace.latitude.toFloat()
-                            )
+                        Log.d("RegisterVehicleViewModel", "addressFromPlace: $addressFromPlace")
+
+                        val query = if (addressFromPlace.streetAddress == " ") {
+                            addressFromPlace.city + ", " + addressFromPlace.country
+                        } else {
+                            addressFromPlace.streetAddress + ", " + addressFromPlace.city
                         }
+
                         _uiState.update {
                             it.copy(
-                                longitude = addressFromPlace.longitude.toFloat()
+                                latitude = addressFromPlace.latitude.toFloat(),
+                                longitude = addressFromPlace.longitude.toFloat(),
+                                query = query
                             )
                         }
                     }
@@ -91,15 +91,19 @@ class SearchViewModel @Inject constructor(
                         addressResult.exception
                     )
                 }
-
                 else -> {}
             }
         }
     }
 
     private fun onLocationAutoCompleteClear() {
+        Log.d("RegisterVehicleViewModel", "onLocationAutoCompleteClear")
         viewModelScope.launch {
-            _address.value = AddressItem()
+            _uiState.update {
+                it.copy(
+                    query = ""
+                )
+            }
             clearPredictions()
         }
     }
@@ -158,7 +162,8 @@ class SearchViewModel @Inject constructor(
                 viewModelScope.launch(dispatcher) {
                     try {
                         withContext(dispatcher) {
-                            val filterPreferences = userPreferencesRepository.getFilterPreference()
+                            val filterPreferences =
+                                userPreferencesRepository.getFilterPreference()
                             Log.d("SearchViewModel", "date: ${filterPreferences.date}")
 
                             // If user has set a date preference, convert it to LocalDate else null
@@ -180,7 +185,7 @@ class SearchViewModel @Inject constructor(
                                 engineTypeFcev = filterPreferences.engineTypeFCEV
                             )
                         }
-                        Log.d("SearchViewModel", "Fetched preferences successfully")
+                        Log.d("Etten", "Fetched preferences successfully")
 
                     } catch (e: Exception) {
 
@@ -197,10 +202,9 @@ class SearchViewModel @Inject constructor(
 
             is SearchUIEvent.OnAddressChange -> {
                 viewModelScope.launch {
-
-                    _address.update {
+                    _uiState.update {
                         it.copy(
-                            streetAddress = event.address
+                            query = event.address
                         )
                     }
                     getPlacePredictions(event.address)
@@ -240,17 +244,19 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun clearFilters() {
-        _uiState.value = _uiState.value.copy(
-            date = null,
-            latitude = 0.0F,
-            longitude = 0.0F,
-            price = 0.0,
-            distance = 0.0,
-            engineTypeIce = true,
-            engineTypeBev = true,
-            engineTypeFcev = true
-        )
-        _address.value = AddressItem()
+        _uiState.update {
+            it.copy(
+                date = null,
+                query = "",
+                latitude = 0.0F,
+                longitude = 0.0F,
+                price = 0.0,
+                distance = 0.0,
+                engineTypeIce = true,
+                engineTypeBev = true,
+                engineTypeFcev = true
+            )
+        }
 
         viewModelScope.launch(dispatcher) {
             try {

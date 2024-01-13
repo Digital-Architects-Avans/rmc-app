@@ -50,7 +50,6 @@ fun SearchScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val address by viewModel.address.collectAsState()
     val placesPredictions by viewModel.placePredictions.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -93,7 +92,7 @@ fun SearchScreen(
                     RmcSpacer(16)
 
                     AddressEdit(
-                        addressItem = address,
+                        query = uiState.query,
                         modifier = Modifier,
                         addressPlaceItemPredictions = placesPredictions,
                         onQueryChanged = { query ->
@@ -101,6 +100,7 @@ fun SearchScreen(
                         },
                         onClearClick = {
                             viewModel.onEvent(SearchUIEvent.OnAddressAutoCompleteClear)
+                            keyboardController?.hide()
                         },
                         onDoneClick = if (placesPredictions.isNotEmpty()) {
                             {
@@ -109,12 +109,14 @@ fun SearchScreen(
                                         placesPredictions.first()
                                     )
                                 )
+                                keyboardController?.hide()
                             }
                         } else {
                             { keyboardController?.hide() }
                         },
                         onItemClick = { placeItem ->
                             viewModel.onEvent(SearchUIEvent.OnAddressSelected(placeItem))
+                            keyboardController?.hide()
                         }
                     )
 

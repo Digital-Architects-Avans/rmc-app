@@ -55,10 +55,7 @@ fun RegisterVehicleScreen(
     navigateToScreen: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val address by viewModel.address.collectAsState()
     val placesPredictions by viewModel.placePredictions.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -303,7 +300,7 @@ fun RegisterVehicleScreen(
                     )
 
                     AddressEdit(
-                        addressItem = address,
+                        query = uiState.query,
                         modifier = Modifier,
                         addressPlaceItemPredictions = placesPredictions,
                         onQueryChanged = { query ->

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.digitalarchitects.rmc_app.data.di.IoDispatcher
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
-import com.digitalarchitects.rmc_app.domain.model.AddressItem
 import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.domain.repo.PlacesRepository
@@ -31,9 +30,6 @@ class EditMyVehicleViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(EditMyVehicleUIState())
     val uiState: StateFlow<EditMyVehicleUIState> get() = _uiState.asStateFlow()
-
-    private val _address: MutableStateFlow<AddressItem> = MutableStateFlow(AddressItem())
-    val address = _address.asStateFlow()
 
     private val _placePredictions: MutableStateFlow<List<PlaceItem>> = MutableStateFlow(arrayListOf())
     val placePredictions = _placePredictions.asStateFlow()
@@ -61,7 +57,8 @@ class EditMyVehicleViewModel @Inject constructor(
                             latitude = vehicle.latitude,
                             longitude = vehicle.longitude,
                             price = vehicle.price,
-                            availability = vehicle.availability
+                            availability = vehicle.availability,
+                            query = vehicle.address
                         )
                     }
                 }
@@ -72,7 +69,6 @@ class EditMyVehicleViewModel @Inject constructor(
     }
 
     private fun getPlacePredictions(query: String) {
-        Log.d("RegisterVehicleViewModel", "streetAddress: ${address.value.streetAddress}")
         viewModelScope.launch(dispatcher) {
 
             when (val placePredictionsResult = placesRepository.getPlacePredictions(query)) {
@@ -105,26 +101,22 @@ class EditMyVehicleViewModel @Inject constructor(
                 is Result.Success -> {
                     val addressFromPlace = addressResult.data
                     if (addressFromPlace != null) {
-                        _address.value = addressFromPlace
-                        _uiState.update {
-                            it.copy(
-                                latitude = addressFromPlace.latitude.toFloat()
-                            )
+                        Log.d("RegisterVehicleViewModel", "addressFromPlace: $addressFromPlace")
+
+                        val query = if (addressFromPlace.streetAddress == " ") {
+                            addressFromPlace.city + ", " + addressFromPlace.country
+                        } else {
+                            addressFromPlace.streetAddress + ", " + addressFromPlace.city
                         }
+
                         _uiState.update {
                             it.copy(
-                                longitude = addressFromPlace.longitude.toFloat()
-                            )
-                        }
-                        _uiState.update {
-                            it.copy(
-                                address = addressFromPlace.address
+                                latitude = addressFromPlace.latitude.toFloat(),
+                                longitude = addressFromPlace.longitude.toFloat(),
+                                query = query
                             )
                         }
                     }
-                    Log.d("RegisterVehicleViewModel", "addressFromPlace: $addressFromPlace")
-                    Log.d("RegisterVehicleViewModel", "address: ${addressFromPlace?.address}")
-                    Log.d("RegisterVehicleViewModel", "streetAddress: ${addressFromPlace?.streetAddress}")
                     clearPredictions()
                 }
 
@@ -143,8 +135,12 @@ class EditMyVehicleViewModel @Inject constructor(
     private fun onLocationAutoCompleteClear() {
         Log.d("RegisterVehicleViewModel", "onLocationAutoCompleteClear")
         viewModelScope.launch {
-            _address.value = AddressItem()
             clearPredictions()
+            _uiState.update {
+                it.copy(
+                    query = ""
+                )
+            }
         }
     }
 
@@ -362,10 +358,9 @@ class EditMyVehicleViewModel @Inject constructor(
 
             is EditMyVehicleUIEvent.OnAddressChange -> {
                 viewModelScope.launch {
-
-                    _address.update {
+                    _uiState.update {
                         it.copy(
-                            streetAddress = event.address
+                            query = event.address
                         )
                     }
                     getPlacePredictions(event.address)
@@ -394,12 +389,8 @@ class EditMyVehicleViewModel @Inject constructor(
                 latitude = 0.0F,
                 longitude = 0.0F,
                 price = 0.00,
-                availability = false
-            )
-        }
-        _address.update {
-            it.copy(
-                streetAddress = ""
+                availability = false,
+                query = ""
             )
         }
     }
