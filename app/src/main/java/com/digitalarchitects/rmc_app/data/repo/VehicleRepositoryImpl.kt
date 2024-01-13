@@ -129,30 +129,8 @@ class VehicleRepositoryImpl(
         return rmcRoomDatabase.getVehicleModel(vehicleId)
     }
 
-    override suspend fun updateVehicleAvailability(vehicleId: String) {
-
-        // Get vehicle
-        val vehicle = getVehicleById(vehicleId = vehicleId)
-
-        // Update availability
-        val updatedVehicle = UpdateVehicleDTO(
-            userId = vehicle.userId,
-            brand = vehicle.brand,
-            model = vehicle.model,
-            year = vehicle.year,
-            vehicleClass = vehicle.vehicleClass,
-            engineType = vehicle.engineType,
-            licensePlate = vehicle.licensePlate,
-            imgLink = vehicle.imgLink,
-            description = vehicle.description,
-            address = vehicle.address,
-            latitude = vehicle.latitude,
-            longitude = vehicle.longitude,
-            price = vehicle.price,
-            availability = !vehicle.availability
-        )
-
-        // Update vehicle
-        updateVehicle(vehicleId = vehicleId, updatedVehicle = updatedVehicle)
+    override suspend fun setVehicleAvailability(vehicleId: String, availability: Boolean) {
+        rmcApiService.setVehicleAvailability(vehicleId, availability)
+        refreshRoomCache()
     }
 }

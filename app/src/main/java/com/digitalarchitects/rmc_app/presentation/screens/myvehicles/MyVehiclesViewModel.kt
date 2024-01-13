@@ -91,7 +91,7 @@ class MyVehiclesViewModel @Inject constructor(
                 viewModelScope.launch(dispatcher) {
                     try {
                         _uiState.value.isAvailable = !_uiState.value.isAvailable
-                        vehicleRepository.updateVehicleAvailability(vehicleId = vehicleId)
+                        vehicleRepository.setVehicleAvailability(vehicleId = vehicleId, availability = _uiState.value.isAvailable)
                         getVehiclesOfUser()
                     } catch (e: Exception) {
                         e.printStackTrace()
