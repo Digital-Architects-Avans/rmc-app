@@ -887,6 +887,103 @@ fun RmcVehicleListItem(
 }
 
 @Composable
+fun RmcRentalListItem(
+    rental: Rental,
+    vehicle: Vehicle,
+    user: User,
+    ownerView: Boolean = false,
+    onItemClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    color = Color.Black
+                ),
+                onClick = { onItemClick() }
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column {
+                    if (ownerView) {
+                        Text(
+                            text = rental.date.toString(),
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                        Text(
+                            text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                        Text(
+                            text = "${user.firstName} ${user.lastName}",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    } else {
+                        Text(
+                            text = rental.date.toString(),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                        Text(
+                            text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                    }
+
+                }
+                val (rentalStatus, labelTextColor, backgroundColor) = when (rental.status) {
+                    RentalStatus.PENDING ->
+                        Triple(
+                            stringResource(R.string.pending),
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondaryContainer
+                        )
+
+                    RentalStatus.APPROVED ->
+                        Triple(
+                            stringResource(R.string.approved),
+                            colorResource(id = R.color.primary_green_text),
+                            colorResource(id = R.color.primary_green_bg)
+                        )
+
+                    RentalStatus.DENIED ->
+                        Triple(
+                            stringResource(R.string.denied),
+                            MaterialTheme.colorScheme.error,
+                            MaterialTheme.colorScheme.errorContainer
+                        )
+
+                    RentalStatus.CANCELLED ->
+                        Triple(
+                            stringResource(R.string.cancelled),
+                            MaterialTheme.colorScheme.error,
+                            MaterialTheme.colorScheme.errorContainer
+                        )
+                }
+                RmcSpacer(4)
+                RmcTextBadge(
+                    label = rentalStatus,
+                    labelTextColor = labelTextColor,
+                    labelBackgroundColor = backgroundColor
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun RmcTextBadge(
     label: String,
     labelTextColor: Color,
