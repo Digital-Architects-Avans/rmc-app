@@ -409,7 +409,18 @@ fun RentACarScreen(
                         RmcFilledIconButton(
                             icon = Icons.Filled.Search,
                             label = R.string.search,
-                            onClick = { navigateToScreen(RmcScreen.Search.name) },
+                            onClick = {
+                                scope.launch {
+                                    if (rentACarUiState.zoomLevel > 10f) {
+                                        viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
+                                        cameraState.centerOnLocation(
+                                            rentACarUiState.startLocation,
+                                            10f
+                                        )
+                                    }
+                                    navigateToScreen(RmcScreen.Search.name)
+                                }
+                            },
                             modifier = Modifier.padding(
                                 horizontal = dimensionResource(R.dimen.padding_extra_small)
                             )
