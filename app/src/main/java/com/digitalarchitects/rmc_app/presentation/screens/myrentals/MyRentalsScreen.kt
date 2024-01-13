@@ -135,7 +135,7 @@ fun MyRentalsScreen(
                                             onItemClick = {
                                                 viewModel.onEvent(
                                                     MyRentalsUIEvent.ShowRentalDetails(
-                                                        tab = MyRentalTab.OPEN,
+                                                        tab = MyRentalTab.HISTORY,
                                                         index = index
                                                     )
                                                 )

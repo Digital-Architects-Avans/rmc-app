@@ -138,7 +138,7 @@ fun RentOutMyCarScreen(
                                             onItemClick = {
                                                 viewModel.onEvent(
                                                     RentOutMyCarUIEvent.ShowRentalDetails(
-                                                        tab = RentalTab.PENDING,
+                                                        tab = RentalTab.OPEN,
                                                         index = index
                                                     )
                                                 )
@@ -169,7 +169,7 @@ fun RentOutMyCarScreen(
                                             onItemClick = {
                                                 viewModel.onEvent(
                                                     RentOutMyCarUIEvent.ShowRentalDetails(
-                                                        tab = RentalTab.PENDING,
+                                                        tab = RentalTab.HISTORY,
                                                         index = index
                                                     )
                                                 )
