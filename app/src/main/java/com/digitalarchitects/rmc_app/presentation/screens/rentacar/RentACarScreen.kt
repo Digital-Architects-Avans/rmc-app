@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -195,11 +196,20 @@ fun RentACarScreen(
     // Start Rent A Car screen
     BottomSheetScaffold(
         scaffoldState = detailsBottomSheet,
+        sheetSwipeEnabled = !rentACarUiState.showIntro,
+        sheetDragHandle = {
+            if (rentACarUiState.showIntro) {
+                RmcSpacer(32)
+            } else {
+                BottomSheetDefaults.DragHandle()
+            }
+        },
         sheetPeekHeight = 320.dp,
 
         // Bottom sheet: Vehicle details
         sheetContent = {
             // Show intro on startup
+            // TODO: Swipe down to dismiss intro
             if (rentACarUiState.showIntro) {
                 Column(
                     modifier = Modifier
@@ -216,7 +226,7 @@ fun RentACarScreen(
                         )
                         RmcSpacer(8)
                         Text(
-                            text = stringResource(id = R.string.welcome_body),
+                            text = stringResource(id = R.string.welcome_text),
                             style = MaterialTheme.typography.bodyLarge
                         )
                         RmcSpacer()
@@ -345,6 +355,7 @@ fun RentACarScreen(
                             clusterManager ?: return@SideEffect
                             clusterManager.setOnClusterClickListener { clusterItem ->
                                 Log.d(TAG, "Cluster clicked: $clusterItem")
+                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
                                 scope.launch {
                                     cameraState.centerOnLocation(clusterItem.position, 12f)
                                 }
@@ -352,6 +363,7 @@ fun RentACarScreen(
                             }
                             clusterManager.setOnClusterItemClickListener { vehicleItem ->
                                 Log.d(TAG, "Item clicked: $vehicleItem")
+                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
                                 viewModel.onEvent(
                                     RentACarUIEvent.RmcMapVehicleItemClicked(vehicleItem.getId())
                                 )
@@ -363,6 +375,7 @@ fun RentACarScreen(
                             }
                             clusterManager.setOnClusterItemInfoWindowClickListener { vehicleItem ->
                                 Log.d(TAG, "Item info window clicked: $vehicleItem")
+                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
                                 scope.launch {
                                     detailsBottomSheet.bottomSheetState.expand()
                                 }
