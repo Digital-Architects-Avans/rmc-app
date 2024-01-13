@@ -263,12 +263,12 @@ class RentACarViewModel @Inject constructor(
                 _rentACarUiState.value.listOfVehicles = filteredVehicles
 
                 // Get vehicle map items
-                if (filteredVehicles.isNotEmpty()) {
-                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
-                    _rentACarUiState.value = _rentACarUiState.value.copy(
-                        searchResults = filteredVehicles.size
-                    )
-                }
+                _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                // Set search results
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    searchResults = filteredVehicles.size
+                )
+                Log.d("RentACarViewModel", "Search results: ${filteredVehicles.size}")
             }.onFailure { e ->
                 e.printStackTrace()
             }
