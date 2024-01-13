@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -31,6 +30,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -495,19 +495,26 @@ fun RentACarScreen(
                                 )
                             )
                         } else {
-                            RmcFilledIconButton(
-                                icon = Icons.Filled.MyLocation,
-                                label = R.string.my_location,
-                                enabled = rentACarUiState.userLocation != null,
-                                onClick = {
-                                    scope.launch {
-                                        cameraState.centerOnLocation(rentACarUiState.userLocation!!)
-                                    }
-                                },
-                                modifier = Modifier.padding(
-                                    bottom = dimensionResource(R.dimen.padding_medium)
+                            Box {
+                                RmcFilledIconButton(
+                                    icon = Icons.Filled.MyLocation,
+                                    label = R.string.my_location,
+                                    enabled = rentACarUiState.userLocation != null,
+                                    onClick = {
+                                        scope.launch {
+                                            cameraState.centerOnLocation(rentACarUiState.userLocation!!)
+                                        }
+                                    },
+                                    modifier = Modifier.padding(
+                                        bottom = dimensionResource(R.dimen.padding_medium)
+                                    )
                                 )
-                            )
+                                if (rentACarUiState.userLocation == null) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(48.dp)
+                                    )
+                                }
+                            }
                         }
                         if (rentACarUiState.searchResults != 0) {
                             RmcFloatingActionButton(
