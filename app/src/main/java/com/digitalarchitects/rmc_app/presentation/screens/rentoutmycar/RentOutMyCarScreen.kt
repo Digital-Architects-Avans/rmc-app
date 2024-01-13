@@ -17,7 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -27,22 +26,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
-import com.digitalarchitects.rmc_app.domain.model.User
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
-import com.digitalarchitects.rmc_app.presentation.components.RmcRentalDetailsOwner
+import com.digitalarchitects.rmc_app.presentation.components.RmcRentalDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcRentalListItem
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
+import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +52,8 @@ fun RentOutMyCarScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     val rentalBottomSheet = rememberModalBottomSheetState()
+
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(
         uiState.listOfRentalsForUser
@@ -209,51 +210,34 @@ fun RentOutMyCarScreen(
 
         // Display vehicle details in a modal bottom sheet when a vehicle is selected
         uiState.selectedRentalItem?.let { details ->
-            RentalDetailsBottomSheet(
-                details = details,
+            ModalBottomSheet(
                 sheetState = rentalBottomSheet,
-                showAcceptButton = details.first.status == RentalStatus.PENDING,
-                showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
-                onRejectClick = {
-                    viewModel.onEvent(RentOutMyCarUIEvent.RejectRental(details.first.rentalId))
-                    viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
-                },
-                onAcceptClick = {
-                    viewModel.onEvent(RentOutMyCarUIEvent.AcceptRental(details.first.rentalId))
-                    viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
-                },
-                onCancel = {
-                    viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
+                onDismissRequest = { viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails) },
+            ) {
+                RmcRentalDetails(
+                    rental = details.first,
+                    vehicle = details.second,
+                    user = details.third,
+                    showAcceptButton = details.first.status == RentalStatus.PENDING,
+                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
+                    onRejectClick = {
+                        viewModel.onEvent(RentOutMyCarUIEvent.RejectRental(details.first.rentalId))
+                        viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
+                    },
+                    onAcceptClick = {
+                        viewModel.onEvent(RentOutMyCarUIEvent.AcceptRental(details.first.rentalId))
+                        viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)
+                    }
+                )
+                RmcDivider()
+                RmcVehicleListItem(details.second) {
+                    scope.launch {
+                        rentalBottomSheet.hide()
+                    }
+                    navigateToScreen(RmcScreen.MyVehicles.name)
                 }
-            )
+                RmcSpacer(32)
+            }
         }
-
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RentalDetailsBottomSheet(
-    details: Triple<Rental, Vehicle, User>,
-    sheetState: SheetState,
-    showAcceptButton: Boolean,
-    showRejectButton: Boolean,
-    onRejectClick: () -> Unit,
-    onAcceptClick: () -> Unit,
-    onCancel: () -> Unit
-) {
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = onCancel,
-    ) {
-        RmcRentalDetailsOwner(
-            rental = details.first,
-            vehicle = details.second,
-            user = details.third,
-            showAcceptButton = showAcceptButton,
-            showRejectButton = showRejectButton,
-            onRejectClick = { onRejectClick() },
-            onAcceptClick = { onAcceptClick() }
-        )
     }
 }
