@@ -30,19 +30,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ToggleOff
 import androidx.compose.material.icons.filled.ToggleOn
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.LocalGasStation
 import androidx.compose.material.icons.rounded.LocationOn
@@ -55,9 +49,11 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,6 +64,7 @@ import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -93,7 +90,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -117,7 +113,6 @@ import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.domain.util.millisToLocalDateConverter
 import com.digitalarchitects.rmc_app.domain.util.validateDate
-import com.digitalarchitects.rmc_app.ui.theme.Shapes
 import kotlinx.datetime.LocalDate
 
 /*
@@ -232,95 +227,13 @@ fun NormalTextComponent(value: String) {
             .fillMaxWidth()
             .heightIn(min = 40.dp)
             .padding(bottom = 15.dp),
-        style = TextStyle(
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 
 /**
- * Composable that displays a Text component with a specific styling for small HeadingText
+ * Text field composable
  */
-@Composable
-fun SmallHeadingTextComponent(value: String) {
-    Text(
-        text = value,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(),
-        style = TextStyle(
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary,
-        textAlign = TextAlign.Center
-    )
-}
-
-/**
- * Composable that displays a Text component with a specific styling for a large HeadingText
- */
-@Composable
-fun LargeHeadingTextComponent(value: String) {
-    Text(
-        text = value,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(),
-        style = TextStyle(
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary,
-        textAlign = TextAlign.Center
-    )
-}
-
-/**
- * Stateless Composable that displays an OutlinedTextField with a label and leading icon
- */
-@Composable
-fun MyTextFieldComponent(
-    labelValue: String,
-    icon: ImageVector,
-    onTextSelected: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Text,
-        imeAction = ImeAction.Next
-    )
-) {
-    var textValue by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(shape = Shapes.small),
-        label = { Text(text = labelValue) },
-        colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = MaterialTheme.colorScheme.primary,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            focusedLabelColor = MaterialTheme.colorScheme.primary
-        ),
-        keyboardOptions = keyboardOptions,
-        singleLine = true,
-        maxLines = 1,
-        value = textValue,
-        onValueChange = {
-            textValue = it
-            onTextSelected(it)
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = null
-            )
-        }
-    )
-}
-
 @Composable
 fun RmcTextField(
     label: String,
@@ -357,9 +270,11 @@ fun RmcTextField(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
             focusedTextColor = MaterialTheme.colorScheme.primary,
+            errorContainerColor = MaterialTheme.colorScheme.error,
             errorBorderColor = MaterialTheme.colorScheme.error,
             errorTextColor = MaterialTheme.colorScheme.error,
-            unfocusedTextColor = MaterialTheme.colorScheme.scrim
+            unfocusedTextColor = MaterialTheme.colorScheme.scrim,
+            focusedTrailingIconColor = MaterialTheme.colorScheme.primary
         ),
         keyboardOptions = keyboardOptions,
         modifier = modifier.fillMaxWidth(),
@@ -382,8 +297,10 @@ fun RmcTextField(
                 IconButton(onClick = {
                     onTrailingIconButtonClick()
                 }) {
-                    Icon(imageVector = trailingIcon,
-                        contentDescription = null)
+                    Icon(
+                        imageVector = trailingIcon,
+                        contentDescription = null
+                    )
                 }
             }
         },
@@ -395,69 +312,6 @@ fun RmcTextField(
                 )
             }
         }
-    )
-}
-
-/**
- * Stateless Composable that displays an OutlinedTextField with a label, leading icon, trialing
- * specific for passwords
- */
-@Composable
-fun PasswordTextFieldComponent(
-    labelValue: String,
-    icon: ImageVector,
-    onTextSelected: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Password,
-        imeAction = ImeAction.Next
-    ),
-) {
-
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-
-    OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(shape = Shapes.small),
-        label = { Text(text = labelValue) },
-        colors = OutlinedTextFieldDefaults.colors(
-            cursorColor = MaterialTheme.colorScheme.primary,
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            focusedLabelColor = MaterialTheme.colorScheme.primary
-        ),
-        keyboardOptions = keyboardOptions,
-        singleLine = true,
-        maxLines = 1,
-        value = password,
-        onValueChange = {
-            password = it
-            onTextSelected(it)
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = null
-            )
-        },
-        trailingIcon = {
-
-            val iconImage = if (passwordVisible) {
-                Icons.Filled.Visibility
-            } else Icons.Filled.VisibilityOff
-
-            val description = if (passwordVisible) {
-                stringResource(id = R.string.hide_password)
-            } else stringResource(id = R.string.show_password)
-
-            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                Icon(imageVector = iconImage, contentDescription = description)
-            }
-        },
-        visualTransformation = if (passwordVisible) {
-            VisualTransformation.None
-        } else PasswordVisualTransformation()
     )
 }
 
@@ -593,7 +447,8 @@ fun RmcFilledButton(
                 imageVector = it,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(18.dp)
+                    .size(18.dp),
+                tint = Color.White
             )
             Spacer(modifier = Modifier.width(8.dp))
         }
@@ -648,7 +503,8 @@ fun RmcOutlinedButton(
         onClick = { onClick() },
         enabled = isEnabled,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
     ) {
         icon?.let {
             Icon(
@@ -753,8 +609,9 @@ fun RmcImgFilledIconButton(
 fun RmcFloatingActionButton(
     icon: ImageVector,
     @StringRes label: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    number: Int? = null,
+    onClick: () -> Unit
 ) {
     ExtendedFloatingActionButton(
         onClick = onClick,
@@ -769,13 +626,21 @@ fun RmcFloatingActionButton(
             )
         },
         text = {
-            Text(
-                text = stringResource(label),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
+            if (number == null) {
+                Text(
+                    text = stringResource(label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            } else {
+                Text(
+                    text = stringResource(label, number),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
         },
-        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
     )
 }
 
@@ -787,10 +652,9 @@ fun DividerTextComponent() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
@@ -798,12 +662,11 @@ fun DividerTextComponent() {
             thickness = 1.dp,
             color = Color.Gray
         )
-
         Text(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)),
             text = stringResource(R.string.or),
             fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.primary
+            color = Color.Gray
         )
         HorizontalDivider(
             modifier = Modifier
@@ -833,18 +696,9 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
     }
 
     ClickableText(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 40.dp),
-        style = TextStyle(
-            fontSize = 21.sp,
-            fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center
-        ),
+        style = MaterialTheme.typography.bodyLarge,
         text = annotatedString,
         onClick = { offset ->
-
             annotatedString.getStringAnnotations(offset, offset)
                 .firstOrNull()?.also { span ->
                     Log.d("ClickableTextComponent", "{${span.item}}")
@@ -853,13 +707,12 @@ fun ClickableLoginTextComponent(tryingToLogin: Boolean = true, onTextSelected: (
                         onTextSelected(span.item)
                     }
                 }
-
         },
     )
 }
 
 /**
- * Stateless Text Composable with an underline
+ * Stateless Text Composable with an underline for Forgot Password
  */
 @Composable
 fun UnderLinedTextComponent(value: String) {
@@ -868,54 +721,11 @@ fun UnderLinedTextComponent(value: String) {
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 40.dp),
-        style = TextStyle(
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal
-        ), color = MaterialTheme.colorScheme.primary,
-        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.primary,
         textDecoration = TextDecoration.Underline
     )
 
-}
-
-/**
- * Old top bottom from My vehicles - don't know what to do with it yet keeping for reference.
- */
-@Composable
-fun RmcTopButton() {
-    Row(
-        modifier = Modifier
-            .height(40.dp)
-            .padding(horizontal = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            onClick = { /* TODO */ }
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(Color.White, shape = CircleShape)
-                    .border(1.dp, Color.LightGray, shape = CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Clear,
-                    contentDescription = stringResource(R.string.close),
-                    modifier = Modifier.fillMaxSize(),
-                    tint = Color.Gray
-                )
-            }
-        }
-        Text(
-            text = stringResource(R.string.my_vehicles),
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier.padding(start = 12.dp)
-        )
-    }
 }
 
 @Composable
@@ -993,6 +803,7 @@ fun RmcMapVehicleItem() {
 @Composable
 fun RmcVehicleListItem(
     vehicle: Vehicle,
+    ownerView: Boolean = false,
     onClick: (String) -> Unit
 ) {
     Row(
@@ -1009,7 +820,7 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (vehicle.imgLink != 1) {
+        if (vehicle.imgLink == 1) {
             Image(
                 painter = painterResource(id = R.drawable.civic),
                 contentDescription = null,
@@ -1021,29 +832,54 @@ fun RmcVehicleListItem(
             )
         }
         Column {
-            Text(
-                text = vehicle.licensePlate,
-                style = MaterialTheme.typography.displaySmall,
-                color = colorResource(id = R.color.primary_red)
-            )
-            Text(
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(R.dimen.padding_small)),
-                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
-                style = MaterialTheme.typography.titleMedium,
-            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
             ) {
-                RmcIconLabel(
-                    label = "Eindhoven",
-                    icon = Icons.Rounded.LocationOn
+                Text(
+                    text = vehicle.licensePlate,
+                    style = MaterialTheme.typography.displaySmall,
+                    color = colorResource(id = R.color.primary_red),
+                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
                 )
+                if (ownerView) {
+                    if (vehicle.availability) {
+                        RmcTextBadge(
+                            label = stringResource(R.string.available),
+                            labelTextColor = MaterialTheme.colorScheme.primary,
+                            labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    } else {
+                        RmcTextBadge(
+                            label = stringResource(R.string.unavailable),
+                            labelTextColor = MaterialTheme.colorScheme.error,
+                            labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    }
+                } else {
+                    RmcTextBadge(
+                        label = "€ ${vehicle.price.toInt()},- ",
+                        labelTextColor = MaterialTheme.colorScheme.primary,
+                        labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                }
+            }
+            Text(
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_small)),
+                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            val addressAsList = vehicle.address.split(",")
+            val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
+            RmcIconLabel(
+                label = detailedAddress,
+                icon = Icons.Rounded.LocationOn
+            )
+            if (ownerView) {
                 RmcIconLabel(
-                    label = vehicle.price.toString(),
+                    label = vehicle.price.toInt().toString(),
                     icon = Icons.Rounded.PriceChange
                 )
             }
@@ -1067,8 +903,8 @@ fun RmcTextBadge(
             color = labelTextColor,
             modifier = Modifier
                 .padding(
-                    vertical = dimensionResource(R.dimen.padding_extra_small),
-                    horizontal = dimensionResource(R.dimen.padding_medium)
+                    vertical = dimensionResource(id = R.dimen.padding_tiny),
+                    horizontal = dimensionResource(R.dimen.padding_small)
                 )
         )
     }
@@ -1101,8 +937,8 @@ fun RmcIconLabel(
 @Composable
 fun RmcVehicleDetails(
     vehicle: Vehicle,
-    location: String,
-    showAvailability: Boolean
+    isAvailable: Boolean = vehicle.availability,
+    ownerView: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -1118,8 +954,8 @@ fun RmcVehicleDetails(
                 style = MaterialTheme.typography.displayMedium,
                 color = colorResource(id = R.color.primary_red)
             )
-            if (showAvailability) {
-                if (vehicle.availability) {
+            if (ownerView) {
+                if (isAvailable) {
                     RmcTextBadge(
                         label = stringResource(R.string.available),
                         labelTextColor = MaterialTheme.colorScheme.primary,
@@ -1132,6 +968,12 @@ fun RmcVehicleDetails(
                         labelBackgroundColor = MaterialTheme.colorScheme.errorContainer
                     )
                 }
+            } else {
+                RmcTextBadge(
+                    label = "€ ${vehicle.price.toInt()},- ",
+                    labelTextColor = MaterialTheme.colorScheme.primary,
+                    labelBackgroundColor = MaterialTheme.colorScheme.secondaryContainer
+                )
             }
         }
         Text(
@@ -1143,31 +985,30 @@ fun RmcVehicleDetails(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_small)),
+                .padding(bottom = dimensionResource(R.dimen.padding_large)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             RmcIconLabel(
-                label = location,
+                label = vehicle.address,
                 icon = Icons.Rounded.LocationOn
             )
-            RmcIconLabel(
-                label = vehicle.price.toInt().toString(),
-                icon = Icons.Rounded.PriceChange
-            )
+            if (ownerView) {
+                RmcIconLabel(
+                    label = vehicle.price.toInt().toString(),
+                    icon = Icons.Rounded.PriceChange
+                )
+            }
         }
     }
-    if (vehicle.imgLink != 1) {
+    if (vehicle.imgLink == 1) {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(height = 160.dp, width = 20.dp)
-                .padding(
-                    top = dimensionResource(R.dimen.padding_medium),
-                    bottom = dimensionResource(R.dimen.padding_large)
-                ),
+                .height(184.dp)
+                .padding(bottom = dimensionResource(R.dimen.padding_large)),
             contentScale = ContentScale.Crop,
-            painter = painterResource(vehicle.imgLink),
+            painter = painterResource(R.drawable.civic),
             contentDescription = null
         )
     }
@@ -1175,14 +1016,11 @@ fun RmcVehicleDetails(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
-        //Text(
-        //    modifier = Modifier
-        //        .padding(
-        //            bottom = dimensionResource(R.dimen.padding_small)
-        //        ),
-        //    text = "A cheap car to go away for a day.",
-        //    style = MaterialTheme.typography.bodyMedium,
-        //)
+        Text(
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium)),
+            text = vehicle.description,
+            style = MaterialTheme.typography.bodyMedium,
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -1413,7 +1251,10 @@ fun RmcRentalDetailsOwner(
             RmcUserIcon(userIcon = R.drawable.usericon,
                 size = dimensionResource(R.dimen.image_size_medium),
                 onClick = {})
-            SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+            Text(
+                text = "${user.firstName} ${user.lastName}",
+                style = MaterialTheme.typography.bodyLarge,
+            )
         }
     }
 
@@ -1596,7 +1437,10 @@ fun MyRentalDetails(
             RmcUserIcon(userIcon = R.drawable.usericon,
                 size = dimensionResource(R.dimen.image_size_medium),
                 onClick = {})
-            SmallHeadingTextComponent(value = "${user.firstName} ${user.lastName}")
+            Text(
+                text = "${user.firstName} ${user.lastName}",
+                style = MaterialTheme.typography.bodyLarge,
+            )
         }
     }
 
@@ -1725,10 +1569,8 @@ fun <T> AutoCompleteUI(
     onItemClick: (T) -> Unit = {},
     itemContent: @Composable (T) -> Unit = {}
 ) {
-
     val view = LocalView.current
     val lazyListState = rememberLazyListState()
-
 
     LazyColumn(
         state = lazyListState,
@@ -1757,7 +1599,8 @@ fun <T> AutoCompleteUI(
             items(predictions) { prediction ->
                 Row(
                     Modifier
-                        .padding(8.dp)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .padding(dimensionResource(id = R.dimen.padding_medium))
                         .fillMaxWidth()
                         .clickable {
                             view.clearFocus()
@@ -1831,7 +1674,8 @@ fun QuerySearch(
                 focusedTextColor = MaterialTheme.colorScheme.primary,
                 errorBorderColor = MaterialTheme.colorScheme.error,
                 errorTextColor = MaterialTheme.colorScheme.error,
-                unfocusedTextColor = MaterialTheme.colorScheme.scrim
+                unfocusedTextColor = MaterialTheme.colorScheme.scrim,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.primary
             )
         )
     } else {
@@ -1879,26 +1723,18 @@ fun AddressEdit(
     onDoneClick: () -> Unit,
     onItemClick: (PlaceItem) -> Unit
 ) {
-
-    Column(
-        modifier = modifier.padding(top = 8.dp, bottom = 8.dp),
-        verticalArrangement = Arrangement.Center
+    AutoCompleteUI(
+        modifier = Modifier.fillMaxWidth(),
+        query = addressItem.streetAddress,
+        queryLabel = stringResource(id = R.string.vehicle_location),
+        useOutlined = true,
+        onQueryChanged = onQueryChanged,
+        predictions = addressPlaceItemPredictions,
+        onClearClick = onClearClick,
+        onDoneActionClick = onDoneClick,
+        onItemClick = onItemClick
     ) {
-
-        AutoCompleteUI(
-            modifier = Modifier.fillMaxWidth(),
-            query = addressItem.streetAddress,
-            queryLabel = stringResource(id = R.string.vehicle_location),
-            useOutlined = true,
-            onQueryChanged = onQueryChanged,
-            predictions = addressPlaceItemPredictions,
-            onClearClick = onClearClick,
-            onDoneActionClick = onDoneClick,
-            onItemClick = onItemClick
-        ) {
-            Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = it.address, style = MaterialTheme.typography.bodyLarge)
     }
 }
 
@@ -1922,20 +1758,22 @@ fun RmcDatePickerDialog(
     DatePickerDialog(
         onDismissRequest = { onDismiss() },
         confirmButton = {
-            Button(onClick = {
-                onDateSelected(selectedDate)
-                onDismiss()
-            }
-
+            Button(
+                onClick = {
+                    onDateSelected(selectedDate)
+                    onDismiss()
+                }
             ) {
-                Text(text = "OK")
+                Text(text = stringResource(id = R.string.apply))
             }
         },
         dismissButton = {
-            Button(onClick = {
-                onDismiss()
-            }) {
-                Text(text = "Cancel")
+            OutlinedButton(
+                modifier = Modifier,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                onClick = { onDismiss() }
+            ) {
+                Text(text = stringResource(id = R.string.cancel))
             }
         }
     ) {
@@ -1975,17 +1813,18 @@ fun RmcDateTextField(
                 isError = !isDateValid, // Set isError based on date validation
                 enabled = true,
                 placeholder = stringResource(id = R.string.date_placeholder), // Placeholder text
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.padding_small))
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                )
             )
         }
         // Show an error message if the date is not valid
         if (!isDateValid) {
             Text(
                 modifier = Modifier
-                    .padding(vertical = dimensionResource(R.dimen.padding_small))
-                    .padding(start = dimensionResource(R.dimen.padding_small)),
+                    .padding(start = dimensionResource(R.dimen.padding_small))
+                    .padding(top = dimensionResource(R.dimen.padding_extra_small)),
                 text = stringResource(R.string.invalid_date),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error

@@ -1,10 +1,8 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myaccount
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CarRental
 import androidx.compose.material.icons.filled.DirectionsCar
@@ -13,6 +11,8 @@ import androidx.compose.material.icons.filled.Output
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,8 +30,6 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcLogoText
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcUserIcon
-import com.digitalarchitects.rmc_app.presentation.components.SmallHeadingTextComponent
-
 
 @Composable
 fun MyAccountScreen(
@@ -65,11 +63,12 @@ fun MyAccountScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                RmcSpacer()
                 RmcLogoText()
+                RmcSpacer(8)
                 RmcUserIcon(
                     userIcon = uiState.imageResourceId,
                     size = dimensionResource(R.dimen.image_size_large),
@@ -77,9 +76,11 @@ fun MyAccountScreen(
                         navigateToScreen(RmcScreen.EditMyAccount.name)
                     }
                 )
+                RmcSpacer(8)
                 uiState.currentUser?.let {
-                    SmallHeadingTextComponent(
-                        value = it.firstName
+                    Text(
+                        text = "${it.firstName} ${it.lastName}",
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 }
                 RmcSpacer()
@@ -90,6 +91,7 @@ fun MyAccountScreen(
                         navigateToScreen(RmcScreen.MyVehicles.name)
                     }
                 )
+                RmcSpacer(8)
                 RmcFilledButton(
                     value = stringResource(R.string.rent_my_car),
                     icon = Icons.Filled.Key,
@@ -97,6 +99,7 @@ fun MyAccountScreen(
                         navigateToScreen(RmcScreen.RentOutMyCar.name)
                     }
                 )
+                RmcSpacer(8)
                 RmcFilledButton(
                     value = stringResource(R.string.my_rentals),
                     icon = Icons.Filled.CarRental,
@@ -104,6 +107,7 @@ fun MyAccountScreen(
                         navigateToScreen(RmcScreen.MyRentals.name)
                     }
                 )
+                RmcSpacer(8)
                 RmcOutlinedButton(
                     value = stringResource(R.string.logout),
                     icon = Icons.Filled.Output,

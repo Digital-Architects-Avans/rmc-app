@@ -60,6 +60,12 @@ class RentACarViewModel @Inject constructor(
 
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
+            // Intro
+            is RentACarUIEvent.ShowIntro -> {
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    showStats = event.show
+                )
+            }
 
             // Map controls
             is RentACarUIEvent.ZoomLevelChanged -> {
@@ -82,8 +88,9 @@ class RentACarViewModel @Inject constructor(
 
             is RentACarUIEvent.RmcMapVehicleItemClicked -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
-                    activeVehicleId = event.id,
-                    showVehicleList = false,
+                    showStats = false,
+                    activeVehicleId = if (event.id == "0") null else event.id,
+                    showVehicleList = false
                 )
             }
 
@@ -143,7 +150,6 @@ class RentACarViewModel @Inject constructor(
                 }
             }
 
-
             // Permissions
             // Invoke locationService when permissions are granted
             is RentACarUIEvent.PermissionsGranted -> {
@@ -176,11 +182,12 @@ class RentACarViewModel @Inject constructor(
                         Log.d("RentACarViewModel", "filterPreferences: $filterPreferences")
 
                         // If user has set a date preference, convert it to LocalDate else null
-                        val dateAsLocalDate: LocalDate? = if (filterPreferences.date?.isEmpty() == true) {
-                            LocalDate.parse(filterPreferences.date)
-                        } else {
-                            null
-                        }
+                        val dateAsLocalDate: LocalDate? =
+                            if (filterPreferences.date.isEmpty()) {
+                                LocalDate.parse(filterPreferences.date)
+                            } else {
+                                null
+                            }
 
                         _rentACarUiState.value = _rentACarUiState.value.copy(
                             date = dateAsLocalDate,
@@ -192,6 +199,15 @@ class RentACarViewModel @Inject constructor(
                             engineTypeBev = filterPreferences.engineTypeBEV,
                             engineTypeFcev = filterPreferences.engineTypeFCEV
                         )
+
+                        Log.d("SearchViewModel", "latitude ${filterPreferences.latitude}")
+                        Log.d("SearchViewModel", "longitude ${filterPreferences.longitude}")
+
+                        if (filterPreferences.latitude == 0.0f || filterPreferences.longitude == 0.0f) {
+                            _rentACarUiState.value = _rentACarUiState.value.copy(
+                                showSearchLocation = false
+                            )
+                        }
                         Log.d("SearchViewModel", "Fetched preferences successfully")
                         Log.d("SearchViewModel", "rentACarUiState: ${rentACarUiState.value.price}")
                     } catch (e: Exception) {
@@ -199,9 +215,37 @@ class RentACarViewModel @Inject constructor(
                     }
                 }
             }
+
+            is RentACarUIEvent.FetchShowSearchLocation -> {
+                viewModelScope.launch(dispatcher) {
+                    try {
+                        val currentState = userPreferencesRepository.getShowSearchLocation()
+                        Log.d("RentACarViewModel", "Current showSearchLocation: $currentState")
+
+                        _rentACarUiState.value = _rentACarUiState.value.copy(
+                            showSearchLocation = currentState
+                        )
+                        Log.d("SearchViewModel", "showSearchLocation set to: $currentState")
+                    } catch (e: Exception) {
+                        Log.d("SearchViewModel", "Error fetching filter preference: $e")
+                    }
+                }
+            }
+
+            is RentACarUIEvent.SetShowSearchLocation -> {
+                viewModelScope.launch(dispatcher) {
+                    try {
+                        _rentACarUiState.value = _rentACarUiState.value.copy(
+                            showSearchLocation = event.show
+                        )
+                        Log.d("SearchViewModel", "showSearchLocation set to: ${event.show}")
+                    } catch (e: Exception) {
+                        Log.d("SearchViewModel", "Error fetching filter preference: $e")
+                    }
+                }
+            }
         }
     }
-
 
     fun setMapData() {
         getVehicles()
@@ -221,6 +265,9 @@ class RentACarViewModel @Inject constructor(
                 // Get vehicle map items
                 if (filteredVehicles.isNotEmpty()) {
                     _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                    _rentACarUiState.value = _rentACarUiState.value.copy(
+                        searchResults = filteredVehicles.size
+                    )
                 }
             }.onFailure { e ->
                 e.printStackTrace()
@@ -237,8 +284,10 @@ class RentACarViewModel @Inject constructor(
                     " EngineTypeFCEV: ${rentACarUiState.value.engineTypeFcev}," +
                     "Latitude: ${rentACarUiState.value.latitude}," +
                     " Longitude: ${rentACarUiState.value.longitude}," +
-                    " Distance: ${rentACarUiState.value.distance}")
-                    Log . d ("RentACarViewModelFilter", "vehicles: ${vehicles.size} $vehicles"
+                    " Distance: ${rentACarUiState.value.distance}"
+        )
+        Log.d(
+            "RentACarViewModelFilter", "vehicles: ${vehicles.size} $vehicles"
         )
         val filterPreferences = _rentACarUiState.value
 

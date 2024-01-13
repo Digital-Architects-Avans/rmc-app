@@ -24,7 +24,6 @@ class LoginViewModel @Inject constructor(
     private val rentalRepository: RentalRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(LoginUIState())
     val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
 
@@ -69,7 +68,5 @@ class LoginViewModel @Inject constructor(
             vehicleRepository.getAllVehiclesFromRemote()
             rentalRepository.getAllRentalsFromRemote()
         }
-
     }
-
 }

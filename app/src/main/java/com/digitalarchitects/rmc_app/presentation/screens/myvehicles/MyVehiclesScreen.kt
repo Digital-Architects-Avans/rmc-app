@@ -1,36 +1,26 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myvehicles
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.PriceChange
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -39,24 +29,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.digitalarchitects.rmc_app.R
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
+import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
+import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionButton
-import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetailsOwner
+import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
+import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetails
+import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,9 +62,9 @@ fun MyVehiclesScreen(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_my_vehicles,
-                navigationIcon = Icons.Rounded.Close,
+                navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
                 navigateUp = {
-                    navigateToScreen(RmcScreen.RentACar.name)
+                    navigateToScreen(RmcScreen.MyAccount.name)
                 },
             )
         },
@@ -106,7 +91,6 @@ fun MyVehiclesScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(24.dp)
                     ) {
                         itemsIndexed(uiState.listOfVehicles) { index, vehicle ->
 
@@ -114,22 +98,16 @@ fun MyVehiclesScreen(
                             val addressAsList = vehicle.address.split(",")
                             val streetAndCity = addressAsList[0] + ", " + addressAsList[1].drop(8)
 
-                            VehicleListItem(
+                            RmcVehicleListItem(
                                 vehicle = vehicle,
-                                location = streetAndCity,
-                                onItemClick = {
+                                ownerView = true,
+                                onClick = {
                                     viewModel.onEvent(MyVehiclesUIEvent.ShowVehicleDetails(vehicle.vehicleId))
                                 }
                             )
 
                             if (index < uiState.listOfVehicles.lastIndex)
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
-                                    thickness = 1.dp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-                                )
+                                RmcDivider()
                         }
                     }
                 } else {
@@ -143,170 +121,92 @@ fun MyVehiclesScreen(
 
                 // Display vehicle details in a modal bottom sheet when a vehicle is selected
                 uiState.selectedVehicle?.let { vehicle ->
-
-                    // Format the address to drop the country
-                    val addressAsList = vehicle.address.split(",")
-                    val detailedAddress = addressAsList[0] + ", " + addressAsList[1]
-
-                    VehicleDetailsBottomSheet(
-                        vehicle = vehicle,
-                        location = detailedAddress,
+                    ModalBottomSheet(
                         sheetState = vehicleBottomSheet,
-                        onDeleteClick = {
-                            viewModel.onEvent(MyVehiclesUIEvent.DeleteVehicle(vehicle.vehicleId))
-                            viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
-                        },
-                        onEditClick = {
-                            navigateToEditVehicle(RmcScreen.EditMyVehicle.name, vehicle.vehicleId)
-                            viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
-                        },
-                        onCancel = {
-                            viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
-                        }
-                    )
+                        onDismissRequest = { viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails) },
+                    ) {
+                        RmcVehicleDetails(
+                            vehicle = vehicle,
+                            isAvailable = uiState.isAvailable,
+                            ownerView = true
+                        )
+                        RmcDivider()
+                        RmcOwnerCarForm(
+                            isAvailable = uiState.isAvailable,
+                            onAvailabilityChanged = {
+                                viewModel.onEvent(MyVehiclesUIEvent.ChangeAvailability(vehicle.vehicleId))
+                            },
+                            onDeleteClick = {
+                                viewModel.onEvent(MyVehiclesUIEvent.DeleteVehicle(vehicle.vehicleId))
+                                viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
+                            },
+                            onEditClick = {
+                                navigateToEditVehicle(
+                                    RmcScreen.EditMyVehicle.name,
+                                    vehicle.vehicleId
+                                )
+                                viewModel.onEvent(MyVehiclesUIEvent.CancelShowVehicleDetails)
+                            }
+                        )
+                        RmcSpacer(32)
+                    }
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+// Form for owner to manage vehicle
 @Composable
-fun VehicleDetailsBottomSheet(
-    vehicle: Vehicle,
-    location: String,
-    sheetState: SheetState,
+fun RmcOwnerCarForm(
+    isAvailable: Boolean,
+    onAvailabilityChanged: () -> Unit,
     onDeleteClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onCancel: () -> Unit
+    onEditClick: () -> Unit
 ) {
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = onCancel,
+    Column(
+        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
-        RmcVehicleDetailsOwner(
-            vehicle = vehicle,
-            location = location,
-            showAvailability = true,
-            onDeleteClick = { onDeleteClick() },
-            onEditClick = { onEditClick() }
-        )
-    }
-}
+        // Vehicle_availability switch
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(id = R.string.vehicle_availability))
+            Switch(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.End),
+                checked = isAvailable,
+                onCheckedChange = { onAvailabilityChanged() }
+            )
+        }
 
-@Composable
-fun VehicleListItem(
-    vehicle: Vehicle,
-    location: String,
-    onItemClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .clickable { onItemClick() }
-    ) {
+        RmcSpacer(16)
 
+        // Delete and Edit buttons
         Row(
             modifier = Modifier
-                .height(92.dp)
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
         ) {
-
-            Image(
-                painter = painterResource(id = R.drawable.civic),
-                contentDescription = stringResource(R.string.vehicle),
-                modifier = Modifier
-                    .padding(end = 6.dp)
-                    .height(92.dp)
-                    .width(92.dp)
-                    .clip(shape = RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
-            Column(
-                modifier = Modifier
-                    .padding(start = 6.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceAround
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = vehicle.licensePlate,
-                        color = Color.Red,
-                        fontSize = 16.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    // Declare text, color, and backgroundColor variables here
-                    val (text, color, backgroundColor) = if (vehicle.availability) {
-                        Triple(
-                            stringResource(R.string.available),
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.secondaryContainer
-                        )
-                    } else {
-                        Triple(
-                            stringResource(R.string.unavailable),
-                            MaterialTheme.colorScheme.error,
-                            MaterialTheme.colorScheme.errorContainer
-                        )
+            Column(Modifier.weight(1f)) {
+                RmcFilledTonalButton(
+                    value = stringResource(id = R.string.delete_vehicle),
+                    onClick = {
+                        onDeleteClick()
                     }
-
-                    Box(
-                        modifier = Modifier
-                            .height(24.dp)
-                            .background(
-                                color = backgroundColor,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            text = text,
-                            color = color
-                        )
-                    }
-                }
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(vehicle.brand)
-                        }
-                        append(" ")
-                        append(vehicle.model)
-                    },
-                    fontSize = 16.sp,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.Place,
-                            contentDescription = stringResource(R.string.location)
-                        )
-                        Text(text = location, style = MaterialTheme.typography.bodySmall)
+            }
+            Column(Modifier.weight(1f)) {
+                RmcFilledButton(
+                    value = stringResource(id = R.string.edit_vehicle),
+                    onClick = {
+                        onEditClick()
                     }
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.PriceChange,
-                            contentDescription = stringResource(R.string.price)
-                        )
-                        Text(
-                            text = vehicle.price.toString(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .width(42.dp)
-                        )
-                    }
-                }
+                )
             }
         }
     }
 }
-

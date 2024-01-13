@@ -11,6 +11,5 @@ data class RegisterUIState(
     var postalCode: String = "",
     var buildingNumber: String = "",
     var city: String = "",
-    var privacyPolicyAccepted :Boolean = false
-
+    var privacyPolicyAccepted: Boolean = false
 )

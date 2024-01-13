@@ -78,6 +78,12 @@ interface RmcApiService {
         @Path("id") id: String
     ): RemoteVehicle?
 
+    @PUT("vehicles/{vehicleId}/{availability}")
+    suspend fun setVehicleAvailability(
+        @Path("vehicleId") id: String,
+        @Path("availability") availability: Boolean
+    ): Response<Unit>
+
     @GET("vehicles/{licensePlate}")
     suspend fun getVehicleByLicensePlate(
         @Path("licensePlate") licensePlate: String

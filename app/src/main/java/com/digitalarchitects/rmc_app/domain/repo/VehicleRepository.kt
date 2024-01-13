@@ -21,6 +21,9 @@ interface VehicleRepository {
     /** Retrieves [Vehicle] by id from underlying data source */
     suspend fun getVehicleById(vehicleId: String): Vehicle?
 
+    /** Sets the availability of a [Vehicle] to either true or false*/
+    suspend fun setVehicleAvailability(vehicleId: String, availability: Boolean)
+
     /** Adds [Vehicle] to the underlying data source */
     suspend fun addVehicle(createVehicleDTO: CreateVehicleDTO)
 
@@ -32,5 +35,4 @@ interface VehicleRepository {
 
     /** Retrieves the model name from the [Vehicle]  */
     suspend fun getVehicleModel(vehicleId: String): String?
-
 }

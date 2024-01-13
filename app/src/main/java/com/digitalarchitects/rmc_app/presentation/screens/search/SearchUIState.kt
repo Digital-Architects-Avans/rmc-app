@@ -2,8 +2,6 @@ package com.digitalarchitects.rmc_app.presentation.screens.search
 
 import kotlinx.datetime.LocalDate
 
-// TODO: Hoist all search settings to Rent A Car screen to show results
-
 data class SearchUIState(
     var date: LocalDate? = null,
     val latitude: Float = 0.0F,

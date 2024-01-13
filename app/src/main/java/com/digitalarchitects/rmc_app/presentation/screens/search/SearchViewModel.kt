@@ -104,7 +104,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-
     private fun clearPredictions() {
         _placePredictions.value = mutableListOf()
     }
@@ -163,11 +162,12 @@ class SearchViewModel @Inject constructor(
                             Log.d("SearchViewModel", "date: ${filterPreferences.date}")
 
                             // If user has set a date preference, convert it to LocalDate else null
-                            val dateAsLocalDate: LocalDate? = if (filterPreferences.date.isNullOrEmpty()) {
-                                LocalDate.parse(filterPreferences.date)
-                            } else {
-                                null
-                            }
+                            val dateAsLocalDate: LocalDate? =
+                                if (filterPreferences.date.isNullOrEmpty()) {
+                                    LocalDate.parse(filterPreferences.date)
+                                } else {
+                                    null
+                                }
 
                             _uiState.value = _uiState.value.copy(
                                 date = dateAsLocalDate,
@@ -230,6 +230,9 @@ class SearchViewModel @Inject constructor(
                     engineTypeFCEV = state.engineTypeFcev
                 )
                 Log.d("SearchViewModel", "Saved preferences successfully, $state")
+
+                userPreferencesRepository.saveShowSearchLocation(true)
+                Log.d("SearchViewModel", "Set ShowSearchLocation to true")
             } catch (e: Exception) {
                 Log.d("SearchViewModel", "Error applying filter preference: $e")
             }
@@ -247,5 +250,15 @@ class SearchViewModel @Inject constructor(
             engineTypeBev = true,
             engineTypeFcev = true
         )
+        _address.value = AddressItem()
+
+        viewModelScope.launch(dispatcher) {
+            try {
+                userPreferencesRepository.saveShowSearchLocation(false)
+                Log.d("SearchViewModel", "Set ShowSearchLocation to true")
+            } catch (e: Exception) {
+                Log.d("SearchViewModel", "Error clearing filter preference: $e")
+            }
+        }
     }
 }

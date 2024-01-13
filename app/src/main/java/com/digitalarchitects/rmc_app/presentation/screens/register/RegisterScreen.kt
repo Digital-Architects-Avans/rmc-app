@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
@@ -19,7 +21,6 @@ import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,8 +37,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.data.auth.AuthResult
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
@@ -98,7 +97,7 @@ fun RegisterScreen(
         topBar = {
             RmcAppBar(
                 title = R.string.screen_title_register,
-                navigationIcon = Icons.Rounded.ArrowBack,
+                navigationIcon = Icons.AutoMirrored.Rounded.ArrowBack,
                 navigateUp = {
                     navigateToScreen(RmcScreen.Welcome.name)
                 }
@@ -139,7 +138,6 @@ fun RegisterScreen(
                     )
                     RmcTextField(
                         label = stringResource(id = R.string.last_name),
-                        leadingIcon = Icons.Filled.Person,
                         value = uiState.lastName,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
@@ -204,19 +202,6 @@ fun RegisterScreen(
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
                 ) {
                     RmcTextField(
-                        label = stringResource(id = R.string.postal_code),
-                        leadingIcon = Icons.Filled.Numbers,
-                        value = uiState.postalCode,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        onValueChange = {
-                            viewModel.onEvent(RegisterUIEvent.PostalCodeChanged(it))
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
-                    RmcTextField(
                         label = stringResource(id = R.string.building_number),
                         leadingIcon = Icons.Filled.Numbers,
                         value = uiState.buildingNumber,
@@ -226,6 +211,18 @@ fun RegisterScreen(
                         ),
                         onValueChange = {
                             viewModel.onEvent(RegisterUIEvent.BuildingNumberChanged(it))
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                    RmcTextField(
+                        label = stringResource(id = R.string.postal_code),
+                        value = uiState.postalCode,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        onValueChange = {
+                            viewModel.onEvent(RegisterUIEvent.PostalCodeChanged(it))
                         },
                         modifier = Modifier.weight(1f)
                     )
@@ -264,10 +261,10 @@ fun RegisterScreen(
 
                 CheckboxComponent(
                     value = stringResource(id = R.string.terms_and_conditions),
-                    onTextSelected = { /* TODO */ }
+                    onTextSelected = { navigateToScreen(RmcScreen.TermsAndConditions.name) },
                 )
 
-                RmcSpacer(32)
+                RmcSpacer(8)
 
                 RmcFilledButton(
                     value = stringResource(id = R.string.register),
@@ -278,11 +275,16 @@ fun RegisterScreen(
 
                 DividerTextComponent()
 
-                ClickableLoginTextComponent(
-                    tryingToLogin = true,
-                    onTextSelected = { navigateToScreen(RmcScreen.Login.name) }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    ClickableLoginTextComponent(
+                        tryingToLogin = true,
+                        onTextSelected = { navigateToScreen(RmcScreen.Login.name) }
 
-                )
+                    )
+                }
 
                 if (uiState.isLoading) {
                     Box(
@@ -294,17 +296,9 @@ fun RegisterScreen(
                         CircularProgressIndicator()
                     }
                 }
+
+                RmcSpacer()
             }
         }
     }
 }
-
-@Preview
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(
-        viewModel = viewModel(),
-        navigateToScreen = { }
-    )
-}
-

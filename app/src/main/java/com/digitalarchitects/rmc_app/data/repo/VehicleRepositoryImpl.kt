@@ -128,4 +128,9 @@ class VehicleRepositoryImpl(
     override suspend fun getVehicleModel(vehicleId: String): String? {
         return rmcRoomDatabase.getVehicleModel(vehicleId)
     }
+
+    override suspend fun setVehicleAvailability(vehicleId: String, availability: Boolean) {
+        rmcApiService.setVehicleAvailability(vehicleId, availability)
+        refreshRoomCache()
+    }
 }

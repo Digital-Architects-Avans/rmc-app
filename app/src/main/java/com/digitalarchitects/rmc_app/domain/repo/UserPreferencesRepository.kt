@@ -17,7 +17,6 @@ class UserPreferencesRepository @Inject constructor(
         val JWT_TOKEN = stringPreferencesKey("jwt_token")
         val USER_ID = stringPreferencesKey("user_id")
         val DATE = stringPreferencesKey("date")
-
         val LATITUDE = floatPreferencesKey("latitude")
         val LONGITUDE = floatPreferencesKey("longitude")
         val PRICE = stringPreferencesKey("price")
@@ -25,6 +24,7 @@ class UserPreferencesRepository @Inject constructor(
         val ENGINETYPEICE = booleanPreferencesKey("enginetype_ice")
         val ENGINETYPEBEV = booleanPreferencesKey("enginetype_bev")
         val ENGINETYPEFCEV = booleanPreferencesKey("enginetype_fcev")
+        val SHOWSEARCHLOCATION = booleanPreferencesKey("show_search_location")
     }
 
     suspend fun saveJwt(token: String) {
@@ -104,4 +104,16 @@ class UserPreferencesRepository @Inject constructor(
         val engineTypeFCEV: Boolean
     )
 
+    // Save new search query activity in datastore to focus camera on map
+    suspend fun saveShowSearchLocation(show: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[SHOWSEARCHLOCATION] = show
+        }
+    }
+
+    // Get current status from datastore
+    suspend fun getShowSearchLocation(): Boolean {
+        val preferences = dataStore.data.first()
+        return preferences[SHOWSEARCHLOCATION] ?: false
+    }
 }

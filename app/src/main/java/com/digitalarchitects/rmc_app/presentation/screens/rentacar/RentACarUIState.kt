@@ -20,7 +20,6 @@ sealed interface LocationPermissionsUIState {
 
 // Rent A Car UI state
 data class RentACarUIState(
-
     // Permissions
     var permissionStatus: PermissionsStatus = PermissionsStatus.PENDING,
     var showRationaleDialog: Boolean = true,
@@ -49,5 +48,10 @@ data class RentACarUIState(
     val distance: Double = 0.0,
     val engineTypeIce: Boolean = true,
     val engineTypeBev: Boolean = true,
-    val engineTypeFcev: Boolean = true
+    val engineTypeFcev: Boolean = true,
+    val showSearchLocation: Boolean = false,
+
+    // Stats
+    var showStats: Boolean = true,
+    var searchResults: Int = 0,
 )
