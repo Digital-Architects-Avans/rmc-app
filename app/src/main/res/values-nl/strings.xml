@@ -30,6 +30,7 @@
     <string name="vehicle_availability">Voertuig beschikbaarheid</string>
     <string name="unavailable">Niet beschikbaar</string>
     <string name="rent_car">Huur auto</string>
+    <string name="rent_a_car">Huur een auto</string>
     <string name="location">Locatie</string>
     <string name="price">Prijs</string>
     <string name="license_plate">Kenteken</string>
@@ -84,7 +85,9 @@
     <string name="screen_title_search">Zoeken</string>
     <string name="screen_title_vehicle_details">Voertuigdetails</string>
     <string name="screen_title_my_rentals">Mijn Verhuringen</string>
+    <string name="my_rentals_with_numer">Mijn Verhuringen (%1$s)</string>
     <string name="screen_title_rent_my_car">Verhuur Mijn Auto</string>
+    <string name="my_rentmycar_with_numer">Verhuur Mijn Auto (%1$s)</string>
     <string name="screen_title_my_vehicles">Mijn Voertuigen</string>
     <string name="screen_title_register_vehicle">Voertuig Registreren</string>
     <string name="screen_title_my_account">Mijn Account</string>
@@ -127,4 +130,8 @@
     <string name="invalid_date">Datum ongeldig</string>
     <string name="vehicle_location">Voertuig Locatie</string>
     <string name="vehicle_description">Voertuig omschrijving</string>
+    <string name="no_rentals_found">Geen Verhuringen gevonden</string>
+    <string name="no_vehicles_found">No Verhuringen gevonden</string>
+    <string name="renter_open_rentals_text">Je gaat binnenkort %1$s auto huren. Veel plezier!</string>
+    <string name="owner_open_rentals_text">Je hebt %1$s openstaande verhuren voor je om te accepteren of afwijzen. %2$s aankomende verhuren.</string>
 </resources>

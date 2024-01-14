@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CarRental
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.MyLocation
@@ -72,7 +73,6 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionBu
 import com.digitalarchitects.rmc_app.presentation.components.RmcImgFilledIconButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcMapVehicleCluster
 import com.digitalarchitects.rmc_app.presentation.components.RmcMapVehicleItem
-import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
@@ -202,7 +202,7 @@ fun RentACarScreen(
     // Start Rent A Car screen
     BottomSheetScaffold(
         scaffoldState = detailsBottomSheet,
-        sheetSwipeEnabled = !rentACarUiState.showStats,
+        sheetSwipeEnabled = true,
         sheetDragHandle = {
             if (rentACarUiState.showStats) {
                 RmcSpacer(32)
@@ -225,39 +225,142 @@ fun RentACarScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.welcome),
-                            style = MaterialTheme.typography.displayMedium,
-                            color = colorResource(id = R.color.primary_red)
-                        )
-                        RmcSpacer(8)
-                        Text(
-                            text = stringResource(id = R.string.welcome_text),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        RmcSpacer()
-                        RmcFilledButton(
-                            value = "Rent A Car",
-                            icon = Icons.Filled.CarRental,
-                            onClick = {
-                                scope.launch {
-                                    detailsBottomSheet.bottomSheetState.partialExpand()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = if (rentACarUiState.statsOwnerTotalRentals != 0 || rentACarUiState.statsRenterTotalRentals != 0) {
+                                    stringResource(R.string.welcome)
+                                } else {
+                                    stringResource(R.string.welcome_title)
+                                },
+                                style = MaterialTheme.typography.displayMedium,
+                                color = colorResource(id = R.color.primary_red)
+                            )
+                            RmcFilledTonalIconButton(
+                                label = R.string.dismiss,
+                                icon = Icons.Filled.Close,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.End),
+                                onClick = {
+                                    scope.launch {
+                                        detailsBottomSheet.bottomSheetState.hide()
+                                    }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
                                 }
-                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
-                            }
-                        )
-                        RmcSpacer(8)
-                        RmcOutlinedButton(
-                            value = "Add a vehicle",
-                            icon = Icons.Filled.DirectionsCar,
-                            onClick = {
-                                scope.launch {
-                                    detailsBottomSheet.bottomSheetState.hide()
+                            )
+                        }
+                        RmcSpacer(16)
+
+                        // Renter has open rentals
+                        if (rentACarUiState.statsRenterOpenRentals != 0) {
+                            Text(
+                                text = stringResource(
+                                    id = R.string.renter_open_rentals_text,
+                                    rentACarUiState.statsRenterOpenRentals
+                                ),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            RmcSpacer(16)
+                            RmcFilledButton(
+                                value = stringResource(
+                                    id = R.string.my_rentals_with_numer,
+                                    rentACarUiState.statsRenterOpenRentals
+                                ),
+                                icon = Icons.Filled.CarRental,
+                                onClick = {
+                                    scope.launch {
+                                        detailsBottomSheet.bottomSheetState.hide()
+                                    }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                    navigateToScreen(RmcScreen.MyRentals.name)
                                 }
-                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
-                                navigateToScreen(RmcScreen.MyVehicles.name)
-                            }
-                        )
+                            )
+                            RmcFilledTonalButton(
+                                value = stringResource(id = R.string.rent_a_car),
+                                icon = Icons.Filled.CarRental,
+                                onClick = {
+                                    scope.launch {
+                                        detailsBottomSheet.bottomSheetState.hide()
+                                    }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                }
+                            )
+                        }
+
+                        if (rentACarUiState.statsRenterTotalRentals != 0 && rentACarUiState.statsOwnerTotalRentals != 0)
+                            RmcSpacer(16)
+
+                        // Owner has open rentals
+                        if (rentACarUiState.statsOwnerTotalRentals != 0) {
+                            Text(
+                                text = stringResource(
+                                    id = R.string.owner_open_rentals_text,
+                                    rentACarUiState.statsOwnerPendingRentals,
+                                    rentACarUiState.statsOwnerOpenRentals
+                                ),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            RmcSpacer(16)
+                            RmcFilledButton(
+                                value = stringResource(
+                                    id = R.string.my_rentmycar_with_numer,
+                                    rentACarUiState.statsOwnerOpenRentals
+                                ),
+                                icon = Icons.Filled.Key,
+                                onClick = {
+                                    scope.launch {
+                                        detailsBottomSheet.bottomSheetState.hide()
+                                    }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                    navigateToScreen(RmcScreen.RentOutMyCar.name)
+                                }
+                            )
+                            RmcFilledTonalButton(
+                                value = stringResource(id = R.string.my_vehicles),
+                                icon = Icons.Filled.DirectionsCar,
+                                onClick = {
+                                    scope.launch {
+                                        detailsBottomSheet.bottomSheetState.hide()
+                                    }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                    navigateToScreen(RmcScreen.MyVehicles.name)
+
+                                }
+                            )
+                        }
+
+                        // No rentals
+                        if (rentACarUiState.statsOwnerTotalRentals == 0 && rentACarUiState.statsRenterTotalRentals == 0) {
+                            Text(
+                                text = stringResource(id = R.string.welcome_text),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            RmcSpacer(16)
+                            RmcFilledButton(
+                                value = stringResource(id = R.string.rent_a_car),
+                                icon = Icons.Filled.CarRental,
+                                onClick = {
+                                    scope.launch {
+                                        detailsBottomSheet.bottomSheetState.hide()
+                                    }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                }
+                            )
+                            RmcFilledTonalButton(
+                                value = stringResource(id = R.string.add_vehicle),
+                                icon = Icons.Filled.DirectionsCar,
+                                onClick = {
+                                    scope.launch {
+                                        detailsBottomSheet.bottomSheetState.hide()
+                                    }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                    navigateToScreen(RmcScreen.MyVehicles.name)
+                                }
+                            )
+                        }
                         RmcSpacer()
                     }
                 }
@@ -596,7 +699,6 @@ fun RentACarScreen(
         }
     }
 }
-
 
 // Dialog to explain required permissions
 @Composable

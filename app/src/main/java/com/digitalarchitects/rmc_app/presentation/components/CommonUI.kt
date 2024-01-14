@@ -481,6 +481,7 @@ fun RmcFilledTonalButton(
             Icon(
                 imageVector = it,
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(18.dp)
             )
@@ -489,7 +490,7 @@ fun RmcFilledTonalButton(
         Text(
             text = value,
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
