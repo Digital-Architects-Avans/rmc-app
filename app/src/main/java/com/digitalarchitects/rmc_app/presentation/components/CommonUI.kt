@@ -1955,9 +1955,9 @@ fun getImageByLicensePlate(licensePlate: String): Int {
         "GX-495-K" -> R.drawable.civic // 2020 Honda Cicic
         "JR-888-P" -> R.drawable.focus // 2019 Ford Focus
         "GK-19-NP" -> R.drawable.malibu // 1980 Chevrolet Malibu
-        "DH-71-47" -> R.drawable.roadster // 1955 Buick Roadmaster
+        "DH-71-47" -> R.drawable.roadmaster // 1955 Buick Roadmaster
         "TR-912-J" -> R.drawable.mx5 // 2012 Mazda MX-5
         "V-512-XE" -> R.drawable.raptor // 2023 F-150 Raptor
-        else -> R.drawable.civic
+        else -> R.drawable.car
     }
 }
