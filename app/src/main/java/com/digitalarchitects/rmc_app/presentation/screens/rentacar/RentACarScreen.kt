@@ -136,6 +136,8 @@ fun RentACarScreen(
     LaunchedEffect(Unit) {
         // Set userId in view model
         viewModel.onEvent(RentACarUIEvent.SetUserId)
+        // Get current user
+        viewModel.onEvent(RentACarUIEvent.FetchUser)
         // Get rentals
         viewModel.onEvent(RentACarUIEvent.FetchOwnerRentals)
         viewModel.onEvent(RentACarUIEvent.FetchRenterRentals)
@@ -588,7 +590,7 @@ fun RentACarScreen(
                         }
                         // User avatar icon button
                         RmcImgFilledIconButton(
-                            image = rentACarUiState.userAvatar,
+                            profileImageSrc = rentACarUiState.user?.profileImageSrc,
                             label = R.string.my_rentals,
                             onClick = { navigateToScreen("MyAccount") },
                             modifier = Modifier.padding(

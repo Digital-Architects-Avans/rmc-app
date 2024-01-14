@@ -1,7 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.components
 
 import android.util.Log
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -87,7 +86,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -222,7 +220,7 @@ fun RmcUserIcon(
         model = ImageRequest.Builder(context = LocalContext.current).data(imageUrl)
             .crossfade(true).build(),
         error = painterResource(R.drawable.loading_img),
-        placeholder = painterResource(R.drawable.loading_img),
+        placeholder = painterResource(R.drawable.usericon),
         contentDescription = stringResource(R.string.profile_picture),
         contentScale = ContentScale.Crop,
         modifier = modifier
@@ -604,7 +602,7 @@ fun RmcOutlinedIconButton(
 
 @Composable
 fun RmcImgFilledIconButton(
-    @DrawableRes image: Int,
+    profileImageSrc: String?,
     @StringRes label: Int,
     onClick: () -> Unit,
     modifier: Modifier
@@ -613,9 +611,18 @@ fun RmcImgFilledIconButton(
         onClick = onClick,
         modifier = modifier
     ) {
-        Image(
-            painter = painterResource(image),
-            contentDescription = stringResource(label),
+        val imageUrl = if (profileImageSrc.isNullOrBlank()) {
+            null // Set to null for AsyncImage to display default icon
+        } else {
+            profileImageSrc
+        }
+
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current).data(imageUrl)
+                .crossfade(true).build(),
+            error = painterResource(R.drawable.loading_img),
+            placeholder = painterResource(R.drawable.usericon),
+            contentDescription = stringResource(R.string.profile_picture),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
@@ -1380,7 +1387,7 @@ fun RmcRentalDetails(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RmcUserIcon(
-                    userIcon = R.drawable.usericon,
+                    imageSrc = user.profileImageSrc,
                     size = dimensionResource(R.dimen.image_size_small),
                     onClick = {}
                 )

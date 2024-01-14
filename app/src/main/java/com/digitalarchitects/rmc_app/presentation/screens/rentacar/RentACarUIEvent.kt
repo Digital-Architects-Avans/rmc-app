@@ -4,8 +4,9 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.datetime.LocalDate
 
 sealed interface RentACarUIEvent {
-    // UserId and Intro
+    // User
     object SetUserId : RentACarUIEvent
+    object FetchUser : RentACarUIEvent
     class ShowIntro(val show: Boolean) : RentACarUIEvent
 
     // Map controls

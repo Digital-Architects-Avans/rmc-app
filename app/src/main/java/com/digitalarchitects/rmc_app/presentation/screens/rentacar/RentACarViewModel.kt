@@ -266,6 +266,10 @@ class RentACarViewModel @Inject constructor(
             is RentACarUIEvent.FetchOwnerRentals -> {
                 getOwnerRentals()
             }
+
+            RentACarUIEvent.FetchUser -> {
+                getUser()
+            }
         }
     }
 
@@ -419,6 +423,20 @@ class RentACarViewModel @Inject constructor(
                 } catch (e: Exception) {
                     Log.d("RentACarViewModel", "error: $e")
                 }
+            }
+        }
+    }
+
+    private fun getUser() {
+        viewModelScope.launch(dispatcher) {
+            try {
+                val userId = _rentACarUiState.value.userId
+                val getUser = userRepository.getUserById(userId!!)
+
+                _rentACarUiState.value.user = getUser
+                Log.d("RentACarViewModel", "getUser: ${_rentACarUiState.value.user}")
+            } catch (e: Exception) {
+                Log.d("RentACarViewModel", "error: $e")
             }
         }
     }
