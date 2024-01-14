@@ -1383,15 +1383,15 @@ fun RmcRentalDetails(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
         ) {
             RmcIconLabel(
-                label = "€ ${rental.price.toInt()},- ",
+                label = stringResource(id = R.string.stats_price_euro, rental.price.toInt()),
                 icon = Icons.Rounded.PriceChange
             )
             RmcIconLabel(
-                label = "${rental.distanceTravelled.toInt()} km",
+                label = stringResource(id = R.string.stats_distance_km, rental.distanceTravelled.toInt()),
                 icon = Icons.Rounded.SportsScore
             )
             RmcIconLabel(
-                label = "+ ${rental.score} points",
+                label = stringResource(id = R.string.stats_rental_points, rental.score),
                 icon = Icons.Rounded.Toys
             )
         }

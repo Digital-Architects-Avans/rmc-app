@@ -86,6 +86,10 @@
     <string name="screen_title_vehicle_details">Voertuigdetails</string>
     <string name="screen_title_my_rentals">Mijn Verhuringen</string>
     <string name="my_rentals_with_numer">Mijn Verhuringen (%1$s)</string>
+    <string name="stats_price_euro">€ %1$s,- </string>
+    <string name="stats_rentals">%1$s verhuringen</string>
+    <string name="stats_distance_km">%1$s km</string>
+    <string name="stats_rental_points">+ %1$s punten</string>
     <string name="screen_title_rent_my_car">Verhuur Mijn Auto</string>
     <string name="my_rentmycar_with_numer">Verhuur Mijn Auto (%1$s)</string>
     <string name="screen_title_my_vehicles">Mijn Voertuigen</string>

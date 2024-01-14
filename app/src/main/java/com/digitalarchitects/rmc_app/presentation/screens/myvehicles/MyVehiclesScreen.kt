@@ -16,6 +16,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.CarRental
+import androidx.compose.material.icons.rounded.PriceChange
+import androidx.compose.material.icons.rounded.SportsScore
+import androidx.compose.material.icons.rounded.Toys
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -40,8 +44,8 @@ import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
-import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFloatingActionButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcIconLabel
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
@@ -144,6 +148,10 @@ fun MyVehiclesScreen(
                         RmcDivider()
                         RmcOwnerCarForm(
                             isAvailable = uiState.isAvailable,
+                            statsRentals = uiState.stats_rentals,
+                            statsDistance = uiState.stats_distance,
+                            statsRating = uiState.stats_rating,
+                            statsEarnings = uiState.stats_earnings,
                             onAvailabilityChanged = {
                                 viewModel.onEvent(MyVehiclesUIEvent.ChangeAvailability(vehicle.vehicleId))
                             },
@@ -171,6 +179,10 @@ fun MyVehiclesScreen(
 @Composable
 fun RmcOwnerCarForm(
     isAvailable: Boolean,
+    statsRentals: Int = 0,
+    statsDistance: Int = 0,
+    statsRating: Int = 0,
+    statsEarnings: Int = 0,
     onAvailabilityChanged: () -> Unit,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit
@@ -178,6 +190,32 @@ fun RmcOwnerCarForm(
     Column(
         modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_large))
     ) {
+
+        // Show rent stats
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            RmcIconLabel(
+                label = stringResource(id = R.string.stats_rentals, statsRentals),
+                icon = Icons.Rounded.CarRental
+            )
+            RmcIconLabel(
+                label = stringResource(id = R.string.stats_distance_km, statsDistance),
+                icon = Icons.Rounded.SportsScore
+            )
+            RmcIconLabel(
+                label = stringResource(id = R.string.stats_rental_points, statsRating),
+                icon = Icons.Rounded.Toys
+            )
+            RmcIconLabel(
+                label = stringResource(id = R.string.stats_price_euro, statsEarnings),
+                icon = Icons.Rounded.PriceChange
+            )
+        }
+
+        RmcSpacer(8)
+
         // Vehicle_availability switch
         Row(
             modifier = Modifier.fillMaxWidth(),
