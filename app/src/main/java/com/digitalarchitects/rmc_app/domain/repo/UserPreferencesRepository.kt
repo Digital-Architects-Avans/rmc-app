@@ -51,6 +51,13 @@ class UserPreferencesRepository @Inject constructor(
         return preferences[USER_ID]
     }
 
+    suspend fun signOut() {
+        dataStore.edit { preferences ->
+            preferences[JWT_TOKEN] = ""
+            preferences[USER_ID] = ""
+        }
+    }
+
     // save filter preference of user in datastore
     suspend fun saveFilterPreference(
         date: String,
