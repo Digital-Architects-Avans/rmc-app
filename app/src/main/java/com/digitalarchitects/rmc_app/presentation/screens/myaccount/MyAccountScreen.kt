@@ -70,7 +70,8 @@ fun MyAccountScreen(
                 RmcLogoText()
                 RmcSpacer(16)
                 RmcUserIcon(
-                    userIcon = uiState.userAvatar,
+                    imageSrc = uiState.profileImgSrc,
+
                     size = dimensionResource(R.dimen.image_size_large),
                     onClick = {
                         navigateToScreen(RmcScreen.EditMyAccount.name)

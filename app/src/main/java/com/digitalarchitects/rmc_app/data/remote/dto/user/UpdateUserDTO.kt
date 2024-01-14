@@ -16,4 +16,5 @@ data class UpdateUserDTO(
     val buildingNumber: String,
     val zipCode: String,
     val city: String,
+    val profileImageSrc: String
 )

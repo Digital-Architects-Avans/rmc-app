@@ -144,6 +144,8 @@
     <string name="date_placeholder" translatable="false">YYYY-MM-DD</string>
     <string name="vehicle_location">Vehicle Location</string>
     <string name="vehicle_description">Vehicle description</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="change_profile_picture">Change Profile Picture</string>
     <string name="no_rentals_found">No rentals found</string>
     <string name="no_vehicles_found">No vehicles found</string>
     <string name="renter_open_rentals_text">You have %1$s rentals coming up. Enjoy your ride!</string>

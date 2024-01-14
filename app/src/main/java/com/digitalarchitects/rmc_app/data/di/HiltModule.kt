@@ -8,15 +8,18 @@ import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabase
 import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepo
 import com.digitalarchitects.rmc_app.data.local.RmcRoomDatabaseRepoImpl
 import com.digitalarchitects.rmc_app.data.remote.RmcApiService
+import com.digitalarchitects.rmc_app.data.repo.FileRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.RentalRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.UserRepositoryImpl
 import com.digitalarchitects.rmc_app.data.repo.VehicleRepositoryImpl
+import com.digitalarchitects.rmc_app.domain.repo.FileRepository
 import com.digitalarchitects.rmc_app.domain.repo.RentalRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserPreferencesRepository
 import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 import com.digitalarchitects.rmc_app.domain.repo.VehicleRepository
 import com.digitalarchitects.rmc_app.domain.util.LocalDateAdapter
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -38,8 +41,9 @@ object HiltModule {
 
     @Provides
     @Singleton
-    fun providePlacesClient(application: Application) =
-        Places.createClient(application.applicationContext)
+    fun providePlacesClient(application: Application): PlacesClient {
+        return Places.createClient(application.applicationContext)
+    }
 
     @Provides
     fun providesRetrofitApi(retrofit: Retrofit): RmcApiService {
@@ -76,6 +80,8 @@ object HiltModule {
     @Provides
     fun providesRetrofit(moshi: Moshi, client: OkHttpClient): Retrofit {
 
+        // Change to production URL when deploying
+        // Also change the URL in FileRepositoryImpl.kt for getting profile images
         return Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8080/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -135,6 +141,14 @@ object HiltModule {
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): RentalRepository {
         return RentalRepositoryImpl(db, api, dispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun providesFileRepo(
+        api: RmcApiService
+    ): FileRepository {
+        return FileRepositoryImpl(api)
     }
 
 }

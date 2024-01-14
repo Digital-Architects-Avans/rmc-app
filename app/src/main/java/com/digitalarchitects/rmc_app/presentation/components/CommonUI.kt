@@ -90,7 +90,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -110,6 +112,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.PlaceItem
 import com.digitalarchitects.rmc_app.domain.model.Rental
@@ -202,20 +206,30 @@ fun RmcDivider() {
  */
 @Composable
 fun RmcUserIcon(
-    @DrawableRes userIcon: Int,
+    imageSrc: String?,
     modifier: Modifier = Modifier,
     size: Dp,
     onClick: () -> Unit
 ) {
-    Image(
+    val imageUrl = if (imageSrc.isNullOrBlank()) {
+        null // Set to null for AsyncImage to display default icon
+    } else {
+        imageSrc
+    }
+    Log.d("RmcUserIcon", "Loading image from URL: $imageUrl")
+
+    AsyncImage(
+        model = ImageRequest.Builder(context = LocalContext.current).data(imageUrl)
+            .crossfade(true).build(),
+        error = painterResource(R.drawable.loading_img),
+        placeholder = painterResource(R.drawable.loading_img),
+        contentDescription = stringResource(R.string.profile_picture),
+        contentScale = ContentScale.Crop,
         modifier = modifier
             .size(size)
             .clip(CircleShape)
             .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
-            .clickable { onClick() },
-        contentScale = ContentScale.Crop,
-        painter = painterResource(userIcon),
-        contentDescription = null
+            .clickable { onClick() }
     )
 }
 
@@ -1514,7 +1528,7 @@ fun RmcRentalDetailsOwner(
             )
         }
         Row {
-            RmcUserIcon(userIcon = R.drawable.usericon,
+            RmcUserIcon(imageSrc = user.profileImageSrc,
                 size = dimensionResource(R.dimen.image_size_medium),
                 onClick = {})
             Text(
@@ -1616,7 +1630,7 @@ fun MyRentalDetails(
             )
         }
         Row {
-            RmcUserIcon(userIcon = R.drawable.usericon,
+            RmcUserIcon(imageSrc = user.profileImageSrc,
                 size = dimensionResource(R.dimen.image_size_medium),
                 onClick = {})
             Text(
@@ -1668,8 +1682,9 @@ fun <T> AutoCompleteUI(
     onItemClick: (T) -> Unit = {},
     itemContent: @Composable (T) -> Unit = {}
 ) {
-    val view = LocalView.current
+    val focusManager = LocalFocusManager.current
     val lazyListState = rememberLazyListState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LazyColumn(
         state = lazyListState,
@@ -1686,10 +1701,13 @@ fun <T> AutoCompleteUI(
                 onQueryChanged = onQueryChanged,
                 onDoneActionClick = {
                     onDoneActionClick()
-                    //view.clearFocus()
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
                 },
                 onClearClick = {
                     onClearClick()
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
                 }
             )
         }
@@ -1702,7 +1720,8 @@ fun <T> AutoCompleteUI(
                         .padding(dimensionResource(id = R.dimen.padding_medium))
                         .fillMaxWidth()
                         .clickable {
-                            view.clearFocus()
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
                             onItemClick(prediction)
                         }
                 ) {
@@ -1913,7 +1932,7 @@ fun RmcDateTextField(
                 enabled = true,
                 placeholder = stringResource(id = R.string.date_placeholder), // Placeholder text
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
                 )
             )

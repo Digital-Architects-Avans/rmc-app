@@ -19,7 +19,7 @@ fun List<User>.toLocalUser(): List<LocalUser> {
             buildingNumber = user.buildingNumber,
             zipCode = user.zipCode,
             city = user.city,
-            imageResourceId = null
+            profileImageSrc = user.profileImageSrc
         )
     }
 }
@@ -38,7 +38,8 @@ fun List<LocalUser>.toUserListFromLocal(): List<User> {
             street = user.street,
             buildingNumber = user.buildingNumber,
             zipCode = user.zipCode,
-            city = user.city
+            city = user.city,
+            profileImageSrc = user.profileImageSrc
         )
     }
 }
@@ -57,7 +58,8 @@ fun List<RemoteUser>.toUserListFromRemote(): List<User> {
             street = user.street,
             buildingNumber = user.buildingNumber,
             zipCode = user.zipCode,
-            city = user.city
+            city = user.city,
+            profileImageSrc = user.profileImageSrc
         )
     }
 }
@@ -77,7 +79,7 @@ fun User.toLocalUser(): LocalUser {
         buildingNumber = buildingNumber,
         zipCode = zipCode,
         city = city,
-        imageResourceId = null
+        profileImageSrc = profileImageSrc
     )
 }
 
@@ -95,7 +97,8 @@ fun User.toRemoteUser(): RemoteUser {
         street = street,
         buildingNumber = buildingNumber,
         zipCode = zipCode,
-        city = city
+        city = city,
+        profileImageSrc = profileImageSrc
     )
 }
 
@@ -112,7 +115,8 @@ fun LocalUser.toUser(): User {
         street = street,
         buildingNumber = buildingNumber,
         zipCode = zipCode,
-        city = city
+        city = city,
+        profileImageSrc = profileImageSrc
     )
 }
 
@@ -129,7 +133,8 @@ fun RemoteUser.toUser(): User {
         street = street,
         buildingNumber = buildingNumber,
         zipCode = zipCode,
-        city = city
+        city = city,
+        profileImageSrc = profileImageSrc
     )
 }
 
@@ -147,7 +152,8 @@ fun List<RemoteUser>.toLocalUserListFromRemote(): List<LocalUser> {
             street = user.street,
             buildingNumber = user.buildingNumber,
             zipCode = user.zipCode,
-            city = user.city
+            city = user.city,
+            profileImageSrc = user.profileImageSrc
         )
     }
 }
