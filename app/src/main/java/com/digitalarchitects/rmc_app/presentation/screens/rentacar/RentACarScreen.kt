@@ -475,11 +475,11 @@ fun RentACarScreen(
                                     label = R.string.rent_my_car,
                                     onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
                                 )
-                            }
-                            if (rentACarUiState.statsOwnerPendingRentals != 0) {
-                                RmcBadge(
-                                    value = rentACarUiState.statsRenterPendingRentals.toString()
-                                )
+                                if (rentACarUiState.statsOwnerPendingRentals != 0) {
+                                    RmcBadge(
+                                        value = rentACarUiState.statsOwnerPendingRentals.toString()
+                                    )
+                                }
                             }
                         }
                         // User avatar icon button

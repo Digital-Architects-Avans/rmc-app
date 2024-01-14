@@ -448,7 +448,7 @@ class RentACarViewModel @Inject constructor(
                                     ?: 0
                             Log.d(
                                 "RentMyCarViewModel",
-                                "Renter Open rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
+                                "Renter Pending rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
                             )
                         }
                     }.onFailure { e ->
@@ -471,14 +471,14 @@ class RentACarViewModel @Inject constructor(
                                 ownerRentals.count { it.first.status == RentalStatus.PENDING }
                             Log.d(
                                 "RentMyCarViewModel",
-                                "Renter Pending rentals: ${_rentACarUiState.value.statsOwnerPendingRentals}"
+                                "Owner Pending rentals: ${_rentACarUiState.value.statsOwnerPendingRentals}"
                             )
 
                             _rentACarUiState.value.statsOwnerOpenRentals =
                                 ownerRentals.count { it.first.date >= today && it.first.status == RentalStatus.APPROVED || it.first.status == RentalStatus.PENDING }
                             Log.d(
                                 "RentMyCarViewModel",
-                                "Renter Open rentals: ${_rentACarUiState.value.statsOwnerOpenRentals}"
+                                "Owner Open rentals: ${_rentACarUiState.value.statsOwnerOpenRentals}"
                             )
                         }
                     }.onFailure { e ->
