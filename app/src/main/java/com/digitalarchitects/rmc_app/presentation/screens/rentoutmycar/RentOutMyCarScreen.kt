@@ -42,6 +42,9 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcRentalListItem
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,13 +88,21 @@ fun RentOutMyCarScreen(
                     selectedTabIndex = uiState.selectedTab.ordinal,
                     contentColor = MaterialTheme.colorScheme.primary,
                 ) {
-                    RentalTab.values().forEach { tab ->
-                        Tab(
-                            text = { Text(stringResource(id = tab.tabNameResourceId)) },
-                            selected = uiState.selectedTab == tab,
-                            onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(tab)) },
-                        )
-                    }
+                    Tab(
+                        text = { Text(stringResource(id = R.string.status_pending, uiState.pendingRentalsList.count())) },
+                        selected = uiState.selectedTab == RentalTab.PENDING,
+                        onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.PENDING)) },
+                    )
+                    Tab(
+                        text = { Text(stringResource(id = R.string.status_open, uiState.openRentalsList.count())) },
+                        selected = uiState.selectedTab == RentalTab.OPEN,
+                        onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.OPEN)) },
+                    )
+                    Tab(
+                        text = { Text(stringResource(id = R.string.status_history, uiState.historyRentalsList.count())) },
+                        selected = uiState.selectedTab == RentalTab.HISTORY,
+                        onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.HISTORY)) },
+                    )
                 }
                 RmcSpacer(16)
                 Column {
@@ -214,13 +225,16 @@ fun RentOutMyCarScreen(
                 sheetState = rentalBottomSheet,
                 onDismissRequest = { viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails) },
             ) {
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
                 RmcRentalDetails(
                     rental = details.first,
                     vehicle = details.second,
                     user = details.third,
                     ownerView = true,
                     showAcceptButton = details.first.status == RentalStatus.PENDING,
-                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
+                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.date >= today && details.first.status == RentalStatus.APPROVED,
                     onRejectClick = {
                         viewModel.onEvent(RentOutMyCarUIEvent.RejectRental(details.first.rentalId))
                         viewModel.onEvent(RentOutMyCarUIEvent.CancelShowRentalDetails)

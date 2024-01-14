@@ -8,5 +8,9 @@ data class MyVehiclesUIState(
     var listOfLocationsDetailed: List<String> = emptyList(),
     val isLoading: Boolean = false,
     val selectedVehicle: Vehicle? = null,
-    var isAvailable: Boolean = false
+    var isAvailable: Boolean = false,
+    var stats_rentals: Int = 0,
+    var stats_distance: Int = 0,
+    var stats_earnings: Int = 0,
+    var stats_rating: Int = 0,
 )

@@ -1,5 +1,8 @@
 package com.digitalarchitects.rmc_app.presentation.screens.myrentals
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,9 +31,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
@@ -40,7 +45,11 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcRentalDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcRentalListItem
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
-import kotlinx.coroutines.launch
+import com.digitalarchitects.rmc_app.presentation.screens.rentoutmycar.RentOutMyCarUIEvent
+import com.digitalarchitects.rmc_app.presentation.screens.rentoutmycar.RentalTab
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,16 +91,36 @@ fun MyRentalsScreen(
                     selectedTabIndex = uiState.selectedTab.ordinal,
                     contentColor = MaterialTheme.colorScheme.primary,
                 ) {
-                    MyRentalTab.values().forEach { tab ->
-                        Tab(
-                            text = { Text(stringResource(id = tab.tabNameResourceId)) },
-                            selected = uiState.selectedTab == tab,
-                            onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(tab)) },
-                        )
-                    }
+                    Tab(
+                        text = { Text(stringResource(id = R.string.status_open, uiState.myOpenRentalsList.count())) },
+                        selected = uiState.selectedTab == MyRentalTab.OPEN,
+                        onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(MyRentalTab.OPEN)) },
+                    )
+                    Tab(
+                        text = { Text(stringResource(id = R.string.status_history, uiState.myHistoryRentalList.count())) },
+                        selected = uiState.selectedTab == MyRentalTab.HISTORY,
+                        onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(MyRentalTab.HISTORY)) },
+                    )
                 }
                 RmcSpacer(16)
                 Column {
+
+                    // Open Google Maps when the user clicks on the route button
+                    if (uiState.routeToRental != null) {
+
+                        // Set and reset location
+                        val vehicleLocation: String = uiState.routeToRental!!
+                        viewModel.onEvent(MyRentalsUIEvent.RouteToRental(null))
+
+                        // Open Google Maps
+                        val context: Context = LocalContext.current
+                        val gmmIntentUri = Uri.parse("geo:0,0?q=${vehicleLocation}")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                        mapIntent.setPackage("com.google.android.apps.maps")
+                        startActivity(context, mapIntent, null)
+                    }
+
+                    // Start My Rentals screen content
                     if (!uiState.isLoading) {
                         when (uiState.selectedTab) {
                             MyRentalTab.OPEN -> {
@@ -175,33 +204,34 @@ fun MyRentalsScreen(
             }
         }
 
+
         // Display rental and vehicle details in a modal bottom sheet when a vehicle is selected
         uiState.selectedRentalItem?.let { details ->
             ModalBottomSheet(
                 sheetState = rentalBottomSheet,
                 onDismissRequest = { viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails) },
             ) {
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
                 RmcRentalDetails(
                     rental = details.first,
                     vehicle = details.second,
                     user = details.third,
-                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
+                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.date >= today && details.first.status == RentalStatus.APPROVED,
                     onCancelRentalClick = {
                         viewModel.onEvent(MyRentalsUIEvent.CancelRental(details.first.rentalId))
                         viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
                     },
                     onRouteClick = {
-                        viewModel.onEvent(MyRentalsUIEvent.RouteToRental(details.first.rentalId))
                         viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
+                        viewModel.onEvent(
+                            MyRentalsUIEvent.RouteToRental(details.second.address)
+                        )
                     },
                 )
                 RmcDivider()
-                RmcVehicleListItem(details.second) {
-                    scope.launch {
-                        rentalBottomSheet.hide()
-                    }
-                    navigateToScreen(RmcScreen.MyVehicles.name)
-                }
+                RmcVehicleListItem(details.second) {}
                 RmcSpacer(32)
             }
         }

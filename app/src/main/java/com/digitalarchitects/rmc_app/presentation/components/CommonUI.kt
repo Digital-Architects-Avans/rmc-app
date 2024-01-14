@@ -47,6 +47,7 @@ import androidx.compose.material.icons.rounded.SportsScore
 import androidx.compose.material.icons.rounded.Straighten
 import androidx.compose.material.icons.rounded.Toys
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -86,6 +87,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
@@ -479,6 +481,7 @@ fun RmcFilledTonalButton(
             Icon(
                 imageVector = it,
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(18.dp)
             )
@@ -487,7 +490,7 @@ fun RmcFilledTonalButton(
         Text(
             text = value,
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -602,6 +605,17 @@ fun RmcImgFilledIconButton(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
+        )
+    }
+}
+
+@Composable
+fun RmcBadge(value: String) {
+    Badge {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -821,17 +835,16 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (vehicle.imgLink == 1) {
-            Image(
-                painter = painterResource(id = R.drawable.civic),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(end = dimensionResource(R.dimen.padding_large))
-                    .size(dimensionResource(R.dimen.image_size_medium))
-                    .clip(RoundedCornerShape(8.dp))
-            )
-        }
+        val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+        Image(
+            painter = painterResource(id = vehicleImage),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(end = dimensionResource(R.dimen.padding_large))
+                .size(dimensionResource(R.dimen.image_size_medium))
+                .clip(RoundedCornerShape(8.dp))
+        )
         Column {
             Row(
                 modifier = Modifier
@@ -1099,17 +1112,16 @@ fun RmcVehicleDetails(
             }
         }
     }
-    if (vehicle.imgLink == 1) {
-        Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(184.dp)
-                .padding(bottom = dimensionResource(R.dimen.padding_large)),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(R.drawable.civic),
-            contentDescription = null
-        )
-    }
+    val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(184.dp)
+            .padding(bottom = dimensionResource(R.dimen.padding_large)),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(id = vehicleImage),
+        contentDescription = null
+    )
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
@@ -1371,15 +1383,15 @@ fun RmcRentalDetails(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
         ) {
             RmcIconLabel(
-                label = "€ ${rental.price.toInt()},- ",
+                label = stringResource(id = R.string.stats_price_euro, rental.price.toInt()),
                 icon = Icons.Rounded.PriceChange
             )
             RmcIconLabel(
-                label = "${rental.distanceTravelled.toInt()} km",
+                label = stringResource(id = R.string.stats_distance_km, rental.distanceTravelled.toInt()),
                 icon = Icons.Rounded.SportsScore
             )
             RmcIconLabel(
-                label = "+ ${rental.score} points",
+                label = stringResource(id = R.string.stats_rental_points, rental.score),
                 icon = Icons.Rounded.Toys
             )
         }
@@ -1931,5 +1943,21 @@ fun RmcDateTextField(
                 }
             )
         }
+    }
+}
+
+fun getImageByLicensePlate(licensePlate: String): Int {
+    return when (licensePlate) {
+        "3-SKS-35" -> R.drawable.x5 // 2015 BMW X5
+        "G-888-VS" -> R.drawable.rs6 // 2020 RS6 Avant
+        "52-KJS-9" -> R.drawable.roadster // 2010 Tesla Roadster
+        "YW-790-2" -> R.drawable.yaris // 2011 Toyota Yaris
+        "GX-495-K" -> R.drawable.civic // 2020 Honda Cicic
+        "JR-888-P" -> R.drawable.focus // 2019 Ford Focus
+        "GK-19-NP" -> R.drawable.malibu // 1980 Chevrolet Malibu
+        "DH-71-47" -> R.drawable.roadmaster // 1955 Buick Roadmaster
+        "TR-912-J" -> R.drawable.mx5 // 2012 Mazda MX-5
+        "V-512-XE" -> R.drawable.raptor // 2023 F-150 Raptor
+        else -> R.drawable.car
     }
 }

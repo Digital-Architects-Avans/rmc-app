@@ -28,7 +28,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -55,18 +58,23 @@ class RentACarViewModel @Inject constructor(
     val locationPermissionsUiState: StateFlow<LocationPermissionsUIState> =
         _locationPermissionsUiState.asStateFlow()
 
-    // Set user ID
-    init {
-        setUserId()
-    }
-
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
+            // Set user ID
+            is RentACarUIEvent.SetUserId -> {
+                setUserId()
+            }
+
             // Intro
             is RentACarUIEvent.ShowIntro -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
                     showStats = event.show
                 )
+            }
+
+            // Set map data
+            is RentACarUIEvent.SetMapData -> {
+                getVehicles()
             }
 
             // Map controls
@@ -246,16 +254,16 @@ class RentACarViewModel @Inject constructor(
                     }
                 }
             }
-        }
-    }
 
-    fun setMapData() {
-        getVehicles()
+            // Stats
+            is RentACarUIEvent.FetchMyRentals -> {
+                getMyRentals()
+            }
+        }
     }
 
     private fun getVehicles() {
         viewModelScope.launch(dispatcher) {
-            val filterPreferences = _rentACarUiState.value
             // Get all vehicles
             val result: Result<List<Vehicle>> = runCatching {
                 vehicleRepository.getAllVehicles()
@@ -265,12 +273,12 @@ class RentACarViewModel @Inject constructor(
                 _rentACarUiState.value.listOfVehicles = filteredVehicles
 
                 // Get vehicle map items
-                if (filteredVehicles.isNotEmpty()) {
-                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
-                    _rentACarUiState.value = _rentACarUiState.value.copy(
-                        searchResults = filteredVehicles.size
-                    )
-                }
+                _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                // Set search results
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    searchResults = filteredVehicles.size
+                )
+                Log.d("RentACarViewModel", "Search results: ${filteredVehicles.size}")
             }.onFailure { e ->
                 e.printStackTrace()
             }
@@ -394,14 +402,105 @@ class RentACarViewModel @Inject constructor(
 
     @VisibleForTesting
     internal fun setUserId() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                try {
+                    val userId = userRepository.getCurrentUserIdFromDataStore()
+                    _rentACarUiState.value.userId = userId!!
+                    Log.d("RentACarViewModel", "UUID setUserId: ${_rentACarUiState.value.userId}")
+                } catch (e: Exception) {
+                    Log.d("RentACarViewModel", "error: $e")
+                }
+            }
+        }
+    }
+
+    // Function that returns a Triple containing the vehicle, user and rental for each
+    // rental that is associated with the user
+    private fun getMyRentals() {
         viewModelScope.launch(dispatcher) {
             try {
-                val userId = userRepository.getCurrentUserIdFromDataStore()
-                withContext(Dispatchers.Main) {
-                    _rentACarUiState.value.userId = userId!!
+                val userId = _rentACarUiState.value.userId
+                Log.d(
+                    "RentACarViewModel",
+                    "UUID UserId from UIState: ${_rentACarUiState.value.userId}"
+                )
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
+                if (userId != "") {
+
+                    // Get rental for renter
+                    val renterTotalRentals = runCatching {
+                        rentalRepository.getRentalsForRenter(userId)
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        renterTotalRentals.onSuccess { renterRentals ->
+                            // Total rentals
+                            _rentACarUiState.value.statsRenterTotalRentals =
+                                renterRentals?.count() ?: 0
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Total rentals: ${_rentACarUiState.value.statsRenterTotalRentals}"
+                            )
+                            // Open rentals
+                            _rentACarUiState.value.statsRenterOpenRentals =
+                                renterRentals?.count { it.date >= today && it.status == RentalStatus.PENDING || it.date >= today && it.status == RentalStatus.APPROVED }
+                                    ?: 0
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Open rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
+                            )
+                            // Pending rentals
+                            _rentACarUiState.value.statsRenterPendingRentals =
+                                renterRentals?.count { it.status == RentalStatus.PENDING }
+                                    ?: 0
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Pending rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
+                            )
+                        }
+                    }.onFailure { e ->
+                        e.printStackTrace()
+                    }
+
+                    // Get rental for owner
+                    val ownerTotalRentals = runCatching {
+                        rentalRepository.getListOfRentalDetailsForOwner(userId)
+                    }
+                    withContext(Dispatchers.Main) {
+                        ownerTotalRentals.onSuccess { ownerRentals ->
+                            _rentACarUiState.value.statsOwnerTotalRentals = ownerRentals.count()
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Owner total rentals: ${ownerRentals.count()}"
+                            )
+
+                            _rentACarUiState.value.statsOwnerPendingRentals =
+                                ownerRentals.count { it.first.status == RentalStatus.PENDING }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Owner Pending rentals: ${_rentACarUiState.value.statsOwnerPendingRentals}"
+                            )
+
+                            _rentACarUiState.value.statsOwnerOpenRentals =
+                                ownerRentals.count { it.first.date >= today && it.first.status == RentalStatus.APPROVED || it.first.status == RentalStatus.PENDING }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Owner Open rentals: ${_rentACarUiState.value.statsOwnerOpenRentals}"
+                            )
+                        }
+                    }.onFailure { e ->
+                        e.printStackTrace()
+                    }
+                } else {
+                    // Log an error message if userId is null
+                    Log.e("RentMyCarViewModel", "UserId is null")
                 }
             } catch (e: Exception) {
-                Log.d("RentACarViewModel", "error: $e")
+                // Handle any unexpected exceptions
+                e.printStackTrace()
             }
         }
     }

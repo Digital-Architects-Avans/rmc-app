@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
+import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.datetime.LocalDate
@@ -35,10 +36,11 @@ data class RentACarUIState(
     var vehicleMapItems: List<VehicleMapItem> = emptyList(),
     var showVehicleList: Boolean = false,
 
-    // Rental data
+    // User & Rental data
     var activeVehicleId: String? = null,
     var date: LocalDate? = null,
     var userId: String = "",
+    var userAvatar: Int = R.drawable.usericon,
 
     // Filter preference
     val datePreference: LocalDate = LocalDate(2021, 1, 1),
@@ -54,4 +56,10 @@ data class RentACarUIState(
     // Stats
     var showStats: Boolean = true,
     var searchResults: Int = 0,
+    var statsRenterTotalRentals: Int = 0,
+    var statsRenterPendingRentals: Int = 0,
+    var statsRenterOpenRentals: Int = 0,
+    var statsOwnerTotalRentals: Int = 0,
+    var statsOwnerOpenRentals: Int = 0,
+    var statsOwnerPendingRentals: Int = 0,
 )

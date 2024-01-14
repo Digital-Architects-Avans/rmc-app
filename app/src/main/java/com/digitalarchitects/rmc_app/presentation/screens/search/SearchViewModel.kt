@@ -235,8 +235,10 @@ class SearchViewModel @Inject constructor(
                 )
                 Log.d("SearchViewModel", "Saved preferences successfully, $state")
 
-                userPreferencesRepository.saveShowSearchLocation(true)
-                Log.d("SearchViewModel", "Set ShowSearchLocation to true")
+                if (state.latitude != 0.0F && state.longitude != 0.0F) {
+                    userPreferencesRepository.saveShowSearchLocation(true)
+                    Log.d("SearchViewModel", "Set ShowSearchLocation to true")
+                }
             } catch (e: Exception) {
                 Log.d("SearchViewModel", "Error applying filter preference: $e")
             }

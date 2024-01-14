@@ -99,7 +99,6 @@ fun EditMyAccountScreen(
                     )
                     RmcTextField(
                         label = stringResource(id = R.string.last_name),
-                        leadingIcon = Icons.Filled.Person,
                         value = uiState.lastName,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
@@ -164,19 +163,6 @@ fun EditMyAccountScreen(
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
                 ) {
                     RmcTextField(
-                        label = stringResource(id = R.string.postal_code),
-                        leadingIcon = Icons.Filled.Numbers,
-                        value = uiState.zipCode,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        onValueChange = {
-                            viewModel.onEvent(EditMyAccountUIEvent.SetZipCode(it))
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
-                    RmcTextField(
                         label = stringResource(id = R.string.building_number),
                         leadingIcon = Icons.Filled.Numbers,
                         value = uiState.buildingNumber,
@@ -186,6 +172,18 @@ fun EditMyAccountScreen(
                         ),
                         onValueChange = {
                             viewModel.onEvent(EditMyAccountUIEvent.SetBuildingNumber(it))
+                        },
+                        modifier = Modifier.weight(1f)
+                    )
+                    RmcTextField(
+                        label = stringResource(id = R.string.postal_code),
+                        value = uiState.zipCode,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        onValueChange = {
+                            viewModel.onEvent(EditMyAccountUIEvent.SetZipCode(it))
                         },
                         modifier = Modifier.weight(1f)
                     )
@@ -222,25 +220,34 @@ fun EditMyAccountScreen(
                     }
                 )
 
-                RmcSpacer(32)
+                RmcSpacer(16)
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
                 ) {
                     Column(Modifier.weight(1f)) {
-                        RmcFilledButton(
-                            value = stringResource(id = R.string.apply),
-                            onClick = {
-                                viewModel.onEvent(EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked)
-                            }
-                        )
-                    }
-                    Column(Modifier.weight(1f)) {
                         RmcOutlinedButton(
                             value = stringResource(id = R.string.cancel),
                             onClick = {
                                 navigateToScreen(RmcScreen.MyAccount.name)
+                            }
+                        )
+                    }
+                    Column(Modifier.weight(1f)) {
+                        RmcFilledButton(
+                            value = stringResource(id = R.string.apply),
+                            isEnabled = uiState.firstName.isNotEmpty() &&
+                                    uiState.lastName.isNotEmpty() &&
+                                    uiState.email.isNotEmpty() &&
+                                    uiState.phone.isNotEmpty() &&
+                                    uiState.street.isNotEmpty() &&
+                                    uiState.zipCode.isNotEmpty() &&
+                                    uiState.buildingNumber.isNotEmpty() &&
+                                    uiState.city.isNotEmpty() &&
+                                    uiState.password.isNotEmpty(),
+                            onClick = {
+                                viewModel.onEvent(EditMyAccountUIEvent.ConfirmEditMyAccountButtonClicked)
                             }
                         )
                     }

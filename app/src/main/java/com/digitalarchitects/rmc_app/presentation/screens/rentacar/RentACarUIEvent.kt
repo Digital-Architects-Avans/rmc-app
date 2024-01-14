@@ -4,10 +4,12 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.datetime.LocalDate
 
 sealed interface RentACarUIEvent {
-    // Intro
+    // UserId and Intro
+    object SetUserId : RentACarUIEvent
     class ShowIntro(val show: Boolean) : RentACarUIEvent
 
     // Map controls
+    object SetMapData : RentACarUIEvent
     data class ZoomLevelChanged(val zoom: Float) : RentACarUIEvent
     data class CameraPositionChanged(val position: LatLng) : RentACarUIEvent
     class ShowListView(val show: Boolean) : RentACarUIEvent
@@ -26,4 +28,7 @@ sealed interface RentACarUIEvent {
     object FetchFilterPreference : RentACarUIEvent
     object FetchShowSearchLocation : RentACarUIEvent
     class SetShowSearchLocation(val show: Boolean) : RentACarUIEvent
+
+    // Stats
+    object FetchMyRentals : RentACarUIEvent
 }

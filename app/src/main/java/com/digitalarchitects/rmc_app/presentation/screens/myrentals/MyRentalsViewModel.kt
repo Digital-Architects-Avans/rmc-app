@@ -117,7 +117,9 @@ class MyRentalsViewModel @Inject constructor(
             }
 
             is MyRentalsUIEvent.RouteToRental -> {
-                TODO("Implement logic to open external Google Maps Navigation and direct to lat long of rental vehicle")
+                _uiState.update {
+                    it.copy(routeToRental = event.location)
+                }
             }
 
             is MyRentalsUIEvent.CancelRental -> {
