@@ -484,7 +484,7 @@ fun RentACarScreen(
                         }
                         // User avatar icon button
                         RmcImgFilledIconButton(
-                            image = R.drawable.civic,
+                            image = rentACarUiState.userAvatar,
                             label = R.string.my_rentals,
                             onClick = { navigateToScreen("MyAccount") },
                             modifier = Modifier.padding(

@@ -87,6 +87,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
@@ -833,17 +834,16 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (vehicle.imgLink == 1) {
-            Image(
-                painter = painterResource(id = R.drawable.civic),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(end = dimensionResource(R.dimen.padding_large))
-                    .size(dimensionResource(R.dimen.image_size_medium))
-                    .clip(RoundedCornerShape(8.dp))
-            )
-        }
+        val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+        Image(
+            painter = painterResource(id = vehicleImage),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(end = dimensionResource(R.dimen.padding_large))
+                .size(dimensionResource(R.dimen.image_size_medium))
+                .clip(RoundedCornerShape(8.dp))
+        )
         Column {
             Row(
                 modifier = Modifier
@@ -1111,17 +1111,16 @@ fun RmcVehicleDetails(
             }
         }
     }
-    if (vehicle.imgLink == 1) {
-        Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(184.dp)
-                .padding(bottom = dimensionResource(R.dimen.padding_large)),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(R.drawable.civic),
-            contentDescription = null
-        )
-    }
+    val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(184.dp)
+            .padding(bottom = dimensionResource(R.dimen.padding_large)),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(id = vehicleImage),
+        contentDescription = null
+    )
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
@@ -1943,5 +1942,21 @@ fun RmcDateTextField(
                 }
             )
         }
+    }
+}
+
+fun getImageByLicensePlate(licensePlate: String): Int {
+    return when (licensePlate) {
+        "3-SKS-35" -> R.drawable.civic // 2015 BMW X5
+        "G-888-VS" -> R.drawable.civic // 2020 RS6 Avant
+        "52-KJS-9" -> R.drawable.civic // 2010 Tesla Roadster
+        "YW-790-2" -> R.drawable.civic // 2011 Toyota Yaris
+        "GX-495-K" -> R.drawable.civic // 2020 Honda Cicic
+        "JR-888-P" -> R.drawable.focus // 2019 Ford Focus
+        "GK-19-NP" -> R.drawable.civic // 1980 Chevrolet Malibu
+        "DH-71-47" -> R.drawable.civic // 1955 Buick Roadmaster
+        "TR-912-J" -> R.drawable.civic // 2012 Mazda MX-5
+        "V-512-XE" -> R.drawable.civic // 2023 F-150 Raptor
+        else -> R.drawable.civic
     }
 }
