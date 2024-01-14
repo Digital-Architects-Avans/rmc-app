@@ -137,5 +137,7 @@
     <string name="date_placeholder" translatable="false">YYYY-MM-DD</string>
     <string name="vehicle_location">Vehicle Location</string>
     <string name="vehicle_description">Vehicle description</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="change_profile_picture">Change Profile Picture</string>
 
 </resources>

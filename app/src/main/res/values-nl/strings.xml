@@ -127,4 +127,7 @@
     <string name="invalid_date">Datum ongeldig</string>
     <string name="vehicle_location">Voertuig Locatie</string>
     <string name="vehicle_description">Voertuig omschrijving</string>
+    <string name="profile_picture">Profiel Foto</string>
+    <string name="change_profile_picture">Wijzig Profiel Foto</string>
+
 </resources>
