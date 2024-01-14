@@ -461,10 +461,8 @@ fun RentACarScreen(
                                     )
                                 )
                                 if (rentACarUiState.statsRenterPendingRentals != 0 || rentACarUiState.statsRenterOpenRentals != 0) {
-                                    val number =
-                                        rentACarUiState.statsRenterPendingRentals + rentACarUiState.statsRenterOpenRentals
                                     RmcBadge(
-                                        value = number.toString()
+                                        value = rentACarUiState.statsRenterOpenRentals.toString()
                                     )
                                 }
                             }
