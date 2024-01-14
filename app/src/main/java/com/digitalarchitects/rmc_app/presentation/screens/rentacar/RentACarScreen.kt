@@ -583,11 +583,13 @@ fun RentACarScreen(
                                         detailsBottomSheet.bottomSheetState.partialExpand()
                                     }
                                 }
-                                if (index < rentACarUiState.listOfVehicles.lastIndex)
+                                if (index < rentACarUiState.listOfVehicles.lastIndex) {
                                     RmcDivider()
+                                } else {
+                                    RmcSpacer(32)
+                                }
                             }
                         }
-                        RmcSpacer()
                     }
                 }
             }
