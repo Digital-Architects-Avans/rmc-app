@@ -45,6 +45,8 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcRentalDetails
 import com.digitalarchitects.rmc_app.presentation.components.RmcRentalListItem
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
+import com.digitalarchitects.rmc_app.presentation.screens.rentoutmycar.RentOutMyCarUIEvent
+import com.digitalarchitects.rmc_app.presentation.screens.rentoutmycar.RentalTab
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -89,13 +91,16 @@ fun MyRentalsScreen(
                     selectedTabIndex = uiState.selectedTab.ordinal,
                     contentColor = MaterialTheme.colorScheme.primary,
                 ) {
-                    MyRentalTab.values().forEach { tab ->
-                        Tab(
-                            text = { Text(stringResource(id = tab.tabNameResourceId)) },
-                            selected = uiState.selectedTab == tab,
-                            onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(tab)) },
-                        )
-                    }
+                    Tab(
+                        text = { Text("Open (${uiState.myOpenRentalsList.count()})") },
+                        selected = uiState.selectedTab == MyRentalTab.OPEN,
+                        onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(MyRentalTab.OPEN)) },
+                    )
+                    Tab(
+                        text = { Text("History (${uiState.myHistoryRentalList.count()})") },
+                        selected = uiState.selectedTab == MyRentalTab.HISTORY,
+                        onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(MyRentalTab.HISTORY)) },
+                    )
                 }
                 RmcSpacer(16)
                 Column {

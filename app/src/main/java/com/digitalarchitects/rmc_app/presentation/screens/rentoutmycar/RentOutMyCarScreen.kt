@@ -99,7 +99,7 @@ fun RentOutMyCarScreen(
                         onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.OPEN)) },
                     )
                     Tab(
-                        text = { Text("Open (${uiState.historyRentalsList.count()})") },
+                        text = { Text("History (${uiState.historyRentalsList.count()})") },
                         selected = uiState.selectedTab == RentalTab.HISTORY,
                         onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.HISTORY)) },
                     )
