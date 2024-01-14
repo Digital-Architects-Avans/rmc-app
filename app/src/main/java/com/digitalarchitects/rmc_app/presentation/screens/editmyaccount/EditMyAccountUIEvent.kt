@@ -1,5 +1,7 @@
 package com.digitalarchitects.rmc_app.presentation.screens.editmyaccount
 
+import android.net.Uri
+
 sealed interface EditMyAccountUIEvent {
 
     object FetchUser: EditMyAccountUIEvent
@@ -12,7 +14,7 @@ sealed interface EditMyAccountUIEvent {
     data class SetBuildingNumber(val buildingNumber: String) : EditMyAccountUIEvent
     data class SetZipCode(val zipCode: String) : EditMyAccountUIEvent
     data class SetCity(val city: String) : EditMyAccountUIEvent
-    data class SetImageResourceId(val imageResourceId: Int) : EditMyAccountUIEvent
     object ConfirmEditMyAccountButtonClicked: EditMyAccountUIEvent
     object ResetUserUpdated: EditMyAccountUIEvent
+    data class SetImageUri(val uri: Uri): EditMyAccountUIEvent
 }

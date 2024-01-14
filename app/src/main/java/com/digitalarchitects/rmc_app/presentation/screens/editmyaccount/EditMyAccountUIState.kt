@@ -1,5 +1,6 @@
 package com.digitalarchitects.rmc_app.presentation.screens.editmyaccount
 
+import android.net.Uri
 import com.digitalarchitects.rmc_app.domain.model.UserType
 
 data class EditMyAccountUIState (
@@ -14,5 +15,7 @@ data class EditMyAccountUIState (
     val buildingNumber: String = "",
     val zipCode: String = "",
     val city: String = "",
-    val imageResourceId: Int = 0
+    val profileImageSrc: String? = null,
+    val imageUri: Uri = Uri.EMPTY,
+    val imgUpdated: Boolean = false
 )
