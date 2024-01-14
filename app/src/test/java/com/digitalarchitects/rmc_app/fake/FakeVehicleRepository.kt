@@ -41,5 +41,9 @@ class FakeVehicleRepository : VehicleRepository {
     override suspend fun getVehicleModel(vehicleId: String): String? {
         TODO("Not yet implemented")
     }
+    override suspend fun setVehicleAvailability(vehicleId: String, availability: Boolean): Unit{
+        TODO("Not yet implemented")
+
+    }
 
 }

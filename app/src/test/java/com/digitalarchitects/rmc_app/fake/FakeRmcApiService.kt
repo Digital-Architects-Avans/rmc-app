@@ -12,6 +12,7 @@ import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.UpdateVehicleDTO
 import com.digitalarchitects.rmc_app.domain.model.Rental
+import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import retrofit2.Response
@@ -99,11 +100,19 @@ class FakeRmcApiService : RmcApiService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addRental(createRentalDTO: CreateRentalDTO): Response<Unit> {
+    override suspend fun addRental(createRentalDTO: CreateRentalDTO): RemoteRental {
         TODO("Not yet implemented")
     }
 
     override suspend fun deleteRental(id: String): Response<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun setRentalStatus(rentalId: String, status: RentalStatus): Response<Unit>{
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun setVehicleAvailability(id: String, availability: Boolean): Response<Unit>{
         TODO("Not yet implemented")
     }
 
