@@ -107,6 +107,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun signOut() {
+        userPreferencesRepository.signOut()
+    }
+
     // Authenticate user using the JWT token stored in shared preferences
     override suspend fun authenticate(): AuthResult<Unit> {
         return try {
@@ -231,5 +235,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getCurrentUserIdFromDataStore(): String? {
         return userPreferencesRepository.getUserId()
+    }
+
+    override suspend fun setProfileImageSrc(userId: String, profileImageSrc: String) {
+        rmcApiService.updateProfileImageSrc(userId, profileImageSrc)
+        refreshRoomCache()
     }
 }

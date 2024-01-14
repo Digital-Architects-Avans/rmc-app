@@ -13,6 +13,7 @@ interface UserRepository {
 
     suspend fun signUp(request: SignUpRequest): AuthResult<Unit>
     suspend fun signIn(username: String, password: String): AuthResult<Unit>
+    suspend fun signOut()
     suspend fun authenticate(): AuthResult<Unit>
 
     /** Retrieves list of [User] from underlying data source */
@@ -41,5 +42,8 @@ interface UserRepository {
 
     /** Retrieves the userId of the [User] currently signed in from the DataStore */
     suspend fun getCurrentUserIdFromDataStore(): String?
+
+    /** Sets the profileImageSrc of a [User] to the newly profile image source URL */
+    suspend fun setProfileImageSrc(userId: String, profileImageSrc: String)
 
 }
