@@ -64,7 +64,10 @@ class MyRentalsViewModel @Inject constructor(
 
                             _uiState.value.myOpenRentalsList =
                                 triples.filter { it.first.date >= today && it.first.status == RentalStatus.APPROVED || it.first.status == RentalStatus.PENDING }
-                            Log.d("MyRentalsViewModel", "Open rentals: ${_uiState.value.myOpenRentalsList}")
+                            Log.d(
+                                "MyRentalsViewModel",
+                                "Open rentals: ${_uiState.value.myOpenRentalsList}"
+                            )
                             _uiState.value.myHistoryRentalList = triples.filter {
                                 it.first.date < today || it.first.status == RentalStatus.DENIED || it.first.status == RentalStatus.CANCELLED
                             }
@@ -114,7 +117,9 @@ class MyRentalsViewModel @Inject constructor(
             }
 
             is MyRentalsUIEvent.RouteToRental -> {
-                TODO("Implement logic to open external Google Maps Navigation and direct to lat long of rental vehicle")
+                _uiState.update {
+                    it.copy(routeToRental = event.location)
+                }
             }
 
             is MyRentalsUIEvent.CancelRental -> {

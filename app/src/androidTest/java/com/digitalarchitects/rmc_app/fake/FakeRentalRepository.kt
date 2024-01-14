@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.fake
 
-import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.mapper.toRental
 import com.digitalarchitects.rmc_app.data.mapper.toRentalListFromLocal
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO

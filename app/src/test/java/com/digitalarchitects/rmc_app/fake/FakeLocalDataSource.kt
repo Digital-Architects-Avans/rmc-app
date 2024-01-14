@@ -52,7 +52,9 @@ object FakeLocalDataSource {
             latitude = 2.0f,
             longitude = 2.0f,
             price = 2.0,
-            availability = true
+            availability = true,
+            description = "placeholder",
+            address = "City"
         ),
         LocalVehicle(
             vehicleId = "2",
@@ -67,7 +69,9 @@ object FakeLocalDataSource {
             latitude = 2.0f,
             longitude = 2.0f,
             price = 2.0,
-            availability = true
+            availability = true,
+            description = "placeholder",
+            address = "City"
         )
     )
     val rentalList = listOf(

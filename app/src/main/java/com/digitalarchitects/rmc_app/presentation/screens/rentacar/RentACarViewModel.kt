@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,7 @@ import com.google.maps.android.clustering.ClusterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +29,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -44,7 +49,8 @@ class RentACarViewModel @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     // Rent A Car UI state
-    private val _rentACarUiState = MutableStateFlow(RentACarUIState())
+    @VisibleForTesting
+    internal val _rentACarUiState = MutableStateFlow(RentACarUIState())
     val rentACarUiState: StateFlow<RentACarUIState> get() = _rentACarUiState.asStateFlow()
 
     // Location permissions UI state
@@ -53,18 +59,23 @@ class RentACarViewModel @Inject constructor(
     val locationPermissionsUiState: StateFlow<LocationPermissionsUIState> =
         _locationPermissionsUiState.asStateFlow()
 
-    // Set user ID
-    init {
-        setUserId()
-    }
-
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
+            // Set user ID
+            is RentACarUIEvent.SetUserId -> {
+                setUserId()
+            }
+
             // Intro
             is RentACarUIEvent.ShowIntro -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
                     showStats = event.show
                 )
+            }
+
+            // Set map data
+            is RentACarUIEvent.SetMapData -> {
+                getVehicles()
             }
 
             // Map controls
@@ -117,9 +128,11 @@ class RentACarViewModel @Inject constructor(
                     return
                 }
 
+                val userId = _rentACarUiState.value.userId ?: "0"
+
                 val newRentalDTO = CreateRentalDTO(
                     vehicleId = vehicle.vehicleId,
-                    userId = _rentACarUiState.value.userId,
+                    userId = userId,
                     date = date,
                     price = vehicle.price,
                     latitude = vehicle.latitude,
@@ -244,16 +257,20 @@ class RentACarViewModel @Inject constructor(
                     }
                 }
             }
-        }
-    }
 
-    fun setMapData() {
-        getVehicles()
+            // Stats
+            is RentACarUIEvent.FetchRenterRentals -> {
+                getRenterRentals()
+            }
+
+            is RentACarUIEvent.FetchOwnerRentals -> {
+                getOwnerRentals()
+            }
+        }
     }
 
     private fun getVehicles() {
         viewModelScope.launch(dispatcher) {
-            val filterPreferences = _rentACarUiState.value
             // Get all vehicles
             val result: Result<List<Vehicle>> = runCatching {
                 vehicleRepository.getAllVehicles()
@@ -263,19 +280,20 @@ class RentACarViewModel @Inject constructor(
                 _rentACarUiState.value.listOfVehicles = filteredVehicles
 
                 // Get vehicle map items
-                if (filteredVehicles.isNotEmpty()) {
-                    _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
-                    _rentACarUiState.value = _rentACarUiState.value.copy(
-                        searchResults = filteredVehicles.size
-                    )
-                }
+                _rentACarUiState.value.vehicleMapItems = createVehicleMapItems()
+                // Set search results
+                _rentACarUiState.value = _rentACarUiState.value.copy(
+                    searchResults = filteredVehicles.size
+                )
+                Log.d("RentACarViewModel", "Search results: ${filteredVehicles.size}")
             }.onFailure { e ->
                 e.printStackTrace()
             }
         }
     }
 
-    private fun applyAdvancedFilter(vehicles: List<Vehicle>): List<Vehicle> {
+    @VisibleForTesting
+    internal fun applyAdvancedFilter(vehicles: List<Vehicle>): List<Vehicle> {
         Log.d(
             "RentACarViewModelFilter",
             "applyAdvancedFilter Price: ${rentACarUiState.value.price}," +
@@ -348,7 +366,8 @@ class RentACarViewModel @Inject constructor(
         return filteredByDistance
     }
 
-    private fun calculateDistance(user: LatLng, vehicle: LatLng): Double {
+    @VisibleForTesting
+    internal fun calculateDistance(user: LatLng, vehicle: LatLng): Double {
         val earthRadius = 6371.0 // Earth radius in kilometers
 
         val userLatRad = Math.toRadians(user.latitude)
@@ -369,7 +388,8 @@ class RentACarViewModel @Inject constructor(
     }
 
     // Create vehicleMapItems for Google Maps composable
-    private fun createVehicleMapItems(): SnapshotStateList<VehicleMapItem> {
+    @VisibleForTesting
+    internal fun createVehicleMapItems(): SnapshotStateList<VehicleMapItem> {
         val mapItems = mutableStateListOf<VehicleMapItem>()
         _rentACarUiState.value.listOfVehicles.forEach { vehicle ->
             mapItems.add(
@@ -388,15 +408,130 @@ class RentACarViewModel @Inject constructor(
         return mapItems
     }
 
-    private fun setUserId() {
+    @VisibleForTesting
+    internal fun setUserId() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                try {
+                    val userId = userRepository.getCurrentUserIdFromDataStore()
+                    _rentACarUiState.value.userId = userId!!
+                    Log.d("RentACarViewModel", "UUID setUserId: ${_rentACarUiState.value.userId}")
+                } catch (e: Exception) {
+                    Log.d("RentACarViewModel", "error: $e")
+                }
+            }
+        }
+    }
+
+    // Get all renter rentals
+    private fun getRenterRentals() {
         viewModelScope.launch(dispatcher) {
             try {
-                val userId = userRepository.getCurrentUserIdFromDataStore()
-                withContext(Dispatchers.Main) {
-                    _rentACarUiState.value.userId = userId!!
+                val userId = _rentACarUiState.value.userId
+                Log.d(
+                    "RentACarViewModel/renter",
+                    "UUID UserId from UIState: ${_rentACarUiState.value.userId}"
+                )
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
+                if (userId != null) {
+
+                    // Get rental for renter
+                    val renterTotalRentals = runCatching {
+                        rentalRepository.getListOfRentalDetailsForRenter(userId)
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        renterTotalRentals.onSuccess { renterRentals ->
+                            // Total rentals
+                            _rentACarUiState.value.statsRenterTotalRentals =
+                                renterRentals.count()
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Total rentals: ${_rentACarUiState.value.statsRenterTotalRentals}"
+                            )
+                            // Open rentals
+                            _rentACarUiState.value.statsRenterOpenRentals =
+                                renterRentals.count { it.first.date >= today && it.first.status == RentalStatus.PENDING || it.first.date >= today && it.first.status == RentalStatus.APPROVED }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Open rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
+                            )
+                            // Pending rentals
+                            _rentACarUiState.value.statsRenterPendingRentals =
+                                renterRentals.count { it.first.status == RentalStatus.PENDING }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Pending rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
+                            )
+                        }
+                    }.onFailure { e ->
+                        e.printStackTrace()
+                    }
+                } else {
+                    // Log an error message if userId is null
+                    Log.e("RentMyCarViewModel", "UserId is null")
                 }
             } catch (e: Exception) {
-                Log.d("RentACarViewModel", "error: $e")
+                // Handle any unexpected exceptions
+                e.printStackTrace()
+            }
+        }
+    }
+
+    // Get all owner rentals
+    private fun getOwnerRentals() {
+        viewModelScope.launch(dispatcher) {
+            delay(200)
+            try {
+                val userId = _rentACarUiState.value.userId
+                Log.d(
+                    "RentACarViewModel/owner",
+                    "UUID UserId from UIState: ${_rentACarUiState.value.userId}"
+                )
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
+                if (userId != null) {
+
+                    // Get rental for owner
+                    val ownerTotalRentals = runCatching {
+                        rentalRepository.getListOfRentalDetailsForOwner(userId)
+                    }
+                    withContext(Dispatchers.Main) {
+                        ownerTotalRentals.onSuccess { ownerRentals ->
+                            // Total rentals
+                            _rentACarUiState.value.statsOwnerTotalRentals = ownerRentals.count()
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Owner total rentals: ${ownerRentals.count()}"
+                            )
+                            // Pending rentals
+                            _rentACarUiState.value.statsOwnerPendingRentals =
+                                ownerRentals.count { it.first.status == RentalStatus.PENDING }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Owner Pending rentals: ${_rentACarUiState.value.statsOwnerPendingRentals}"
+                            )
+                            // Open rentals
+                            _rentACarUiState.value.statsOwnerOpenRentals =
+                                ownerRentals.count { it.first.date >= today && it.first.status == RentalStatus.APPROVED || it.first.status == RentalStatus.PENDING }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Owner Open rentals: ${_rentACarUiState.value.statsOwnerOpenRentals}"
+                            )
+                        }
+                    }.onFailure { e ->
+                        e.printStackTrace()
+                    }
+                } else {
+                    // Log an error message if userId is null
+                    Log.e("RentMyCarViewModel", "UserId is null")
+                }
+            } catch (e: Exception) {
+                // Handle any unexpected exceptions
+                e.printStackTrace()
             }
         }
     }

@@ -17,8 +17,11 @@ class FakeUserRepository : UserRepository {
     }
 
     override suspend fun signIn(username: String, password: String): AuthResult<Unit> {
-        TODO("Not yet implemented")
-    }
+        return if (username == "validUser" && password == "validPassword") {
+            AuthResult.Authorized(Unit)
+        } else {
+            AuthResult.Unauthorized()
+        }    }
 
     override suspend fun authenticate(): AuthResult<Unit> {
         TODO("Not yet implemented")
@@ -56,6 +59,6 @@ class FakeUserRepository : UserRepository {
     }
 
     override suspend fun getCurrentUserIdFromDataStore(): String? {
-        TODO("Not yet implemented")
+        return "1"
     }
 }

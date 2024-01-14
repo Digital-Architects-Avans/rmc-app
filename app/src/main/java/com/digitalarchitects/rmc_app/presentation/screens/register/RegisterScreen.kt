@@ -268,6 +268,15 @@ fun RegisterScreen(
 
                 RmcFilledButton(
                     value = stringResource(id = R.string.register),
+                    isEnabled = uiState.firstName.isNotEmpty() &&
+                            uiState.lastName.isNotEmpty() &&
+                            uiState.email.isNotEmpty() &&
+                            uiState.telephone.isNotEmpty() &&
+                            uiState.address.isNotEmpty() &&
+                            uiState.buildingNumber.isNotEmpty() &&
+                            uiState.postalCode.isNotEmpty() &&
+                            uiState.city.isNotEmpty() &&
+                            uiState.password.isNotEmpty(),
                     onClick = {
                         viewModel.onEvent(RegisterUIEvent.RegisterButtonClicked)
                     }

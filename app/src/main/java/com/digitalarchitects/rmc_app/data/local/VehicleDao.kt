@@ -36,8 +36,5 @@ interface VehicleDao {
 
     @Query("DELETE FROM LocalVehicle")
     suspend fun clearCache()
-
-//     TODO GET CURRENT Vehicle
-//    @Query("SELECT * FROM VehicleEntity LIMIT 1")
-//    fun getVehicle(): VehicleTable
+    
 }

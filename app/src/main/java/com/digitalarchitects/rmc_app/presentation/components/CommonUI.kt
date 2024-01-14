@@ -32,17 +32,22 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ToggleOff
 import androidx.compose.material.icons.filled.ToggleOn
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.LocalGasStation
 import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.PriceChange
+import androidx.compose.material.icons.rounded.SportsScore
 import androidx.compose.material.icons.rounded.Straighten
+import androidx.compose.material.icons.rounded.Toys
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -82,6 +87,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -489,6 +495,7 @@ fun RmcFilledTonalButton(
             Icon(
                 imageVector = it,
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(18.dp)
             )
@@ -497,7 +504,7 @@ fun RmcFilledTonalButton(
         Text(
             text = value,
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -612,6 +619,17 @@ fun RmcImgFilledIconButton(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
+        )
+    }
+}
+
+@Composable
+fun RmcBadge(value: String) {
+    Badge {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -831,17 +849,16 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (vehicle.imgLink == 1) {
-            Image(
-                painter = painterResource(id = R.drawable.civic),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(end = dimensionResource(R.dimen.padding_large))
-                    .size(dimensionResource(R.dimen.image_size_medium))
-                    .clip(RoundedCornerShape(8.dp))
-            )
-        }
+        val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+        Image(
+            painter = painterResource(id = vehicleImage),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(end = dimensionResource(R.dimen.padding_large))
+                .size(dimensionResource(R.dimen.image_size_medium))
+                .clip(RoundedCornerShape(8.dp))
+        )
         Column {
             Row(
                 modifier = Modifier
@@ -899,6 +916,103 @@ fun RmcVehicleListItem(
 }
 
 @Composable
+fun RmcRentalListItem(
+    rental: Rental,
+    vehicle: Vehicle,
+    user: User,
+    ownerView: Boolean = false,
+    onItemClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    color = Color.Black
+                ),
+                onClick = { onItemClick() }
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column {
+                    if (ownerView) {
+                        Text(
+                            text = rental.date.toString(),
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                        Text(
+                            text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                        Text(
+                            text = "${user.firstName} ${user.lastName}",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    } else {
+                        Text(
+                            text = rental.date.toString(),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                        Text(
+                            text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                        )
+                    }
+
+                }
+                val (rentalStatus, labelTextColor, backgroundColor) = when (rental.status) {
+                    RentalStatus.PENDING ->
+                        Triple(
+                            stringResource(R.string.pending),
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondaryContainer
+                        )
+
+                    RentalStatus.APPROVED ->
+                        Triple(
+                            stringResource(R.string.approved),
+                            colorResource(id = R.color.primary_green_text),
+                            colorResource(id = R.color.primary_green_bg)
+                        )
+
+                    RentalStatus.DENIED ->
+                        Triple(
+                            stringResource(R.string.denied),
+                            MaterialTheme.colorScheme.error,
+                            MaterialTheme.colorScheme.errorContainer
+                        )
+
+                    RentalStatus.CANCELLED ->
+                        Triple(
+                            stringResource(R.string.cancelled),
+                            MaterialTheme.colorScheme.error,
+                            MaterialTheme.colorScheme.errorContainer
+                        )
+                }
+                RmcSpacer(4)
+                RmcTextBadge(
+                    label = rentalStatus,
+                    labelTextColor = labelTextColor,
+                    labelBackgroundColor = backgroundColor
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun RmcTextBadge(
     label: String,
     labelTextColor: Color,
@@ -914,8 +1028,8 @@ fun RmcTextBadge(
             color = labelTextColor,
             modifier = Modifier
                 .padding(
-                    vertical = dimensionResource(id = R.dimen.padding_tiny),
-                    horizontal = dimensionResource(R.dimen.padding_small)
+                    vertical = dimensionResource(id = R.dimen.padding_extra_small),
+                    horizontal = dimensionResource(R.dimen.padding_medium)
                 )
         )
     }
@@ -1012,17 +1126,16 @@ fun RmcVehicleDetails(
             }
         }
     }
-    if (vehicle.imgLink == 1) {
-        Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(184.dp)
-                .padding(bottom = dimensionResource(R.dimen.padding_large)),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(R.drawable.civic),
-            contentDescription = null
-        )
-    }
+    val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(184.dp)
+            .padding(bottom = dimensionResource(R.dimen.padding_large)),
+        contentScale = ContentScale.Crop,
+        painter = painterResource(id = vehicleImage),
+        contentDescription = null
+    )
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(R.dimen.padding_large))
@@ -1196,6 +1309,162 @@ fun RmcVehicleDetailsOwner(
     }
 }
 
+@Composable
+fun RmcRentalDetails(
+    rental: Rental,
+    vehicle: Vehicle,
+    user: User,
+    ownerView: Boolean = false,
+    showRejectButton: Boolean,
+    showAcceptButton: Boolean = false,
+    onRejectClick: () -> Unit = {},
+    onAcceptClick: () -> Unit = {},
+    onRouteClick: () -> Unit = {},
+    onCancelRentalClick: () -> Unit = {}
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+    ) {
+        // Show rental details
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = rental.date.toString(),
+                style = MaterialTheme.typography.displayMedium,
+                color = colorResource(id = R.color.primary_red)
+            )
+            val (rentalStatus, labelTextColor, backgroundColor) = when (rental.status) {
+                RentalStatus.PENDING ->
+                    Triple(
+                        stringResource(R.string.pending),
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondaryContainer
+                    )
+
+                RentalStatus.APPROVED ->
+                    Triple(
+                        stringResource(R.string.approved),
+                        colorResource(id = R.color.primary_green_text),
+                        colorResource(id = R.color.primary_green_bg)
+                    )
+
+                RentalStatus.DENIED ->
+                    Triple(
+                        stringResource(R.string.denied),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
+
+                RentalStatus.CANCELLED ->
+                    Triple(
+                        stringResource(R.string.cancelled),
+                        MaterialTheme.colorScheme.error,
+                        MaterialTheme.colorScheme.errorContainer
+                    )
+            }
+            RmcTextBadge(
+                label = rentalStatus,
+                labelTextColor = labelTextColor,
+                labelBackgroundColor = backgroundColor
+            )
+        }
+        RmcSpacer(16)
+        // Show renter details for owner
+        if (ownerView) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RmcUserIcon(
+                    userIcon = R.drawable.usericon,
+                    size = dimensionResource(R.dimen.image_size_small),
+                    onClick = {}
+                )
+                Text(
+                    text = "${user.firstName} ${user.lastName}",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+            RmcSpacer(16)
+        }
+        // Show rent stats
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+        ) {
+            RmcIconLabel(
+                label = stringResource(id = R.string.stats_price_euro, rental.price.toInt()),
+                icon = Icons.Rounded.PriceChange
+            )
+            RmcIconLabel(
+                label = stringResource(id = R.string.stats_distance_km, rental.distanceTravelled.toInt()),
+                icon = Icons.Rounded.SportsScore
+            )
+            RmcIconLabel(
+                label = stringResource(id = R.string.stats_rental_points, rental.score),
+                icon = Icons.Rounded.Toys
+            )
+        }
+        RmcSpacer(16)
+        // Show owner actions
+        if (ownerView) {
+            Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))) {
+                Column(Modifier.weight(1f)) {
+                    RmcFilledButton(
+                        value = stringResource(id = R.string.reject_rental),
+                        icon = Icons.Filled.Cancel,
+                        color = colorResource(id = R.color.primary_red),
+                        isEnabled = showRejectButton,
+                        onClick = {
+                            onRejectClick()
+                        }
+                    )
+                }
+                Column(Modifier.weight(1f)) {
+                    RmcFilledButton(
+                        value = stringResource(id = R.string.accept_rental),
+                        icon = Icons.Rounded.Check,
+                        color = colorResource(id = R.color.primary_green),
+                        isEnabled = showAcceptButton,
+                        onClick = {
+                            onAcceptClick()
+                        }
+                    )
+                }
+            }
+            // Show renter actions
+        } else {
+            Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))) {
+                Column(Modifier.weight(1f)) {
+                    RmcFilledButton(
+                        value = stringResource(id = R.string.cancel_rental),
+                        icon = Icons.Filled.Cancel,
+                        color = colorResource(id = R.color.primary_red),
+                        isEnabled = showRejectButton,
+                        onClick = {
+                            onCancelRentalClick()
+                        }
+                    )
+                }
+                Column(Modifier.weight(1f)) {
+                    RmcFilledButton(
+                        value = stringResource(id = R.string.route_to_car),
+                        icon = Icons.Rounded.Check,
+                        color = colorResource(id = R.color.primary_green),
+                        onClick = {
+                            onRouteClick()
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun RmcRentalDetailsOwner(
@@ -1296,90 +1565,6 @@ fun RmcRentalDetailsOwner(
             }
         }
     }
-
-    HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 24.dp),
-        thickness = 1.dp,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-    )
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_small)),
-        ) {
-            Text(
-                text = vehicle.licensePlate,
-                style = MaterialTheme.typography.displayMedium,
-                color = colorResource(id = R.color.primary_red)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(R.dimen.padding_small)),
-                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_small)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RmcIconLabel(
-                label = vehicle.address,
-                icon = Icons.Rounded.LocationOn
-            )
-            RmcIconLabel(
-                label = vehicle.price.toInt().toString(),
-                icon = Icons.Rounded.PriceChange
-            )
-        }
-    }
-
-    Image(
-        modifier = Modifier
-            .fillMaxWidth()
-            .size(height = 240.dp, width = 20.dp)
-            .padding(
-                top = dimensionResource(R.dimen.padding_medium),
-                bottom = dimensionResource(R.dimen.padding_large)
-            ),
-        contentScale = ContentScale.Crop,
-        painter = painterResource(R.drawable.civic),
-        contentDescription = null
-    )
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
-    ) {
-
-        Text(
-            text = buildAnnotatedString {
-                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
-                    append("\"${vehicle.description}\"")
-                }
-            },
-            modifier = Modifier
-                .padding(bottom = 8.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
-    }
-
 }
 
 
@@ -1479,89 +1664,6 @@ fun MyRentalDetails(
                 )
             }
         }
-    }
-
-    HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 24.dp),
-        thickness = 1.dp,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-    )
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_small)),
-        ) {
-            Text(
-                text = vehicle.licensePlate,
-                style = MaterialTheme.typography.displayMedium,
-                color = colorResource(id = R.color.primary_red)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(R.dimen.padding_small)),
-                text = "${vehicle.year} - ${vehicle.brand} ${vehicle.model}",
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(R.dimen.padding_small)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            RmcIconLabel(
-                label = location,
-                icon = Icons.Rounded.LocationOn
-            )
-            RmcIconLabel(
-                label = vehicle.price.toInt().toString(),
-                icon = Icons.Rounded.PriceChange
-            )
-        }
-    }
-
-    Image(
-        modifier = Modifier
-            .fillMaxWidth()
-            .size(height = 240.dp, width = 20.dp)
-            .padding(
-                top = dimensionResource(R.dimen.padding_medium),
-                bottom = dimensionResource(R.dimen.padding_large)
-            ),
-        contentScale = ContentScale.Crop,
-        painter = painterResource(R.drawable.civic),
-        contentDescription = null
-    )
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
-    ) {
-
-        Text(
-            text = buildAnnotatedString {
-                withStyle(style = SpanStyle(fontStyle = FontStyle.Italic)) {
-                    append("\"${vehicle.description}\"")
-                }
-            },
-            modifier = Modifier
-                .padding(bottom = 8.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
     }
 }
 
@@ -1860,5 +1962,21 @@ fun RmcDateTextField(
                 }
             )
         }
+    }
+}
+
+fun getImageByLicensePlate(licensePlate: String): Int {
+    return when (licensePlate) {
+        "3-SKS-35" -> R.drawable.x5 // 2015 BMW X5
+        "G-888-VS" -> R.drawable.rs6 // 2020 RS6 Avant
+        "52-KJS-9" -> R.drawable.roadster // 2010 Tesla Roadster
+        "YW-790-2" -> R.drawable.yaris // 2011 Toyota Yaris
+        "GX-495-K" -> R.drawable.civic // 2020 Honda Cicic
+        "JR-888-P" -> R.drawable.focus // 2019 Ford Focus
+        "GK-19-NP" -> R.drawable.malibu // 1980 Chevrolet Malibu
+        "DH-71-47" -> R.drawable.roadmaster // 1955 Buick Roadmaster
+        "TR-912-J" -> R.drawable.mx5 // 2012 Mazda MX-5
+        "V-512-XE" -> R.drawable.raptor // 2023 F-150 Raptor
+        else -> R.drawable.car
     }
 }

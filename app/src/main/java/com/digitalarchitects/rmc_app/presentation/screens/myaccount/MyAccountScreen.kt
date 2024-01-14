@@ -68,15 +68,16 @@ fun MyAccountScreen(
             ) {
                 RmcSpacer()
                 RmcLogoText()
-                RmcSpacer(8)
+                RmcSpacer(16)
                 RmcUserIcon(
                     imageSrc = uiState.profileImgSrc,
+
                     size = dimensionResource(R.dimen.image_size_large),
                     onClick = {
                         navigateToScreen(RmcScreen.EditMyAccount.name)
                     }
                 )
-                RmcSpacer(8)
+                RmcSpacer(16)
                 uiState.currentUser?.let {
                     Text(
                         text = "${it.firstName} ${it.lastName}",

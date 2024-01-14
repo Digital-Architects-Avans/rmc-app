@@ -1,16 +1,15 @@
 package com.digitalarchitects.rmc_app.fake
-
+import com.digitalarchitects.rmc_app.data.local.LocalRental
+import com.digitalarchitects.rmc_app.data.local.LocalUser
+import com.digitalarchitects.rmc_app.data.local.LocalVehicle
 import com.digitalarchitects.rmc_app.domain.model.EngineType
-import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
-import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.UserType
-import com.digitalarchitects.rmc_app.domain.model.Vehicle
 import kotlinx.datetime.LocalDate
 
-object FakeRemoteDataSource {
+object FakeLocalDataSource {
     val userList = listOf(
-        User(
+        LocalUser(
             userId = "1",
             email = "email",
             password = "password",
@@ -24,7 +23,7 @@ object FakeRemoteDataSource {
             zipCode = "zipCode",
             city = "city"
         ),
-        User(
+        LocalUser(
             userId = "2",
             email = "email2",
             password = "password",
@@ -40,7 +39,7 @@ object FakeRemoteDataSource {
         )
     )
     val vehicleList = listOf(
-        Vehicle(
+        LocalVehicle(
             vehicleId = "1",
             userId = "1",
             brand = "brand",
@@ -57,7 +56,7 @@ object FakeRemoteDataSource {
             description = "placeholder",
             address = "City"
         ),
-        Vehicle(
+        LocalVehicle(
             vehicleId = "2",
             userId = "2",
             brand = "brand2",
@@ -76,9 +75,9 @@ object FakeRemoteDataSource {
         )
     )
     val rentalList = listOf(
-        Rental(
-            rentalId = "1",
-            vehicleId = "1",
+        LocalRental(
+            rentalId = "2",
+            vehicleId = "2",
             userId = "1",
             date = LocalDate(2021, 1, 1),
             price = 1.0,
@@ -88,8 +87,8 @@ object FakeRemoteDataSource {
             distanceTravelled = 1.0,
             score = 1
         ),
-        Rental(
-            rentalId = "1",
+        LocalRental(
+            rentalId = "2",
             vehicleId = "2",
             userId = "2",
             date = LocalDate(2021, 2, 2),

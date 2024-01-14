@@ -1,6 +1,5 @@
 package com.digitalarchitects.rmc_app.fake
 
-import FakeLocalDataSource
 import com.digitalarchitects.rmc_app.data.mapper.toVehicle
 import com.digitalarchitects.rmc_app.data.mapper.toVehicleListFromLocal
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
