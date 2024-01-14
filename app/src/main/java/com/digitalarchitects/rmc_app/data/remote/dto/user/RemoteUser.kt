@@ -17,5 +17,6 @@ data class RemoteUser (
     val street: String,
     val buildingNumber: String,
     val zipCode: String,
-    val city: String
+    val city: String,
+    val profileImageSrc: String
 )

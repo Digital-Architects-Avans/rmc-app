@@ -19,5 +19,5 @@ data class LocalUser(
     val buildingNumber: String,
     val zipCode: String,
     val city: String,
-    val imageResourceId: Int? = 0
+    val profileImageSrc: String
 )

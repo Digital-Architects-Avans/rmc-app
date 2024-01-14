@@ -13,4 +13,5 @@ data class SignupDTO(
     val buildingNumber: String,
     val zipCode: String,
     val city: String,
+    val profileImageSrc: String
 )
