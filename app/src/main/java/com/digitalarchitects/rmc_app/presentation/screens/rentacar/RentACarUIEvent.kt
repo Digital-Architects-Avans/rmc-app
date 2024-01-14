@@ -9,6 +9,7 @@ sealed interface RentACarUIEvent {
     class ShowIntro(val show: Boolean) : RentACarUIEvent
 
     // Map controls
+    object SetMapData : RentACarUIEvent
     data class ZoomLevelChanged(val zoom: Float) : RentACarUIEvent
     data class CameraPositionChanged(val position: LatLng) : RentACarUIEvent
     class ShowListView(val show: Boolean) : RentACarUIEvent

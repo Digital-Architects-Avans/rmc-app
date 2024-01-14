@@ -70,6 +70,11 @@ class RentACarViewModel @Inject constructor(
                 )
             }
 
+            // Set map data
+            is RentACarUIEvent.SetMapData -> {
+                getVehicles()
+            }
+
             // Map controls
             is RentACarUIEvent.ZoomLevelChanged -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
@@ -253,10 +258,6 @@ class RentACarViewModel @Inject constructor(
                 getMyRentals()
             }
         }
-    }
-
-    fun setMapData() {
-        getVehicles()
     }
 
     private fun getVehicles() {

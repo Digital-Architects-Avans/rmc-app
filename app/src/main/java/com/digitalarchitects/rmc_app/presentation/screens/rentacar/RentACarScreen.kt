@@ -140,7 +140,7 @@ fun RentACarScreen(
         viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         viewModel.onEvent(RentACarUIEvent.FetchShowSearchLocation)
         // Get vehicles and create map items in view model
-        viewModel.setMapData()
+        viewModel.onEvent(RentACarUIEvent.SetMapData)
         // Get rentals
         viewModel.onEvent(RentACarUIEvent.FetchMyRentals)
         // Set camera data in view model
