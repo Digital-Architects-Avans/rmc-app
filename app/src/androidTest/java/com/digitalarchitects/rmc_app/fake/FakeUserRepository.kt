@@ -9,9 +9,15 @@ import com.digitalarchitects.rmc_app.domain.repo.UserRepository
 
 class FakeUserRepository : UserRepository {
     private val signInResults: MutableMap<Pair<String, String>, AuthResult<Unit>> = mutableMapOf()
+    private val signUpResults: List<Any> = listOf()
+
 
     fun setSignInResult(email: String, password: String, result: AuthResult<Unit>) {
         signInResults[email to password] = result
+    }
+
+    fun setSignUpResult(email: String, password: String, result: AuthResult<Unit>) {
+//        signUpResults[email to password] = result
     }
 
     override suspend fun signUp(request: SignUpRequest): AuthResult<Unit> {
