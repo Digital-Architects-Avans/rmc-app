@@ -48,7 +48,7 @@ class FakeRentalRepository: RentalRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addRental(createRentalDTO: CreateRentalDTO, rental: Rental) {
+    override suspend fun addRental(createRentalDTO: CreateRentalDTO) {
         TODO("Not yet implemented")
     }
 

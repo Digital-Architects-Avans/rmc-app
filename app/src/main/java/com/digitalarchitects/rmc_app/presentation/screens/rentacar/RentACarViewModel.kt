@@ -1,6 +1,7 @@
 package com.digitalarchitects.rmc_app.presentation.screens.rentacar
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
@@ -44,7 +45,8 @@ class RentACarViewModel @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     // Rent A Car UI state
-    private val _rentACarUiState = MutableStateFlow(RentACarUIState())
+    @VisibleForTesting
+    internal val _rentACarUiState = MutableStateFlow(RentACarUIState())
     val rentACarUiState: StateFlow<RentACarUIState> get() = _rentACarUiState.asStateFlow()
 
     // Location permissions UI state
@@ -274,8 +276,8 @@ class RentACarViewModel @Inject constructor(
             }
         }
     }
-
-    private fun applyAdvancedFilter(vehicles: List<Vehicle>): List<Vehicle> {
+    @VisibleForTesting
+    internal fun applyAdvancedFilter(vehicles: List<Vehicle>): List<Vehicle> {
         Log.d(
             "RentACarViewModelFilter",
             "applyAdvancedFilter Price: ${rentACarUiState.value.price}," +
@@ -348,7 +350,8 @@ class RentACarViewModel @Inject constructor(
         return filteredByDistance
     }
 
-    private fun calculateDistance(user: LatLng, vehicle: LatLng): Double {
+    @VisibleForTesting
+    internal fun calculateDistance(user: LatLng, vehicle: LatLng): Double {
         val earthRadius = 6371.0 // Earth radius in kilometers
 
         val userLatRad = Math.toRadians(user.latitude)
@@ -369,7 +372,8 @@ class RentACarViewModel @Inject constructor(
     }
 
     // Create vehicleMapItems for Google Maps composable
-    private fun createVehicleMapItems(): SnapshotStateList<VehicleMapItem> {
+    @VisibleForTesting
+    internal fun createVehicleMapItems(): SnapshotStateList<VehicleMapItem> {
         val mapItems = mutableStateListOf<VehicleMapItem>()
         _rentACarUiState.value.listOfVehicles.forEach { vehicle ->
             mapItems.add(
@@ -388,7 +392,8 @@ class RentACarViewModel @Inject constructor(
         return mapItems
     }
 
-    private fun setUserId() {
+    @VisibleForTesting
+    internal fun setUserId() {
         viewModelScope.launch(dispatcher) {
             try {
                 val userId = userRepository.getCurrentUserIdFromDataStore()
