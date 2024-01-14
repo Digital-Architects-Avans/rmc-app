@@ -435,20 +435,20 @@ class RentACarViewModel @Inject constructor(
                                 "Renter Total rentals: ${_rentACarUiState.value.statsRenterTotalRentals}"
                             )
                             // Open rentals
-                            _rentACarUiState.value.renterOpenRentalsList =
+                            _rentACarUiState.value.statsRenterOpenRentals =
                                 renterRentals?.count { it.date >= today && it.status == RentalStatus.PENDING || it.date >= today && it.status == RentalStatus.APPROVED }
                                     ?: 0
                             Log.d(
                                 "RentMyCarViewModel",
-                                "Renter Open rentals: ${_rentACarUiState.value.renterOpenRentalsList}"
+                                "Renter Open rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
                             )
                             // Pending rentals
-                            _rentACarUiState.value.renterPendingRentalsList =
+                            _rentACarUiState.value.statsRenterPendingRentals =
                                 renterRentals?.count { it.status == RentalStatus.PENDING }
                                     ?: 0
                             Log.d(
                                 "RentMyCarViewModel",
-                                "Renter Open rentals: ${_rentACarUiState.value.renterOpenRentalsList}"
+                                "Renter Open rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
                             )
                         }
                     }.onFailure { e ->
@@ -467,18 +467,18 @@ class RentACarViewModel @Inject constructor(
                                 "Owner total rentals: ${ownerRentals.count()}"
                             )
 
-                            _rentACarUiState.value.ownerPendingRentalsList =
+                            _rentACarUiState.value.statsOwnerPendingRentals =
                                 ownerRentals.count { it.first.status == RentalStatus.PENDING }
                             Log.d(
                                 "RentMyCarViewModel",
-                                "Renter Pending rentals: ${_rentACarUiState.value.ownerPendingRentalsList}"
+                                "Renter Pending rentals: ${_rentACarUiState.value.statsOwnerPendingRentals}"
                             )
 
-                            _rentACarUiState.value.ownerOpenRentalsList =
+                            _rentACarUiState.value.statsOwnerOpenRentals =
                                 ownerRentals.count { it.first.date >= today && it.first.status == RentalStatus.APPROVED || it.first.status == RentalStatus.PENDING }
                             Log.d(
                                 "RentMyCarViewModel",
-                                "Renter Open rentals: ${_rentACarUiState.value.ownerOpenRentalsList}"
+                                "Renter Open rentals: ${_rentACarUiState.value.statsOwnerOpenRentals}"
                             )
                         }
                     }.onFailure { e ->

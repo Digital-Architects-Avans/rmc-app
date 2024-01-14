@@ -47,6 +47,7 @@ import androidx.compose.material.icons.rounded.SportsScore
 import androidx.compose.material.icons.rounded.Straighten
 import androidx.compose.material.icons.rounded.Toys
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -602,6 +603,17 @@ fun RmcImgFilledIconButton(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
+        )
+    }
+}
+
+@Composable
+fun RmcBadge(value: String) {
+    Badge {
+        Text(
+            text = value,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 }

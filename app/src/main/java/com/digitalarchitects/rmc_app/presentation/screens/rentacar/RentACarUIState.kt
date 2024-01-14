@@ -55,9 +55,9 @@ data class RentACarUIState(
     var showStats: Boolean = true,
     var searchResults: Int = 0,
     var statsRenterTotalRentals: Int = 0,
-    var renterPendingRentalsList: Int = 0,
-    var renterOpenRentalsList: Int = 0,
+    var statsRenterPendingRentals: Int = 0,
+    var statsRenterOpenRentals: Int = 0,
     var statsOwnerTotalRentals: Int = 0,
-    var ownerOpenRentalsList: Int = 0,
-    var ownerPendingRentalsList: Int = 0,
+    var statsOwnerOpenRentals: Int = 0,
+    var statsOwnerPendingRentals: Int = 0,
 )

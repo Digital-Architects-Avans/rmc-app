@@ -61,6 +61,7 @@ import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.util.hasLocationPermission
 import com.digitalarchitects.rmc_app.domain.util.validateDate
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
+import com.digitalarchitects.rmc_app.presentation.components.RmcBadge
 import com.digitalarchitects.rmc_app.presentation.components.RmcDateTextField
 import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
@@ -421,6 +422,7 @@ fun RentACarScreen(
                         modifier = Modifier
                             .padding(dimensionResource(R.dimen.padding_small))
                     ) {
+                        // Search icon button
                         RmcFilledIconButton(
                             icon = Icons.Filled.Search,
                             label = R.string.search,
@@ -447,23 +449,42 @@ fun RentACarScreen(
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
                     ) {
-                        if (rentACarUiState.statsOwnerTotalRentals != 0) {
-                            RmcFilledTonalIconButton(
-                                icon = Icons.Filled.Key,
-                                label = R.string.rent_my_car,
-                                onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
-                            )
-                        }
+                        // My Rentals icon button
                         if (rentACarUiState.statsRenterTotalRentals != 0) {
-                            RmcFilledTonalIconButton(
-                                icon = Icons.Filled.CarRental,
-                                label = R.string.my_rentals,
-                                onClick = { navigateToScreen(RmcScreen.MyRentals.name) },
-                                modifier = Modifier.padding(
-                                    horizontal = dimensionResource(R.dimen.padding_extra_small)
+                            Box {
+                                RmcFilledTonalIconButton(
+                                    icon = Icons.Filled.CarRental,
+                                    label = R.string.my_rentals,
+                                    onClick = { navigateToScreen(RmcScreen.MyRentals.name) },
+                                    modifier = Modifier.padding(
+                                        horizontal = dimensionResource(R.dimen.padding_extra_small)
+                                    )
                                 )
-                            )
+                                if (rentACarUiState.statsRenterPendingRentals != 0 || rentACarUiState.statsRenterOpenRentals != 0) {
+                                    val number =
+                                        rentACarUiState.statsRenterPendingRentals + rentACarUiState.statsRenterOpenRentals
+                                    RmcBadge(
+                                        value = number.toString()
+                                    )
+                                }
+                            }
                         }
+                        // Rent My Car icon button
+                        if (rentACarUiState.statsOwnerTotalRentals != 0) {
+                            Box {
+                                RmcFilledTonalIconButton(
+                                    icon = Icons.Filled.Key,
+                                    label = R.string.rent_my_car,
+                                    onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
+                                )
+                            }
+                            if (rentACarUiState.statsOwnerPendingRentals != 0) {
+                                RmcBadge(
+                                    value = rentACarUiState.statsRenterPendingRentals.toString()
+                                )
+                            }
+                        }
+                        // User avatar icon button
                         RmcImgFilledIconButton(
                             image = R.drawable.civic,
                             label = R.string.my_rentals,
