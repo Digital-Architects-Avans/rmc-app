@@ -23,13 +23,19 @@
     <string name="my_account">My account</string>
     <string name="add_vehicle">Add Vehicle</string>
     <string name="rent_my_car">Rent my car</string>
+    <string name="my_rentmycar_with_numer">Rent my car (%1$s)</string>
     <string name="my_rentals">My rentals</string>
+    <string name="my_rentals_with_numer">My rentals (%1$s)</string>
+    <string name="stats_price_euro">€ %1$s,- </string>
+    <string name="stats_distance_km">%1$s km</string>
+    <string name="stats_rental_points">+ %1$s points</string>
     <string name="my_vehicles">My vehicles</string>
     <string name="vehicle">Vehicle</string>
     <string name="available">Available</string>
     <string name="vehicle_availability">Vehicle availability</string>
     <string name="unavailable">Unavailable</string>
     <string name="rent_car">Rent car</string>
+    <string name="rent_a_car">Rent a car</string>
     <string name="location">Location</string>
     <string name="price">Price</string>
     <string name="license_plate">License plate</string>
@@ -93,6 +99,7 @@
     <string name="screen_title_search">Search</string>
     <string name="screen_title_vehicle_details">Vehicle Details</string>
     <string name="screen_title_my_rentals">My rentals</string>
+    <string name="stats_rentals">%1$s rentals</string>
     <string name="screen_title_rent_my_car">Rent My Car</string>
     <string name="screen_title_my_vehicles">My Vehicles</string>
     <string name="screen_title_register_vehicle">Register Vehicle</string>
@@ -138,5 +145,10 @@
     <string name="vehicle_location">Vehicle Location</string>
     <string name="vehicle_description">Vehicle description</string>
     <string name="no_rentals_found">No rentals found</string>
-
+    <string name="no_vehicles_found">No vehicles found</string>
+    <string name="renter_open_rentals_text">You have %1$s rentals coming up. Enjoy your ride!</string>
+    <string name="owner_open_rentals_text">You have %1$s pending rentals for your vehicles to accept or decline. %2$s upcoming rentals.</string>
+    <string name="status_pending" translatable="false">Pending (%1$s)</string>
+    <string name="status_open" translatable="false">Open (%1$s)</string>
+    <string name="status_history" translatable="false">History (%1$s)</string>
 </resources>

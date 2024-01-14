@@ -11,7 +11,8 @@ data class MyRentalsUIState(
     var myRentalsList: List<Triple<Rental, Vehicle, User>> = emptyList(),
     var myOpenRentalsList: List<Triple<Rental, Vehicle, User>> = emptyList(),
     var myHistoryRentalList: List<Triple<Rental, Vehicle, User>> = emptyList(),
-    val selectedRentalItem: Triple<Rental, Vehicle, User>? = null
+    val selectedRentalItem: Triple<Rental, Vehicle, User>? = null,
+    val routeToRental: String? = null,
 )
 
 enum class MyRentalTab(val tabNameResourceId: Int) {
