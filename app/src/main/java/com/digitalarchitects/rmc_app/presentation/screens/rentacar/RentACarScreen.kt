@@ -134,6 +134,8 @@ fun RentACarScreen(
     val listBottomSheet = rememberModalBottomSheetState()
 
     LaunchedEffect(Unit) {
+        // Set userId in view model
+        viewModel.onEvent(RentACarUIEvent.SetUserId)
         // Get filter preference from datastore
         viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         viewModel.onEvent(RentACarUIEvent.FetchShowSearchLocation)

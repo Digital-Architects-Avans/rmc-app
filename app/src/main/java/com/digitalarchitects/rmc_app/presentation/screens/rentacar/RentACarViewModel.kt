@@ -56,13 +56,13 @@ class RentACarViewModel @Inject constructor(
     val locationPermissionsUiState: StateFlow<LocationPermissionsUIState> =
         _locationPermissionsUiState.asStateFlow()
 
-    // Set user ID
-    init {
-        setUserId()
-    }
-
     fun onEvent(event: RentACarUIEvent) {
         when (event) {
+            // Set user ID
+            is RentACarUIEvent.SetUserId -> {
+                setUserId()
+            }
+
             // Intro
             is RentACarUIEvent.ShowIntro -> {
                 _rentACarUiState.value = _rentACarUiState.value.copy(
@@ -261,7 +261,6 @@ class RentACarViewModel @Inject constructor(
 
     private fun getVehicles() {
         viewModelScope.launch(dispatcher) {
-            val filterPreferences = _rentACarUiState.value
             // Get all vehicles
             val result: Result<List<Vehicle>> = runCatching {
                 vehicleRepository.getAllVehicles()
@@ -397,14 +396,15 @@ class RentACarViewModel @Inject constructor(
     }
 
     private fun setUserId() {
-        viewModelScope.launch(dispatcher) {
-            try {
-                val userId = userRepository.getCurrentUserIdFromDataStore()
-                withContext(Dispatchers.Main) {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                try {
+                    val userId = userRepository.getCurrentUserIdFromDataStore()
                     _rentACarUiState.value.userId = userId!!
+                    Log.d("RentACarViewModel", "UUID setUserId: ${_rentACarUiState.value.userId}")
+                } catch (e: Exception) {
+                    Log.d("RentACarViewModel", "error: $e")
                 }
-            } catch (e: Exception) {
-                Log.d("RentACarViewModel", "error: $e")
             }
         }
     }
@@ -415,10 +415,14 @@ class RentACarViewModel @Inject constructor(
         viewModelScope.launch(dispatcher) {
             try {
                 val userId = _rentACarUiState.value.userId
+                Log.d(
+                    "RentACarViewModel",
+                    "UUID UserId from UIState: ${_rentACarUiState.value.userId}"
+                )
                 val today = Clock.System.now().toLocalDateTime(
                     TimeZone.currentSystemDefault()
                 ).date
-                if (userId != null) {
+                if (userId != "") {
 
                     // Get rental for renter
                     val renterTotalRentals = runCatching {
