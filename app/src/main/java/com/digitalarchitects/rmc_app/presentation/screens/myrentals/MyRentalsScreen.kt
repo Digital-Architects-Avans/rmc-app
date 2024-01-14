@@ -41,6 +41,9 @@ import com.digitalarchitects.rmc_app.presentation.components.RmcRentalListItem
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcVehicleListItem
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -181,11 +184,14 @@ fun MyRentalsScreen(
                 sheetState = rentalBottomSheet,
                 onDismissRequest = { viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails) },
             ) {
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
                 RmcRentalDetails(
                     rental = details.first,
                     vehicle = details.second,
                     user = details.third,
-                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.status == RentalStatus.APPROVED,
+                    showRejectButton = details.first.status == RentalStatus.PENDING || details.first.date >= today && details.first.status == RentalStatus.APPROVED,
                     onCancelRentalClick = {
                         viewModel.onEvent(MyRentalsUIEvent.CancelRental(details.first.rentalId))
                         viewModel.onEvent(MyRentalsUIEvent.CancelShowRentalDetails)
