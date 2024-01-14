@@ -89,17 +89,17 @@ fun RentOutMyCarScreen(
                     contentColor = MaterialTheme.colorScheme.primary,
                 ) {
                     Tab(
-                        text = { Text("Pending (${uiState.pendingRentalsList.count()})") },
+                        text = { Text(stringResource(id = R.string.status_pending, uiState.pendingRentalsList.count())) },
                         selected = uiState.selectedTab == RentalTab.PENDING,
                         onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.PENDING)) },
                     )
                     Tab(
-                        text = { Text("Open (${uiState.openRentalsList.count()})") },
+                        text = { Text(stringResource(id = R.string.status_open, uiState.openRentalsList.count())) },
                         selected = uiState.selectedTab == RentalTab.OPEN,
                         onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.OPEN)) },
                     )
                     Tab(
-                        text = { Text("History (${uiState.historyRentalsList.count()})") },
+                        text = { Text(stringResource(id = R.string.status_history, uiState.historyRentalsList.count())) },
                         selected = uiState.selectedTab == RentalTab.HISTORY,
                         onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.HISTORY)) },
                     )

@@ -138,4 +138,7 @@
     <string name="no_vehicles_found">No Verhuringen gevonden</string>
     <string name="renter_open_rentals_text">Je gaat binnenkort %1$s auto huren. Veel plezier!</string>
     <string name="owner_open_rentals_text">Je hebt %1$s openstaande verhuren voor je om te accepteren of afwijzen. %2$s aankomende verhuren.</string>
+    <string name="status_pending" translatable="false">In afwachting (%1$s)</string>
+    <string name="status_open" translatable="false">Open (%1$s)</string>
+    <string name="status_history" translatable="false">Geschiedenis (%1$s)</string>
 </resources>

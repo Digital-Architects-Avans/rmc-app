@@ -148,4 +148,7 @@
     <string name="no_vehicles_found">No vehicles found</string>
     <string name="renter_open_rentals_text">You have %1$s rentals coming up. Enjoy your ride!</string>
     <string name="owner_open_rentals_text">You have %1$s pending rentals for your vehicles to accept or decline. %2$s upcoming rentals.</string>
+    <string name="status_pending" translatable="false">Pending (%1$s)</string>
+    <string name="status_open" translatable="false">Open (%1$s)</string>
+    <string name="status_history" translatable="false">History (%1$s)</string>
 </resources>

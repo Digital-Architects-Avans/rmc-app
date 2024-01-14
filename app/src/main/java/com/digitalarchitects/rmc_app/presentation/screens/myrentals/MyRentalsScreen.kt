@@ -92,12 +92,12 @@ fun MyRentalsScreen(
                     contentColor = MaterialTheme.colorScheme.primary,
                 ) {
                     Tab(
-                        text = { Text("Open (${uiState.myOpenRentalsList.count()})") },
+                        text = { Text(stringResource(id = R.string.status_open, uiState.myOpenRentalsList.count())) },
                         selected = uiState.selectedTab == MyRentalTab.OPEN,
                         onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(MyRentalTab.OPEN)) },
                     )
                     Tab(
-                        text = { Text("History (${uiState.myHistoryRentalList.count()})") },
+                        text = { Text(stringResource(id = R.string.status_history, uiState.myHistoryRentalList.count())) },
                         selected = uiState.selectedTab == MyRentalTab.HISTORY,
                         onClick = { viewModel.onEvent(MyRentalsUIEvent.SelectTab(MyRentalTab.HISTORY)) },
                     )
