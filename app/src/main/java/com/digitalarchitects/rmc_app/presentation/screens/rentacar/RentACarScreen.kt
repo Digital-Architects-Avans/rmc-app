@@ -118,12 +118,10 @@ fun RentACarScreen(
 
     // Maps states
     val cameraState = rememberCameraPositionState {
-        if (rentACarUiState.userLocation == null) {
-            position = CameraPosition.fromLatLngZoom(
-                rentACarUiState.cameraPosition,
-                rentACarUiState.zoomLevel
-            )
-        }
+        position = CameraPosition.fromLatLngZoom(
+            rentACarUiState.cameraPosition,
+            rentACarUiState.zoomLevel
+        )
     }
     // Bottom sheet states
     val detailsBottomSheet = rememberBottomSheetScaffoldState(
