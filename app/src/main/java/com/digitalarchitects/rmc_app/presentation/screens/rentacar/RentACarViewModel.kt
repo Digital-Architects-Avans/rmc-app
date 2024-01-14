@@ -21,6 +21,7 @@ import com.google.maps.android.clustering.ClusterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -127,9 +128,11 @@ class RentACarViewModel @Inject constructor(
                     return
                 }
 
+                val userId = _rentACarUiState.value.userId ?: "0"
+
                 val newRentalDTO = CreateRentalDTO(
                     vehicleId = vehicle.vehicleId,
-                    userId = _rentACarUiState.value.userId,
+                    userId = userId,
                     date = date,
                     price = vehicle.price,
                     latitude = vehicle.latitude,
@@ -256,8 +259,12 @@ class RentACarViewModel @Inject constructor(
             }
 
             // Stats
-            is RentACarUIEvent.FetchMyRentals -> {
-                getMyRentals()
+            is RentACarUIEvent.FetchRenterRentals -> {
+                getRenterRentals()
+            }
+
+            is RentACarUIEvent.FetchOwnerRentals -> {
+                getOwnerRentals()
             }
         }
     }
@@ -284,6 +291,7 @@ class RentACarViewModel @Inject constructor(
             }
         }
     }
+
     @VisibleForTesting
     internal fun applyAdvancedFilter(vehicles: List<Vehicle>): List<Vehicle> {
         Log.d(
@@ -415,47 +423,44 @@ class RentACarViewModel @Inject constructor(
         }
     }
 
-    // Function that returns a Triple containing the vehicle, user and rental for each
-    // rental that is associated with the user
-    private fun getMyRentals() {
+    // Get all renter rentals
+    private fun getRenterRentals() {
         viewModelScope.launch(dispatcher) {
             try {
                 val userId = _rentACarUiState.value.userId
                 Log.d(
-                    "RentACarViewModel",
+                    "RentACarViewModel/renter",
                     "UUID UserId from UIState: ${_rentACarUiState.value.userId}"
                 )
                 val today = Clock.System.now().toLocalDateTime(
                     TimeZone.currentSystemDefault()
                 ).date
-                if (userId != "") {
+                if (userId != null) {
 
                     // Get rental for renter
                     val renterTotalRentals = runCatching {
-                        rentalRepository.getRentalsForRenter(userId)
+                        rentalRepository.getListOfRentalDetailsForRenter(userId)
                     }
 
                     withContext(Dispatchers.Main) {
                         renterTotalRentals.onSuccess { renterRentals ->
                             // Total rentals
                             _rentACarUiState.value.statsRenterTotalRentals =
-                                renterRentals?.count() ?: 0
+                                renterRentals.count()
                             Log.d(
                                 "RentMyCarViewModel",
                                 "Renter Total rentals: ${_rentACarUiState.value.statsRenterTotalRentals}"
                             )
                             // Open rentals
                             _rentACarUiState.value.statsRenterOpenRentals =
-                                renterRentals?.count { it.date >= today && it.status == RentalStatus.PENDING || it.date >= today && it.status == RentalStatus.APPROVED }
-                                    ?: 0
+                                renterRentals.count { it.first.date >= today && it.first.status == RentalStatus.PENDING || it.first.date >= today && it.first.status == RentalStatus.APPROVED }
                             Log.d(
                                 "RentMyCarViewModel",
                                 "Renter Open rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
                             )
                             // Pending rentals
                             _rentACarUiState.value.statsRenterPendingRentals =
-                                renterRentals?.count { it.status == RentalStatus.PENDING }
-                                    ?: 0
+                                renterRentals.count { it.first.status == RentalStatus.PENDING }
                             Log.d(
                                 "RentMyCarViewModel",
                                 "Renter Pending rentals: ${_rentACarUiState.value.statsRenterOpenRentals}"
@@ -464,6 +469,31 @@ class RentACarViewModel @Inject constructor(
                     }.onFailure { e ->
                         e.printStackTrace()
                     }
+                } else {
+                    // Log an error message if userId is null
+                    Log.e("RentMyCarViewModel", "UserId is null")
+                }
+            } catch (e: Exception) {
+                // Handle any unexpected exceptions
+                e.printStackTrace()
+            }
+        }
+    }
+
+    // Get all owner rentals
+    private fun getOwnerRentals() {
+        viewModelScope.launch(dispatcher) {
+            delay(200)
+            try {
+                val userId = _rentACarUiState.value.userId
+                Log.d(
+                    "RentACarViewModel/owner",
+                    "UUID UserId from UIState: ${_rentACarUiState.value.userId}"
+                )
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
+                if (userId != null) {
 
                     // Get rental for owner
                     val ownerTotalRentals = runCatching {
@@ -471,19 +501,20 @@ class RentACarViewModel @Inject constructor(
                     }
                     withContext(Dispatchers.Main) {
                         ownerTotalRentals.onSuccess { ownerRentals ->
+                            // Total rentals
                             _rentACarUiState.value.statsOwnerTotalRentals = ownerRentals.count()
                             Log.d(
                                 "RentMyCarViewModel",
                                 "Owner total rentals: ${ownerRentals.count()}"
                             )
-
+                            // Pending rentals
                             _rentACarUiState.value.statsOwnerPendingRentals =
                                 ownerRentals.count { it.first.status == RentalStatus.PENDING }
                             Log.d(
                                 "RentMyCarViewModel",
                                 "Owner Pending rentals: ${_rentACarUiState.value.statsOwnerPendingRentals}"
                             )
-
+                            // Open rentals
                             _rentACarUiState.value.statsOwnerOpenRentals =
                                 ownerRentals.count { it.first.date >= today && it.first.status == RentalStatus.APPROVED || it.first.status == RentalStatus.PENDING }
                             Log.d(

@@ -39,7 +39,7 @@ data class RentACarUIState(
     // User & Rental data
     var activeVehicleId: String? = null,
     var date: LocalDate? = null,
-    var userId: String = "",
+    var userId: String? = null,
     var userAvatar: Int = R.drawable.usericon,
 
     // Filter preference

@@ -136,13 +136,14 @@ fun RentACarScreen(
     LaunchedEffect(Unit) {
         // Set userId in view model
         viewModel.onEvent(RentACarUIEvent.SetUserId)
+        // Get rentals
+        viewModel.onEvent(RentACarUIEvent.FetchOwnerRentals)
+        viewModel.onEvent(RentACarUIEvent.FetchRenterRentals)
         // Get filter preference from datastore
         viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         viewModel.onEvent(RentACarUIEvent.FetchShowSearchLocation)
         // Get vehicles and create map items in view model
         viewModel.onEvent(RentACarUIEvent.SetMapData)
-        // Get rentals
-        viewModel.onEvent(RentACarUIEvent.FetchMyRentals)
         // Set camera data in view model
         snapshotFlow { cameraState.isMoving }
             .collect {
