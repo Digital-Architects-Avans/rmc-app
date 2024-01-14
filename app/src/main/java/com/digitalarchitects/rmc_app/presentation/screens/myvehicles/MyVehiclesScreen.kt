@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
@@ -111,6 +112,14 @@ fun MyVehiclesScreen(
                             if (index < uiState.listOfVehicles.lastIndex)
                                 RmcDivider()
                         }
+                    }
+                    if (uiState.listOfVehicles.isEmpty()) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.no_vehicles_found),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
                 } else {
                     // Show loading indicator or any other UI when isLoading is true
