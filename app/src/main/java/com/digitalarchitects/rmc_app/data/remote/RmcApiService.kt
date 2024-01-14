@@ -6,6 +6,7 @@ import com.digitalarchitects.rmc_app.data.auth.TokenResponse
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.user.ProfileImageResponse
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
@@ -14,12 +15,15 @@ import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 /**
@@ -56,6 +60,12 @@ interface RmcApiService {
     suspend fun updateUser(
         @Path("id") id: String,
         @Body updatedUser: UpdateUserDTO
+    ): Response<Unit>
+
+    @PUT("users/{id}/{profileImageSrc}")
+    suspend fun updateProfileImageSrc(
+        @Path("id") id: String,
+        @Path("profileImageSrc") profileImageSrc: String
     ): Response<Unit>
 
     @GET("users/{email}")
@@ -142,4 +152,13 @@ interface RmcApiService {
     suspend fun deleteRental(
         @Path("id") id: String
     ): Response<Unit>
+
+    // -------------------------------------------------------------------------------------------
+
+    @POST("profileImage")
+    @Multipart
+    suspend fun uploadImage(
+        @Part image: MultipartBody.Part
+    ): ProfileImageResponse
+
 }
