@@ -35,6 +35,7 @@ class MyAccountViewModel @Inject constructor(
                 val currentUser = userRepository.getUserById(userId!!)
                 withContext(Dispatchers.Main) {
                     _uiState.value.currentUser = currentUser
+                    _uiState.value.profileImgSrc = currentUser.profileImageSrc
                 }
             } catch (e: Exception) {
                 Log.d("MyAccountViewModel", "error: $e")
@@ -49,7 +50,9 @@ class MyAccountViewModel @Inject constructor(
             }
 
             is MyAccountUIEvent.OnLogoutButtonClicked -> {
-                // TODO: Implement LOG OUT FUNCTION
+                viewModelScope.launch(dispatcher) {
+                    userRepository.signOut()
+                }
             }
         }
     }
