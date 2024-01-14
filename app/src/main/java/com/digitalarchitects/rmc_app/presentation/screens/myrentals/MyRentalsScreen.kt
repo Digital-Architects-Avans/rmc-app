@@ -196,12 +196,7 @@ fun MyRentalsScreen(
                     },
                 )
                 RmcDivider()
-                RmcVehicleListItem(details.second) {
-                    scope.launch {
-                        rentalBottomSheet.hide()
-                    }
-                    navigateToScreen(RmcScreen.MyVehicles.name)
-                }
+                RmcVehicleListItem(details.second) {}
                 RmcSpacer(32)
             }
         }
