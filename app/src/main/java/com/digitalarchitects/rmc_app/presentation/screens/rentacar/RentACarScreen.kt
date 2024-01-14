@@ -140,6 +140,8 @@ fun RentACarScreen(
         viewModel.onEvent(RentACarUIEvent.FetchShowSearchLocation)
         // Get vehicles and create map items in view model
         viewModel.setMapData()
+        // Get rentals
+        viewModel.onEvent(RentACarUIEvent.FetchMyRentals)
         // Set camera data in view model
         snapshotFlow { cameraState.isMoving }
             .collect {
@@ -445,19 +447,23 @@ fun RentACarScreen(
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.End)
                     ) {
-                        RmcFilledTonalIconButton(
-                            icon = Icons.Filled.Key,
-                            label = R.string.rent_my_car,
-                            onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
-                        )
-                        RmcFilledTonalIconButton(
-                            icon = Icons.Filled.CarRental,
-                            label = R.string.my_rentals,
-                            onClick = { navigateToScreen(RmcScreen.MyRentals.name) },
-                            modifier = Modifier.padding(
-                                horizontal = dimensionResource(R.dimen.padding_extra_small)
+                        if (rentACarUiState.statsOwnerTotalRentals != 0) {
+                            RmcFilledTonalIconButton(
+                                icon = Icons.Filled.Key,
+                                label = R.string.rent_my_car,
+                                onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
                             )
-                        )
+                        }
+                        if (rentACarUiState.statsRenterTotalRentals != 0) {
+                            RmcFilledTonalIconButton(
+                                icon = Icons.Filled.CarRental,
+                                label = R.string.my_rentals,
+                                onClick = { navigateToScreen(RmcScreen.MyRentals.name) },
+                                modifier = Modifier.padding(
+                                    horizontal = dimensionResource(R.dimen.padding_extra_small)
+                                )
+                            )
+                        }
                         RmcImgFilledIconButton(
                             image = R.drawable.civic,
                             label = R.string.my_rentals,

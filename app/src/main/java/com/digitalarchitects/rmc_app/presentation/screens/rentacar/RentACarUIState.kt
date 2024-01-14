@@ -54,4 +54,10 @@ data class RentACarUIState(
     // Stats
     var showStats: Boolean = true,
     var searchResults: Int = 0,
+    var statsRenterTotalRentals: Int = 0,
+    var renterPendingRentalsList: Int = 0,
+    var renterOpenRentalsList: Int = 0,
+    var statsOwnerTotalRentals: Int = 0,
+    var ownerOpenRentalsList: Int = 0,
+    var ownerPendingRentalsList: Int = 0,
 )

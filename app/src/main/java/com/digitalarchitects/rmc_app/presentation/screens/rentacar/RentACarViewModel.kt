@@ -27,7 +27,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -244,6 +247,11 @@ class RentACarViewModel @Inject constructor(
                     }
                 }
             }
+
+            // Stats
+            is RentACarUIEvent.FetchMyRentals -> {
+                getMyRentals()
+            }
         }
     }
 
@@ -397,6 +405,92 @@ class RentACarViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.d("RentACarViewModel", "error: $e")
+            }
+        }
+    }
+
+    // Function that returns a Triple containing the vehicle, user and rental for each
+    // rental that is associated with the user
+    private fun getMyRentals() {
+        viewModelScope.launch(dispatcher) {
+            try {
+                val userId = _rentACarUiState.value.userId
+                val today = Clock.System.now().toLocalDateTime(
+                    TimeZone.currentSystemDefault()
+                ).date
+                if (userId != null) {
+
+                    // Get rental for renter
+                    val renterTotalRentals = runCatching {
+                        rentalRepository.getRentalsForRenter(userId)
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        renterTotalRentals.onSuccess { renterRentals ->
+                            // Total rentals
+                            _rentACarUiState.value.statsRenterTotalRentals =
+                                renterRentals?.count() ?: 0
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Total rentals: ${_rentACarUiState.value.statsRenterTotalRentals}"
+                            )
+                            // Open rentals
+                            _rentACarUiState.value.renterOpenRentalsList =
+                                renterRentals?.count { it.date >= today && it.status == RentalStatus.PENDING || it.date >= today && it.status == RentalStatus.APPROVED }
+                                    ?: 0
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Open rentals: ${_rentACarUiState.value.renterOpenRentalsList}"
+                            )
+                            // Pending rentals
+                            _rentACarUiState.value.renterPendingRentalsList =
+                                renterRentals?.count { it.status == RentalStatus.PENDING }
+                                    ?: 0
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Open rentals: ${_rentACarUiState.value.renterOpenRentalsList}"
+                            )
+                        }
+                    }.onFailure { e ->
+                        e.printStackTrace()
+                    }
+
+                    // Get rental for owner
+                    val ownerTotalRentals = runCatching {
+                        rentalRepository.getListOfRentalDetailsForOwner(userId)
+                    }
+                    withContext(Dispatchers.Main) {
+                        ownerTotalRentals.onSuccess { ownerRentals ->
+                            _rentACarUiState.value.statsOwnerTotalRentals = ownerRentals.count()
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Owner total rentals: ${ownerRentals.count()}"
+                            )
+
+                            _rentACarUiState.value.ownerPendingRentalsList =
+                                ownerRentals.count { it.first.status == RentalStatus.PENDING }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Pending rentals: ${_rentACarUiState.value.ownerPendingRentalsList}"
+                            )
+
+                            _rentACarUiState.value.ownerOpenRentalsList =
+                                ownerRentals.count { it.first.date >= today && it.first.status == RentalStatus.APPROVED || it.first.status == RentalStatus.PENDING }
+                            Log.d(
+                                "RentMyCarViewModel",
+                                "Renter Open rentals: ${_rentACarUiState.value.ownerOpenRentalsList}"
+                            )
+                        }
+                    }.onFailure { e ->
+                        e.printStackTrace()
+                    }
+                } else {
+                    // Log an error message if userId is null
+                    Log.e("RentMyCarViewModel", "UserId is null")
+                }
+            } catch (e: Exception) {
+                // Handle any unexpected exceptions
+                e.printStackTrace()
             }
         }
     }
