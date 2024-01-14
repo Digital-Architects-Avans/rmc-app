@@ -88,13 +88,21 @@ fun RentOutMyCarScreen(
                     selectedTabIndex = uiState.selectedTab.ordinal,
                     contentColor = MaterialTheme.colorScheme.primary,
                 ) {
-                    RentalTab.values().forEach { tab ->
-                        Tab(
-                            text = { Text(stringResource(id = tab.tabNameResourceId)) },
-                            selected = uiState.selectedTab == tab,
-                            onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(tab)) },
-                        )
-                    }
+                    Tab(
+                        text = { Text("Pending (${uiState.pendingRentalsList.count()})") },
+                        selected = uiState.selectedTab == RentalTab.PENDING,
+                        onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.PENDING)) },
+                    )
+                    Tab(
+                        text = { Text("Open (${uiState.openRentalsList.count()})") },
+                        selected = uiState.selectedTab == RentalTab.OPEN,
+                        onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.OPEN)) },
+                    )
+                    Tab(
+                        text = { Text("Open (${uiState.historyRentalsList.count()})") },
+                        selected = uiState.selectedTab == RentalTab.HISTORY,
+                        onClick = { viewModel.onEvent(RentOutMyCarUIEvent.SelectTab(RentalTab.HISTORY)) },
+                    )
                 }
                 RmcSpacer(16)
                 Column {
