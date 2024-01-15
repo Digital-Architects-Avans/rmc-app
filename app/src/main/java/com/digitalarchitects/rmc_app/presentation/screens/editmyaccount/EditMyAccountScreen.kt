@@ -31,7 +31,6 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationCity
@@ -47,7 +46,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -71,13 +69,10 @@ import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
-import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalIconButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
-import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedIconButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -209,7 +204,7 @@ fun EditMyAccountScreen(
                     leadingIcon = Icons.Filled.Home,
                     value = uiState.street,
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = {
