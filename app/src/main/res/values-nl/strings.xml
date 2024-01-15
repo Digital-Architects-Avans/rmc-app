@@ -119,6 +119,9 @@
     <string name="location_permissions">Rent My Car heeft locatietoestemming nodig om de camerapositie van de kaart op u te richten.</string>
     <string name="dismiss">Sluiten</string>
     <string name="approve">Goedkeuren</string>
+    <string name="gallery">Gallerij</string>
+    <string name="camera">Camera</string>
+    <string name="select_image_source">Select image source</string>
     <string name="your_location">Uw locatie</string>
     <string name="approved">Goedgekeurd</string>
     <string name="rejected">Afgewezen</string>
