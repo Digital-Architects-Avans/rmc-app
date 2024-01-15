@@ -535,16 +535,7 @@ fun RentACarScreen(
                             label = R.string.search,
                             onClick = {
                                 scope.launch {
-                                    if (rentACarUiState.zoomLevel > 10f ||
-                                        rentACarUiState.cameraPosition.latitude != rentACarUiState.startLocation.latitude &&
-                                        rentACarUiState.cameraPosition.longitude != rentACarUiState.startLocation.longitude
-                                    ) {
-                                        viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
-                                        cameraState.centerOnLocation(
-                                            rentACarUiState.startLocation,
-                                            10f
-                                        )
-                                    }
+                                    viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
                                     viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
                                     navigateToScreen(RmcScreen.Search.name)
                                 }
@@ -627,10 +618,7 @@ fun RentACarScreen(
                     Column(
                         horizontalAlignment = Alignment.End
                     ) {
-                        if (rentACarUiState.zoomLevel > 10f ||
-                            rentACarUiState.cameraPosition.latitude != rentACarUiState.startLocation.latitude &&
-                            rentACarUiState.cameraPosition.longitude != rentACarUiState.startLocation.longitude
-                        ) {
+                        if (rentACarUiState.zoomLevel > 10f) {
                             RmcFilledTonalIconButton(
                                 icon = Icons.Filled.ZoomOutMap,
                                 label = R.string.my_location,
@@ -638,7 +626,7 @@ fun RentACarScreen(
                                     scope.launch {
                                         viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
                                         cameraState.centerOnLocation(
-                                            rentACarUiState.startLocation,
+                                            rentACarUiState.cameraPosition,
                                             10f
                                         )
                                     }
