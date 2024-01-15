@@ -31,7 +31,7 @@ jobs:
         run: ./gradlew assembleDebug
 
       - name: Upload Artifact to Firebase App Distribution
-        uses: Digital-Architects-Avans/rmc-app@master
+        uses: Digital-Architects-Avans/rmc-app@v1.0
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
