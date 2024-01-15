@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ZoomOutMap
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
@@ -534,7 +535,10 @@ fun RentACarScreen(
                             label = R.string.search,
                             onClick = {
                                 scope.launch {
-                                    if (rentACarUiState.zoomLevel > 10f) {
+                                    if (rentACarUiState.zoomLevel > 10f ||
+                                        rentACarUiState.cameraPosition.latitude != rentACarUiState.startLocation.latitude &&
+                                        rentACarUiState.cameraPosition.longitude != rentACarUiState.startLocation.longitude
+                                    ) {
                                         viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
                                         cameraState.centerOnLocation(
                                             rentACarUiState.startLocation,
@@ -623,6 +627,24 @@ fun RentACarScreen(
                     Column(
                         horizontalAlignment = Alignment.End
                     ) {
+                        if (rentACarUiState.zoomLevel > 10f ||
+                            rentACarUiState.cameraPosition.latitude != rentACarUiState.startLocation.latitude &&
+                            rentACarUiState.cameraPosition.longitude != rentACarUiState.startLocation.longitude
+                        ) {
+                            RmcFilledTonalIconButton(
+                                icon = Icons.Filled.ZoomOutMap,
+                                label = R.string.my_location,
+                                onClick = {
+                                    scope.launch {
+                                        viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
+                                        cameraState.centerOnLocation(
+                                            rentACarUiState.startLocation,
+                                            10f
+                                        )
+                                    }
+                                },
+                            )
+                        }
                         if (!context.hasLocationPermission()) {
                             RmcFilledTonalIconButton(
                                 icon = Icons.Filled.MyLocation,
