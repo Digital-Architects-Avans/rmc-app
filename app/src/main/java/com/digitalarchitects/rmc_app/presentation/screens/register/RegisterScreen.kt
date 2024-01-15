@@ -187,7 +187,7 @@ fun RegisterScreen(
                     leadingIcon = Icons.Filled.Home,
                     value = uiState.address,
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
                     onValueChange = {

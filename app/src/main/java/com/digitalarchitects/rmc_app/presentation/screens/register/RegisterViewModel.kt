@@ -114,7 +114,8 @@ class RegisterViewModel @Inject constructor(
                     street = uiState.value.address,
                     buildingNumber = uiState.value.buildingNumber,
                     zipCode = uiState.value.postalCode,
-                    city = uiState.value.city
+                    city = uiState.value.city,
+                    profileImageSrc = uiState.value.profileImageSrc
                 )
             )
             resultChannel.send(result)
