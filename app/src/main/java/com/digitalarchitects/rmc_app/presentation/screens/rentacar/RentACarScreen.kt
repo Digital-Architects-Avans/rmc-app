@@ -136,11 +136,11 @@ fun RentACarScreen(
     LaunchedEffect(Unit) {
         // Set userId in view model
         viewModel.onEvent(RentACarUIEvent.SetUserId)
-        // Get current user
-        viewModel.onEvent(RentACarUIEvent.FetchUser)
         // Get rentals
         viewModel.onEvent(RentACarUIEvent.FetchOwnerRentals)
         viewModel.onEvent(RentACarUIEvent.FetchRenterRentals)
+        // Get current user
+        viewModel.onEvent(RentACarUIEvent.FetchUser)
         // Get filter preference from datastore
         viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         viewModel.onEvent(RentACarUIEvent.FetchShowSearchLocation)
