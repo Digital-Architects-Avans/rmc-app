@@ -29,6 +29,7 @@ android {
     }
 
     secrets {
+        propertiesFileName = "local.properties"
         defaultPropertiesFileName = "local.defaults.properties"
     }
 
