@@ -320,6 +320,7 @@ fun RegisterVehicleScreen(
                     Column(Modifier.weight(1f)) {
                         RmcFilledButton(
                             value = stringResource(id = R.string.register),
+                            isEnabled = uiState.query != "" && uiState.longitude != 0.0F,
                             onClick = {
                                 viewModel.onEvent(RegisterVehicleUIEvent.ConfirmRegisterVehicleButtonClicked)
                             }

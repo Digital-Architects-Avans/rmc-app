@@ -334,6 +334,7 @@ fun EditMyVehicleScreen(
                         Column(Modifier.weight(1f)) {
                             RmcFilledButton(
                                 value = stringResource(id = R.string.apply),
+                                isEnabled = uiState.query != "" && uiState.longitude != 0.0F,
                                 onClick = {
                                     viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
                                 }
