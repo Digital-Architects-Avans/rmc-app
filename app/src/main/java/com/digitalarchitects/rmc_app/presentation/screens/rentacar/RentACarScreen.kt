@@ -541,6 +541,7 @@ fun RentACarScreen(
                                             10f
                                         )
                                     }
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
                                     navigateToScreen(RmcScreen.Search.name)
                                 }
                             },
@@ -561,7 +562,10 @@ fun RentACarScreen(
                                 RmcFilledTonalIconButton(
                                     icon = Icons.Filled.CarRental,
                                     label = R.string.my_rentals,
-                                    onClick = { navigateToScreen(RmcScreen.MyRentals.name) },
+                                    onClick = {
+                                        viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                        navigateToScreen(RmcScreen.MyRentals.name)
+                                    },
                                     modifier = Modifier.padding(
                                         horizontal = dimensionResource(R.dimen.padding_extra_small)
                                     )
@@ -579,7 +583,10 @@ fun RentACarScreen(
                                 RmcFilledTonalIconButton(
                                     icon = Icons.Filled.Key,
                                     label = R.string.rent_my_car,
-                                    onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
+                                    onClick = {
+                                        viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                        navigateToScreen(RmcScreen.RentOutMyCar.name)
+                                    },
                                 )
                                 if (rentACarUiState.statsOwnerPendingRentals != 0) {
                                     RmcBadge(
@@ -592,7 +599,10 @@ fun RentACarScreen(
                         RmcImgFilledIconButton(
                             profileImageSrc = rentACarUiState.user?.profileImageSrc,
                             label = R.string.my_rentals,
-                            onClick = { navigateToScreen("MyAccount") },
+                            onClick = {
+                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                navigateToScreen("MyAccount")
+                            },
                             modifier = Modifier.padding(
                                 end = dimensionResource(R.dimen.padding_extra_small)
                             )
