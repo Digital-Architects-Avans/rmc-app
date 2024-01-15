@@ -31,7 +31,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -869,8 +868,7 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val vehicleImage =
-            if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+        val vehicleImage = getImageByLicensePlate(vehicle.licensePlate)
         Image(
             painter = painterResource(id = vehicleImage),
             contentDescription = null,
@@ -1147,8 +1145,7 @@ fun RmcVehicleDetails(
             }
         }
     }
-    val vehicleImage =
-        if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+    val vehicleImage = getImageByLicensePlate(vehicle.licensePlate)
     Image(
         modifier = Modifier
             .fillMaxWidth()

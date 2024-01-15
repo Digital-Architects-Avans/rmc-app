@@ -48,6 +48,7 @@ class UserRepositoryImpl @Inject constructor(
                     buildingNumber = request.buildingNumber,
                     zipCode = request.zipCode,
                     city = request.city,
+                    profileImageSrc = request.profileImageSrc
                 )
             )
             signIn(request.email, request.password)

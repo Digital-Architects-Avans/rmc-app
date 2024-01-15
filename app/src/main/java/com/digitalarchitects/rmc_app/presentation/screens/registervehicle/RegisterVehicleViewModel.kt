@@ -103,6 +103,7 @@ class RegisterVehicleViewModel @Inject constructor(
                             it.copy(
                                 latitude = addressFromPlace.latitude.toFloat(),
                                 longitude = addressFromPlace.longitude.toFloat(),
+                                address = addressFromPlace.address,
                                 query = query
                             )
                         }

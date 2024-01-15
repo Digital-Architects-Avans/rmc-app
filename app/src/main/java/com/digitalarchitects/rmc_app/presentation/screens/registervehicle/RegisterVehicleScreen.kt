@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
@@ -109,8 +110,10 @@ fun RegisterVehicleScreen(
                             imeAction = ImeAction.Next
                         ),
                         onValueChange = {
-                            val number = if (it.isEmpty()) 0 else it.toInt()
-                            viewModel.onEvent(RegisterVehicleUIEvent.SetYear(number))
+                            if (it.isDigitsOnly()) {
+                                val number = if (it.isEmpty()) 0 else it.toInt()
+                                viewModel.onEvent(RegisterVehicleUIEvent.SetYear(number))
+                            }
                         },
                         modifier = Modifier.weight(0.4f)
                     )
