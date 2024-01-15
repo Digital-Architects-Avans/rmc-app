@@ -28,6 +28,10 @@ android {
         }
     }
 
+    secrets {
+        defaultPropertiesFileName = "local.defaults.properties"
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
