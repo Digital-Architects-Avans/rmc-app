@@ -293,7 +293,7 @@ fun RentACarScreen(
                             )
                         }
 
-                        if (rentACarUiState.statsRenterTotalRentals != 0 && rentACarUiState.statsOwnerTotalRentals != 0)
+                        if (rentACarUiState.statsRenterOpenRentals != 0 && rentACarUiState.statsOwnerTotalRentals != 0)
                             RmcSpacer(16)
 
                         // Owner has open rentals
