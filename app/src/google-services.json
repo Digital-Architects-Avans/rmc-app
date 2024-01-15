@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "621439897538",
+    "project_id": "rmc-ktor-api-2",
+    "storage_bucket": "rmc-ktor-api-2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621439897538:android:f66efcffa2897b41e7505b",
+        "android_client_info": {
+          "package_name": "com.digitalarchitects.rmc_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCODm51Qd8qc1tlyXtqZOMkuDaQuKyZFKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
