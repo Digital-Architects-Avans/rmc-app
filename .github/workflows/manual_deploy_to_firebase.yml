@@ -31,7 +31,7 @@ jobs:
         env:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
         run: |
-          sed "s|MAPS_API_KEY|MAPS_API_KEY|g;" local.defaults.properties > local.properties
+          echo MAPS_API_KEY=\"$MAPS_API_KEY\" > ./local.defaults.properties
 
       - name: Execute Gradle command - assembleDebug
         run: ./gradlew assembleDebug
