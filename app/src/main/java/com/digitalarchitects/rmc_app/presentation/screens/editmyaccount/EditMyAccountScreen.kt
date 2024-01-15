@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationCity
@@ -69,9 +72,12 @@ import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalIconButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedIconButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -381,22 +387,31 @@ fun ProfileImage(
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Card(
-            shape = CircleShape,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(100.dp)
-        ) {
-            Image(
-                painter = painter,
-                contentDescription = stringResource(id = R.string.profile_picture),
+        Box {
+            Card(
+                shape = CircleShape,
                 modifier = Modifier
-                    .wrapContentSize()
-                    .clickable {
-                        // Open the dialog asking for image source
-                        showDialog = true
-                    },
-                contentScale = ContentScale.Crop
+                    .padding(8.dp)
+                    .size(120.dp)
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = stringResource(id = R.string.profile_picture),
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .clickable {
+                            // Open the dialog asking for image source
+                            showDialog = true
+                        },
+                    contentScale = ContentScale.Crop
+                )
+            }
+            RmcFilledTonalIconButton(
+                icon = Icons.Filled.CameraAlt,
+                label = R.string.camera,
+                onClick = {
+                    showDialog = true
+                }
             )
         }
     }

@@ -209,7 +209,8 @@ fun RmcUserIcon(
     imageSrc: String?,
     modifier: Modifier = Modifier,
     size: Dp,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    editEnabled: Boolean = false
 ) {
     val imageUrl = if (imageSrc.isNullOrBlank()) {
         null // Set to null for AsyncImage to display default icon
@@ -233,10 +234,13 @@ fun RmcUserIcon(
                 .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
                 .clickable { onClick() }
         )
-        RmcFilledTonalIconButton(
-            icon = Icons.Filled.Edit,
-            label = R.string.camera,
-            onClick = onClick)
+        if (editEnabled) {
+            RmcFilledTonalIconButton(
+                icon = Icons.Filled.Edit,
+                label = R.string.camera,
+                onClick = onClick
+            )
+        }
     }
 }
 
