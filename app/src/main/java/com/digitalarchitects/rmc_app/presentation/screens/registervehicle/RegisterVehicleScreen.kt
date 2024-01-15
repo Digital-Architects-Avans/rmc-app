@@ -326,6 +326,8 @@ fun RegisterVehicleScreen(
                         )
                     }
                 }
+                RmcSpacer(32)
+
                 val context = LocalContext.current
                 val toastMessage = if (uiState.vehicleUpdated) {
                     stringResource(R.string.vehicle_registered_successfully)
