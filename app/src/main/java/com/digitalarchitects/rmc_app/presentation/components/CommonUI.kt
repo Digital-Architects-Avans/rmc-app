@@ -31,8 +31,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ToggleOff
@@ -216,19 +218,26 @@ fun RmcUserIcon(
     }
     Log.d("RmcUserIcon", "Loading image from URL: $imageUrl")
 
-    AsyncImage(
-        model = ImageRequest.Builder(context = LocalContext.current).data(imageUrl)
-            .crossfade(true).build(),
-        error = painterResource(R.drawable.loading_img),
-        placeholder = painterResource(R.drawable.usericon),
-        contentDescription = stringResource(R.string.profile_picture),
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .size(size)
-            .clip(CircleShape)
-            .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
-            .clickable { onClick() }
-    )
+    Box {
+
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current).data(imageUrl)
+                .crossfade(true).build(),
+            error = painterResource(R.drawable.loading_img),
+            placeholder = painterResource(R.drawable.usericon),
+            contentDescription = stringResource(R.string.profile_picture),
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+                .size(size)
+                .clip(CircleShape)
+                .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                .clickable { onClick() }
+        )
+        RmcFilledTonalIconButton(
+            icon = Icons.Filled.Edit,
+            label = R.string.camera,
+            onClick = onClick)
+    }
 }
 
 /**
@@ -856,7 +865,8 @@ fun RmcVehicleListItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+        val vehicleImage =
+            if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
         Image(
             painter = painterResource(id = vehicleImage),
             contentDescription = null,
@@ -1133,7 +1143,8 @@ fun RmcVehicleDetails(
             }
         }
     }
-    val vehicleImage = if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
+    val vehicleImage =
+        if (vehicle.imgLink == 1) getImageByLicensePlate(vehicle.licensePlate) else vehicle.imgLink
     Image(
         modifier = Modifier
             .fillMaxWidth()
@@ -1408,7 +1419,10 @@ fun RmcRentalDetails(
                 icon = Icons.Rounded.PriceChange
             )
             RmcIconLabel(
-                label = stringResource(id = R.string.stats_distance_km, rental.distanceTravelled.toInt()),
+                label = stringResource(
+                    id = R.string.stats_distance_km,
+                    rental.distanceTravelled.toInt()
+                ),
                 icon = Icons.Rounded.SportsScore
             )
             RmcIconLabel(
