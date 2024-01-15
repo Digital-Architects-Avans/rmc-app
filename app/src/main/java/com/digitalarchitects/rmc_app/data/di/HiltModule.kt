@@ -83,7 +83,7 @@ object HiltModule {
         // Change to production URL when deploying
         // Also change the URL in FileRepositoryImpl.kt for getting profile images
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/")
+            .baseUrl("https://rmc-ktor-api-2.ew.r.appspot.com/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
