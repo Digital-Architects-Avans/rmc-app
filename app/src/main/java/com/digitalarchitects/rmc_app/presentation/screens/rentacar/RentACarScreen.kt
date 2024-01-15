@@ -667,16 +667,14 @@ fun RentACarScreen(
                                 }
                             }
                         }
-                        if (rentACarUiState.searchResults != 0) {
-                            RmcFloatingActionButton(
-                                icon = Icons.AutoMirrored.Filled.List,
-                                label = R.string.list_view,
-                                number = rentACarUiState.searchResults,
-                                onClick = {
-                                    viewModel.onEvent(RentACarUIEvent.ShowListView(true))
-                                }
-                            )
-                        }
+                        RmcFloatingActionButton(
+                            icon = Icons.AutoMirrored.Filled.List,
+                            label = R.string.list_view,
+                            number = rentACarUiState.searchResults,
+                            onClick = {
+                                viewModel.onEvent(RentACarUIEvent.ShowListView(true))
+                            }
+                        )
                     }
                 }
 
@@ -714,6 +712,29 @@ fun RentACarScreen(
                                 } else {
                                     RmcSpacer(32)
                                 }
+                            }
+                        }
+                        if (rentACarUiState.listOfVehicles.isEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(dimensionResource(R.dimen.padding_large)),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.no_vehicles_found),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                RmcSpacer(24)
+                                RmcFilledButton(
+                                    value = stringResource(id = R.string.search),
+                                    icon = Icons.Filled.Search,
+                                    onClick = {
+                                        viewModel.onEvent(RentACarUIEvent.ShowListView(false))
+                                        navigateToScreen(RmcScreen.Search.name)
+                                    }
+                                )
+                                RmcSpacer(24)
                             }
                         }
                     }
