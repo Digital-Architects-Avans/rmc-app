@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +20,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,11 +43,14 @@ import com.digitalarchitects.rmc_app.domain.model.EngineType
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.AddressEdit
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
+import com.digitalarchitects.rmc_app.presentation.components.RmcDivider
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcSwitch
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
+import com.digitalarchitects.rmc_app.presentation.components.getImageByLicensePlate
+import com.digitalarchitects.rmc_app.presentation.screens.registervehicle.RegisterVehicleUIEvent
 import com.digitalarchitects.rmc_app.presentation.screens.search.RmcFilterChip
 
 @Composable
@@ -86,23 +91,20 @@ fun EditMyVehicleScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
+                val vehicleImage = getImageByLicensePlate(uiState.licensePlate)
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
                         .size(height = 160.dp, width = 20.dp),
                     contentScale = ContentScale.Crop,
-                    painter = painterResource(R.drawable.civic),
+                    painter = painterResource(vehicleImage),
                     contentDescription = null
                 )
 
-                RmcSpacer(8)
+                RmcSpacer(24)
 
                 Column(
-                    modifier = Modifier
-                        .padding(
-                            start = dimensionResource(R.dimen.padding_large),
-                            end = dimensionResource(R.dimen.padding_large)
-                        )
+                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_large))
                 ) {
                     Row(
                         modifier = Modifier,
@@ -111,7 +113,6 @@ fun EditMyVehicleScreen(
 
                         RmcTextField(
                             label = stringResource(id = R.string.brand),
-//                            icon = Icons.Filled.Person,
                             value = uiState.brand,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
@@ -125,7 +126,6 @@ fun EditMyVehicleScreen(
 
                         RmcTextField(
                             label = stringResource(id = R.string.year),
-//                            icon = Icons.Filled.Person,
                             value = uiState.year.toString(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Number,
@@ -148,7 +148,6 @@ fun EditMyVehicleScreen(
 
                         RmcTextField(
                             label = stringResource(id = R.string.model),
-//                            icon = Icons.Filled.Person,
                             value = uiState.model,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
@@ -170,7 +169,6 @@ fun EditMyVehicleScreen(
 
                         RmcTextField(
                             label = stringResource(id = R.string.license_plate),
-//                            icon = Icons.Filled.Person,
                             value = uiState.licensePlate,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
@@ -184,7 +182,6 @@ fun EditMyVehicleScreen(
 
                         RmcTextField(
                             label = stringResource(id = R.string.price),
-//                            icon = Icons.Filled.Person,
                             value = uiState.price.toString(),
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Decimal,
@@ -195,8 +192,6 @@ fun EditMyVehicleScreen(
                             },
                             modifier = Modifier.weight(1f)
                         )
-
-
                     }
 
                     RmcSpacer(8)
@@ -207,7 +202,6 @@ fun EditMyVehicleScreen(
                     ) {
                         RmcTextField(
                             label = stringResource(id = R.string.vehicle_class),
-//                            icon = Icons.Filled.Person,
                             value = uiState.vehicleClass,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 keyboardType = KeyboardType.Text,
@@ -220,9 +214,13 @@ fun EditMyVehicleScreen(
                         )
                     }
 
-                    RmcSpacer(8)
+                    RmcSpacer(16)
 
-                    Text(text = stringResource(id = R.string.engine_type))
+                    Text(
+                        text = stringResource(id = R.string.engine_type),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    RmcSpacer(8)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -256,31 +254,24 @@ fun EditMyVehicleScreen(
                             )
                         }
                     }
-                    RmcSpacer(8)
 
-                    Divider()
-
-                    RmcSpacer(8)
+                    RmcDivider()
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_large)),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
-                        Text(
-                            text = stringResource(id = R.string.vehicle_availability),
-                            fontWeight = FontWeight.Bold
+                        Text(text = stringResource(id = R.string.vehicle_availability))
+                        Switch(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.End),
+                            checked = uiState.availability,
+                            onCheckedChange = { viewModel.onEvent(EditMyVehicleUIEvent.AvailabilityToggleButtonClicked) }
                         )
-                        RmcSwitch(value = uiState.availability, onToggle = {
-                            viewModel.onEvent(EditMyVehicleUIEvent.AvailabilityToggleButtonClicked)
-                        })
                     }
 
                     RmcSpacer(8)
-
 
                     // Add the larger RmcTextField for the vehicle description
                     RmcTextField(
@@ -298,6 +289,8 @@ fun EditMyVehicleScreen(
                             .fillMaxWidth()
                             .height(120.dp) // Adjust the height as needed
                     )
+
+                    RmcSpacer(16)
 
                     AddressEdit(
                         query = uiState.query,
@@ -324,31 +317,31 @@ fun EditMyVehicleScreen(
                             viewModel.onEvent(EditMyVehicleUIEvent.OnAddressSelected(placeItem))
                         }
                     )
-                }
 
-                RmcSpacer(32)
+                    RmcSpacer(16)
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        RmcFilledButton(
-                            value = stringResource(id = R.string.apply),
-                            onClick = {
-                                viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
-                            }
-                        )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            RmcOutlinedButton(
+                                value = stringResource(id = R.string.cancel),
+                                onClick = {
+                                    navigateToScreen(RmcScreen.MyVehicles.name)
+                                }
+                            )
+                        }
+                        Column(Modifier.weight(1f)) {
+                            RmcFilledButton(
+                                value = stringResource(id = R.string.apply),
+                                isEnabled = uiState.query != "" && uiState.longitude != 0.0F,
+                                onClick = {
+                                    viewModel.onEvent(EditMyVehicleUIEvent.ConfirmEditMyVehicleButtonClicked)
+                                }
+                            )
+                        }
                     }
-                    Column(Modifier.weight(1f)) {
-                        RmcOutlinedButton(
-                            value = stringResource(id = R.string.cancel),
-                            onClick = {
-                                navigateToScreen(RmcScreen.MyVehicles.name)
-                            }
-                        )
-                    }
+                    RmcSpacer(32)
                 }
 
                 val context = LocalContext.current

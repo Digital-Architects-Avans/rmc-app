@@ -12,11 +12,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,12 +28,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,6 +68,7 @@ import com.digitalarchitects.rmc_app.R
 import com.digitalarchitects.rmc_app.presentation.RmcScreen
 import com.digitalarchitects.rmc_app.presentation.components.RmcAppBar
 import com.digitalarchitects.rmc_app.presentation.components.RmcFilledButton
+import com.digitalarchitects.rmc_app.presentation.components.RmcFilledTonalButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcOutlinedButton
 import com.digitalarchitects.rmc_app.presentation.components.RmcSpacer
 import com.digitalarchitects.rmc_app.presentation.components.RmcTextField
@@ -401,30 +409,42 @@ fun ProfileImage(
                 dismissOnClickOutside = true
             ),
             content = {
-                Column {
-                    Text(
-                        text = "Select Image Source",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
-                    )
-                    TextButton(
-                        onClick = {
-                            galleryLauncher.launch("image/*")
-                            showDialog = false
+                Surface(
+                    shape = MaterialTheme.shapes.large,
+                    tonalElevation = AlertDialogDefaults.TonalElevation,
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight()
+                ) {
+                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))) {
+                        Text(text = stringResource(R.string.select_image_source))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_large)))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
+                        ) {
+                            Column(Modifier.weight(1f)) {
+                                RmcFilledButton(
+                                    value = stringResource(id = R.string.gallery),
+                                    icon = Icons.Filled.Photo,
+                                    onClick = {
+                                        galleryLauncher.launch("image/*")
+                                        showDialog = false
+                                    }
+                                )
+                            }
+                            Column(Modifier.weight(1f)) {
+                                RmcFilledButton(
+                                    value = stringResource(id = R.string.camera),
+                                    icon = Icons.Filled.Camera,
+                                    onClick = {
+                                        // Before opening the camera, check for permission
+                                        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                                        showDialog = false
+                                    }
+                                )
+                            }
                         }
-                    ) {
-                        Text(text = "Gallery")
-                    }
-                    TextButton(
-                        onClick = {
-                            // Before opening the camera, check for permission
-                            cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-                            showDialog = false
-                        }
-                    ) {
-                        Text(text = "Camera")
                     }
                 }
             }

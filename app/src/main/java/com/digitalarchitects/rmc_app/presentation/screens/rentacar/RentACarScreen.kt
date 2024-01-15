@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ZoomOutMap
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
@@ -136,11 +137,11 @@ fun RentACarScreen(
     LaunchedEffect(Unit) {
         // Set userId in view model
         viewModel.onEvent(RentACarUIEvent.SetUserId)
-        // Get current user
-        viewModel.onEvent(RentACarUIEvent.FetchUser)
         // Get rentals
         viewModel.onEvent(RentACarUIEvent.FetchOwnerRentals)
         viewModel.onEvent(RentACarUIEvent.FetchRenterRentals)
+        // Get current user
+        viewModel.onEvent(RentACarUIEvent.FetchUser)
         // Get filter preference from datastore
         viewModel.onEvent(RentACarUIEvent.FetchFilterPreference)
         viewModel.onEvent(RentACarUIEvent.FetchShowSearchLocation)
@@ -293,7 +294,7 @@ fun RentACarScreen(
                             )
                         }
 
-                        if (rentACarUiState.statsRenterTotalRentals != 0 && rentACarUiState.statsOwnerTotalRentals != 0)
+                        if (rentACarUiState.statsRenterOpenRentals != 0 && rentACarUiState.statsOwnerTotalRentals != 0)
                             RmcSpacer(16)
 
                         // Owner has open rentals
@@ -534,13 +535,8 @@ fun RentACarScreen(
                             label = R.string.search,
                             onClick = {
                                 scope.launch {
-                                    if (rentACarUiState.zoomLevel > 10f) {
-                                        viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
-                                        cameraState.centerOnLocation(
-                                            rentACarUiState.startLocation,
-                                            10f
-                                        )
-                                    }
+                                    viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
+                                    viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
                                     navigateToScreen(RmcScreen.Search.name)
                                 }
                             },
@@ -561,7 +557,10 @@ fun RentACarScreen(
                                 RmcFilledTonalIconButton(
                                     icon = Icons.Filled.CarRental,
                                     label = R.string.my_rentals,
-                                    onClick = { navigateToScreen(RmcScreen.MyRentals.name) },
+                                    onClick = {
+                                        viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                        navigateToScreen(RmcScreen.MyRentals.name)
+                                    },
                                     modifier = Modifier.padding(
                                         horizontal = dimensionResource(R.dimen.padding_extra_small)
                                     )
@@ -579,7 +578,10 @@ fun RentACarScreen(
                                 RmcFilledTonalIconButton(
                                     icon = Icons.Filled.Key,
                                     label = R.string.rent_my_car,
-                                    onClick = { navigateToScreen(RmcScreen.RentOutMyCar.name) },
+                                    onClick = {
+                                        viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                        navigateToScreen(RmcScreen.RentOutMyCar.name)
+                                    },
                                 )
                                 if (rentACarUiState.statsOwnerPendingRentals != 0) {
                                     RmcBadge(
@@ -592,7 +594,10 @@ fun RentACarScreen(
                         RmcImgFilledIconButton(
                             profileImageSrc = rentACarUiState.user?.profileImageSrc,
                             label = R.string.my_rentals,
-                            onClick = { navigateToScreen("MyAccount") },
+                            onClick = {
+                                viewModel.onEvent(RentACarUIEvent.ShowIntro(false))
+                                navigateToScreen("MyAccount")
+                            },
                             modifier = Modifier.padding(
                                 end = dimensionResource(R.dimen.padding_extra_small)
                             )
@@ -613,6 +618,21 @@ fun RentACarScreen(
                     Column(
                         horizontalAlignment = Alignment.End
                     ) {
+                        if (rentACarUiState.zoomLevel > 10f) {
+                            RmcFilledTonalIconButton(
+                                icon = Icons.Filled.ZoomOutMap,
+                                label = R.string.my_location,
+                                onClick = {
+                                    scope.launch {
+                                        viewModel.onEvent(RentACarUIEvent.RmcMapVehicleItemClicked("0"))
+                                        cameraState.centerOnLocation(
+                                            rentACarUiState.cameraPosition,
+                                            10f
+                                        )
+                                    }
+                                },
+                            )
+                        }
                         if (!context.hasLocationPermission()) {
                             RmcFilledTonalIconButton(
                                 icon = Icons.Filled.MyLocation,
@@ -647,16 +667,14 @@ fun RentACarScreen(
                                 }
                             }
                         }
-                        if (rentACarUiState.searchResults != 0) {
-                            RmcFloatingActionButton(
-                                icon = Icons.AutoMirrored.Filled.List,
-                                label = R.string.list_view,
-                                number = rentACarUiState.searchResults,
-                                onClick = {
-                                    viewModel.onEvent(RentACarUIEvent.ShowListView(true))
-                                }
-                            )
-                        }
+                        RmcFloatingActionButton(
+                            icon = Icons.AutoMirrored.Filled.List,
+                            label = R.string.list_view,
+                            number = rentACarUiState.searchResults,
+                            onClick = {
+                                viewModel.onEvent(RentACarUIEvent.ShowListView(true))
+                            }
+                        )
                     }
                 }
 
@@ -694,6 +712,29 @@ fun RentACarScreen(
                                 } else {
                                     RmcSpacer(32)
                                 }
+                            }
+                        }
+                        if (rentACarUiState.listOfVehicles.isEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(dimensionResource(R.dimen.padding_large)),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.no_vehicles_found),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                RmcSpacer(24)
+                                RmcFilledButton(
+                                    value = stringResource(id = R.string.search),
+                                    icon = Icons.Filled.Search,
+                                    onClick = {
+                                        viewModel.onEvent(RentACarUIEvent.ShowListView(false))
+                                        navigateToScreen(RmcScreen.Search.name)
+                                    }
+                                )
+                                RmcSpacer(24)
                             }
                         }
                     }

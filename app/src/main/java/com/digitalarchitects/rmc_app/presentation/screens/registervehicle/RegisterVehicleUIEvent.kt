@@ -9,7 +9,7 @@ sealed interface RegisterVehicleUIEvent {
     object EngineTypeFCEVButtonClicked : RegisterVehicleUIEvent
     object AvailabilityToggleButtonClicked : RegisterVehicleUIEvent
     object ConfirmRegisterVehicleButtonClicked : RegisterVehicleUIEvent
-    object CancelRegisterVehicleButtonClicked:RegisterVehicleUIEvent
+    object CancelRegisterVehicleButtonClicked : RegisterVehicleUIEvent
     data class SetBrand(val brand: String) : RegisterVehicleUIEvent
     data class SetModel(val model: String) : RegisterVehicleUIEvent
     data class SetYear(val year: Int) : RegisterVehicleUIEvent
@@ -18,7 +18,7 @@ sealed interface RegisterVehicleUIEvent {
     data class SetImgLink(val imgLink: Int) : RegisterVehicleUIEvent
     data class SetDescription(val description: String) : RegisterVehicleUIEvent
     data class SetPrice(val price: Double) : RegisterVehicleUIEvent
-    object ResetVehicleUpdated: RegisterVehicleUIEvent
+    object ResetVehicleUpdated : RegisterVehicleUIEvent
     object OnAddressAutoCompleteClear : RegisterVehicleUIEvent
     data class OnAddressChange(val address: String) : RegisterVehicleUIEvent
     data class OnAddressSelected(val selectedPlaceItem: PlaceItem) : RegisterVehicleUIEvent

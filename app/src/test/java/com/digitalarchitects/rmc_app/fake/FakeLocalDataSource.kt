@@ -1,4 +1,3 @@
-
 import com.digitalarchitects.rmc_app.data.local.LocalRental
 import com.digitalarchitects.rmc_app.data.local.LocalUser
 import com.digitalarchitects.rmc_app.data.local.LocalVehicle
@@ -21,7 +20,8 @@ object FakeLocalDataSource {
             street = "street",
             buildingNumber = "buildingNumber",
             zipCode = "zipCode",
-            city = "city"
+            city = "city",
+            profileImageSrc = ""
         ),
         LocalUser(
             userId = "2",
@@ -35,7 +35,8 @@ object FakeLocalDataSource {
             street = "street2",
             buildingNumber = "buildingNumber2",
             zipCode = "zipCode2",
-            city = "city2"
+            city = "city2",
+            profileImageSrc = ""
         )
     )
     val vehicleList = listOf(

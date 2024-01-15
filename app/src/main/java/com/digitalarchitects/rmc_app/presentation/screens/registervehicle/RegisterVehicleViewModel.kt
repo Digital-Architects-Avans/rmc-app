@@ -33,7 +33,8 @@ class RegisterVehicleViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RegisterVehicleUIState())
     val uiState: StateFlow<RegisterVehicleUIState> get() = _uiState.asStateFlow()
 
-    private val _placePredictions: MutableStateFlow<List<PlaceItem>> = MutableStateFlow(arrayListOf())
+    private val _placePredictions: MutableStateFlow<List<PlaceItem>> =
+        MutableStateFlow(arrayListOf())
     val placePredictions = _placePredictions.asStateFlow()
 
     init {
@@ -116,6 +117,7 @@ class RegisterVehicleViewModel @Inject constructor(
                         addressResult.exception
                     )
                 }
+
                 else -> {}
             }
         }
@@ -132,7 +134,6 @@ class RegisterVehicleViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun clearPredictions() {
         _placePredictions.value = mutableListOf()

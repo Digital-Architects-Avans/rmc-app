@@ -6,7 +6,7 @@ data class RegisterVehicleUIState(
     val userId: String = "",
     val brand: String = "",
     val model: String = "",
-    val year: Int = 1999,
+    val year: Int = 2023,
     val vehicleClass: String = "",
     val engineType: EngineType = EngineType.ICE,
     val licensePlate: String = "",
@@ -17,7 +17,6 @@ data class RegisterVehicleUIState(
     val longitude: Float = 0.0F,
     val price: Double = 0.00,
     val availability: Boolean = false,
-
     var vehicleUpdated: Boolean = false,
     val query: String = "",
 )

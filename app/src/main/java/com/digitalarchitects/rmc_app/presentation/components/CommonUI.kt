@@ -1851,7 +1851,7 @@ fun AddressEdit(
     AutoCompleteUI(
         modifier = Modifier.fillMaxWidth(),
         query = query,
-        queryLabel = stringResource(id = R.string.vehicle_location),
+        queryLabel = stringResource(id = R.string.location),
         useOutlined = true,
         onQueryChanged = onQueryChanged,
         predictions = addressPlaceItemPredictions,

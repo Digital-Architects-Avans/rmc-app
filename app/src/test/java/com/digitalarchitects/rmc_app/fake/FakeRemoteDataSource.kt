@@ -22,7 +22,8 @@ object FakeRemoteDataSource {
             street = "street",
             buildingNumber = "buildingNumber",
             zipCode = "zipCode",
-            city = "city"
+            city = "city",
+            profileImageSrc = ""
         ),
         User(
             userId = "2",
@@ -36,7 +37,8 @@ object FakeRemoteDataSource {
             street = "street2",
             buildingNumber = "buildingNumber2",
             zipCode = "zipCode2",
-            city = "city2"
+            city = "city2",
+            profileImageSrc = ""
         )
     )
     val vehicleList = listOf(
