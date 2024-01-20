@@ -21,7 +21,7 @@ object FakeLocalDataSource {
             buildingNumber = "buildingNumber",
             zipCode = "zipCode",
             city = "city",
-            profileImageSrc = ""
+            profileImageSrc = "src"
         ),
         LocalUser(
             userId = "2",
@@ -36,7 +36,7 @@ object FakeLocalDataSource {
             buildingNumber = "buildingNumber2",
             zipCode = "zipCode2",
             city = "city2",
-            profileImageSrc = ""
+            profileImageSrc = "src2"
         )
     )
     val vehicleList = listOf(
