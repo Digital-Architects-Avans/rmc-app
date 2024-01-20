@@ -23,6 +23,10 @@ class FakeUserRepository : UserRepository {
             AuthResult.Unauthorized()
         }    }
 
+    override suspend fun signOut() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun authenticate(): AuthResult<Unit> {
         TODO("Not yet implemented")
     }
@@ -60,5 +64,9 @@ class FakeUserRepository : UserRepository {
 
     override suspend fun getCurrentUserIdFromDataStore(): String? {
         return "1"
+    }
+
+    override suspend fun setProfileImageSrc(userId: String, profileImageSrc: String) {
+        TODO("Not yet implemented")
     }
 }
