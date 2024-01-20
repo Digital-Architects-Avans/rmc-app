@@ -1,29 +1,32 @@
 package com.digitalarchitects.rmc_app
 
 
+import android.app.Application
+import android.net.Uri
+import com.digitalarchitects.rmc_app.fake.FakeFileRepository
 import com.digitalarchitects.rmc_app.fake.FakeUserRepository
 import com.digitalarchitects.rmc_app.presentation.screens.editmyaccount.EditMyAccountUIEvent
 import com.digitalarchitects.rmc_app.presentation.screens.editmyaccount.EditMyAccountViewModel
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
+
 
 class EditMyAccountScreenUiTest {
 
-    private lateinit var userRepository: FakeUserRepository
-    private lateinit var viewModel: EditMyAccountViewModel
+    private val viewModel = EditMyAccountViewModel(
+        application = Application(),
+        userRepository = FakeUserRepository(),
+        fileRepository = FakeFileRepository()
+    )
 
-    @Before
-    fun setUp() {
-        userRepository = FakeUserRepository()
-        viewModel = EditMyAccountViewModel(
-            userRepository = userRepository
-        )
+    private fun createMockUri(): Uri {
+        return Uri.parse("content://mock")
     }
 
+
     @Test
-    fun test_editaccount_success() = runTest {
+    fun test_editAccount_success() = runTest {
         val firstName = "John"
         val lastName = "Doe"
         val email = "test@example.com"
@@ -33,7 +36,8 @@ class EditMyAccountScreenUiTest {
         val postalCode = "3200kk"
         val buildingNumber = "120"
         val city = "Breda"
-//        val imageResourceId = 1
+        val profileImageSrc = "src"
+        val imageUri = createMockUri()
 
         viewModel.onEvent(EditMyAccountUIEvent.SetFirstName(firstName))
         viewModel.onEvent(EditMyAccountUIEvent.SetLastName(lastName))
@@ -44,7 +48,7 @@ class EditMyAccountScreenUiTest {
         viewModel.onEvent(EditMyAccountUIEvent.SetBuildingNumber(buildingNumber))
         viewModel.onEvent(EditMyAccountUIEvent.SetCity(city))
         viewModel.onEvent(EditMyAccountUIEvent.SetZipCode(postalCode))
-//        viewModel.onEvent(EditMyAccountUIEvent.SetImageResourceId(imageResourceId))
+        viewModel.onEvent(EditMyAccountUIEvent.SetImageUri(imageUri))
 
 
         assertEquals(firstName, viewModel.uiState.value.firstName)
@@ -56,12 +60,13 @@ class EditMyAccountScreenUiTest {
         assertEquals(postalCode, viewModel.uiState.value.zipCode)
         assertEquals(buildingNumber, viewModel.uiState.value.buildingNumber)
         assertEquals(city, viewModel.uiState.value.city)
-//        assertEquals(imageResourceId, viewModel.uiState.value.imageResourceId)
+        assertEquals(profileImageSrc, viewModel.uiState.value.profileImageSrc)
+        assertEquals(imageUri, viewModel.uiState.value.imageUri)
     }
 
 
     @Test
-    fun test_editaccount_false() = runTest {
+    fun test_editAccount_false() = runTest {
         val firstName = "John"
         val lastName = "Doe"
         val email = "test@example.com"
@@ -71,7 +76,8 @@ class EditMyAccountScreenUiTest {
         val postalCode = "3200kk"
         val buildingNumber = "120"
         val city = "Breda"
-//        val imageResourceId = 1
+        val profileImageSrc = "src"
+        val imageUri = createMockUri()
 
         viewModel.onEvent(EditMyAccountUIEvent.SetFirstName(firstName))
         viewModel.onEvent(EditMyAccountUIEvent.SetLastName(lastName))
@@ -82,7 +88,7 @@ class EditMyAccountScreenUiTest {
         viewModel.onEvent(EditMyAccountUIEvent.SetBuildingNumber(buildingNumber))
         viewModel.onEvent(EditMyAccountUIEvent.SetCity(city))
         viewModel.onEvent(EditMyAccountUIEvent.SetZipCode(postalCode))
-//        viewModel.onEvent(EditMyAccountUIEvent.SetImageResourceId(imageResourceId))
+        viewModel.onEvent(EditMyAccountUIEvent.SetImageUri(imageUri))
 
 
         assertEquals(firstName, viewModel.uiState.value.firstName)
@@ -94,6 +100,7 @@ class EditMyAccountScreenUiTest {
         assertEquals(postalCode, viewModel.uiState.value.zipCode)
         assertEquals(buildingNumber, viewModel.uiState.value.buildingNumber)
         assertEquals(city, viewModel.uiState.value.city)
-//        assertEquals(imageResourceId, viewModel.uiState.value.imageResourceId)
+        assertEquals(profileImageSrc, viewModel.uiState.value.profileImageSrc)
+        assertEquals(imageUri, viewModel.uiState.value.imageUri)
     }
 }
