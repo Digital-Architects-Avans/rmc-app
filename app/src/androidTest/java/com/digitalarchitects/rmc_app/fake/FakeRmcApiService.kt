@@ -7,6 +7,7 @@ import com.digitalarchitects.rmc_app.data.remote.RmcApiService
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.CreateRentalDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.RemoteRental
 import com.digitalarchitects.rmc_app.data.remote.dto.rental.UpdateRentalDTO
+import com.digitalarchitects.rmc_app.data.remote.dto.user.ProfileImageResponse
 import com.digitalarchitects.rmc_app.data.remote.dto.user.UpdateUserDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.CreateVehicleDTO
 import com.digitalarchitects.rmc_app.data.remote.dto.vehicle.RemoteVehicle
@@ -15,6 +16,7 @@ import com.digitalarchitects.rmc_app.domain.model.Rental
 import com.digitalarchitects.rmc_app.domain.model.RentalStatus
 import com.digitalarchitects.rmc_app.domain.model.User
 import com.digitalarchitects.rmc_app.domain.model.Vehicle
+import okhttp3.MultipartBody
 import retrofit2.Response
 
 class FakeRmcApiService : RmcApiService {
@@ -43,6 +45,13 @@ class FakeRmcApiService : RmcApiService {
     }
 
     override suspend fun updateUser(id: String, updatedUser: UpdateUserDTO): Response<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateProfileImageSrc(
+        id: String,
+        profileImageSrc: String
+    ): Response<Unit> {
         TODO("Not yet implemented")
     }
 
@@ -105,6 +114,10 @@ class FakeRmcApiService : RmcApiService {
     }
 
     override suspend fun deleteRental(id: String): Response<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun uploadImage(image: MultipartBody.Part): ProfileImageResponse {
         TODO("Not yet implemented")
     }
 

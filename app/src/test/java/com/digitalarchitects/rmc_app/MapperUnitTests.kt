@@ -20,7 +20,7 @@ import org.junit.Test
 class MapperTests {
 
     @Test
-    fun LocalRental_to_Rental_MapsCorrectly() {
+    fun localRental_to_Rental_MapsCorrectly() {
         val testDate = LocalDate.parse("2023-01-01")
 
         val localRentalList = listOf(
@@ -59,7 +59,7 @@ class MapperTests {
     }
 
     @Test
-    fun ListRemoteRental_to_LocalRentalListFromRemote_MapsCorrectly() {
+    fun listRemoteRental_to_LocalRentalListFromRemote_MapsCorrectly() {
         val testDate = LocalDate.parse("2023-01-01")
         val remoteRentalList = listOf(
             RemoteRental(
@@ -106,7 +106,7 @@ class MapperTests {
     }
 
     @Test
-    fun LocalRental_Vehicle_User_toTriple_MapsCorrectly() {
+    fun localRental_Vehicle_User_toTriple_MapsCorrectly() {
         val testDate = LocalDate.parse("2023-01-01")
         val localRental = LocalRental(
             rentalId = "1",
@@ -151,7 +151,8 @@ class MapperTests {
             street = "bredalaan",
             buildingNumber = "123",
             zipCode = "3400kd",
-            city = "Breda"
+            city = "Breda",
+            profileImageSrc = "src"
         )
 
         val triple = Triple(localRental, localVehicle, localUser)
